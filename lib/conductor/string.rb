@@ -14,19 +14,19 @@ class ::String
   end
 
   def date?
-    match(/^\d{4}-\d{2}-\d{2}/) ? true : false
+    dup.force_encoding('utf-8').match(/^\d{4}-\d{2}-\d{2}/) ? true : false
   end
 
   def time?
-    match(/ \d{1,2}(:\d\d)? *([ap]m)?/i)
+    dup.force_encoding('utf-8').match(/ \d{1,2}(:\d\d)? *([ap]m)?/i)
   end
 
   def to_date
-    Chronic.parse(self)
+    Chronic.parse(self.dup.force_encoding('utf-8'))
   end
 
   def strip_time
-    sub(/ \d{1,2}(:\d\d)? *([ap]m)?/i, '')
+    dup.force_encoding('utf-8').sub(/ \d{1,2}(:\d\d)? *([ap]m)?/i, '')
   end
 
   def to_day(time = :end)
@@ -39,7 +39,7 @@ class ::String
   end
 
   def bool?
-    match(/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/) ? true : false
+    dup.force_encoding('utf-8').match(/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/) ? true : false
   end
 
   def to_bool!

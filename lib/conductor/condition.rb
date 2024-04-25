@@ -85,6 +85,8 @@ module Conductor
 
       return operator == :not_equal if val1.nil?
 
+      val2 = val2.force_encoding('utf-8')
+
       if val1.date?
         if val2.time?
           date1 = val1.to_date
@@ -112,22 +114,22 @@ module Conductor
              else
                Regexp.escape(val2)
              end
-
+      val1 = val1.dup.to_s.force_encoding('utf-8')
       case operator
       when :contains
-        val1.to_s =~ /#{val2}/i
+        val1 =~ /#{val2}/i
       when :not_starts_with
-        val1.to_s !~ /^#{val2}/i
+        val1 !~ /^#{val2}/i
       when :not_ends_with
-        val1.to_s !~ /#{val2}$/i
+        val1 !~ /#{val2}$/i
       when :starts_with
-        val1.to_s =~ /^#{val2}/i
+        val1 =~ /^#{val2}/i
       when :ends_with
-        val1.to_s =~ /#{val2}$/i
+        val1 =~ /#{val2}$/i
       when :equal
-        val1.to_s =~ /^#{val2}$/i
+        val1 =~ /^#{val2}$/i
       when :not_equal
-        val1.to_s !~ /^#{val2}$/i
+        val1 !~ /^#{val2}$/i
       else
         false
       end
