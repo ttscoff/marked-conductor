@@ -150,7 +150,7 @@ module Conductor
     def test_truthy(value1, value2, operator)
       return false unless value2.bool?
 
-      value2.to_bool!
+      value2 = value2.to_bool if value2.is_a?(String)
 
       res = value1 == value2
 
@@ -185,14 +185,15 @@ module Conductor
         content = IO.read(@env[:filepath]).force_encoding('utf-8')
         return false unless content =~ /^---/
 
-        yaml = YAML.safe_load(content.split(/(---|\.\.\.)/)[1])
+        yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
+
         return false unless yaml
         if m[2]
           value1 = yaml[m[2]]
           value1 = value1.join(',') if value1.is_a?(Array)
           if %i[type_of not_type_of].include?(operator)
             test_type(value1, value, operator)
-          elsif value1.is_a?(Boolean)
+          elsif value1.bool?
             test_truthy(value1, value, operator)
           elsif value1.number? && value2.number? && %i[gt lt equal not_equal].include?(operator)
             test_operator(value1, value, operator)

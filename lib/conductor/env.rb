@@ -28,11 +28,11 @@ module Conductor
         css_path: '/Applications/Marked 2.app/Contents/Resources/swiss.css',
         ext: 'md',
         includes: [],
-        origin: '/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/',
-        filepath: '/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/README.md',
+        origin: '/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/',
+        filepath: '/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/marked-2-and-obsidian.md',
         phase: 'PREPROCESS',
         outline: 'NONE',
-        path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/'
+        path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/'
       }
     end
 
