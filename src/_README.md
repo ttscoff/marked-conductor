@@ -1,4 +1,5 @@
 <!--README-->
+[![RubyGems.org](https://img.shields.io/gem/v/journal-cli)](https://rubygems.org/gems/journal-cli)
 
 # Marked Conductor
 
