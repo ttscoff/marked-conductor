@@ -73,7 +73,7 @@ Available conditions are:
 - `path`: This tests just the path itself, allowing conditions like `path contains _drafts` or `path does not contain _posts`.
 - `phase`: Tests whether Marked is in Preprocessor or Processor phase, allowing conditions like `phase is preprocess` or `phase is process` (which can be shortened to `pre` and `pro`).
 - `text`: This tests for any string match within the text of the document being processed. This can be used with operators `starts with`, `ends with`, or `contains`, e.g. `text contains @taskpaper` or `text does not contain <!--more-->`. 
-    - If the test value is surrounded by forward slashes, it will be treated as a regular expression. Regexes are always flagged as case insensitive. Use it like `text matches @\w+`.
+    - If the test value is surrounded by forward slashes, it will be treated as a regular expression. Regexes are always flagged as case insensitive. Use it like `text contains /@\w+/`.
 - `yaml`, `headers`, or `frontmatter` will test for YAML headers. If a `yaml:KEY` is defined, a specific YAML key will be tested for. If a value is defined with an operator, it will be tested against the value key.
     - `yaml` tests for the presence of YAML frontmatter.
     - `yaml:comments` tests for the presence of a `comments` key.
