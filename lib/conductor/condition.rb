@@ -64,7 +64,7 @@ module Conductor
     end
 
     def split_condition(condition)
-      res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>|is(?: not)?(?: an?|type(?: of)?)?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:has )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
+      res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
       [res['val1'], res['val2'], operator_to_symbol(res['op'])]
     end
 
@@ -81,6 +81,10 @@ module Conductor
     end
 
     def test_string(val1, val2, operator)
+      return operator == :not_equal ? val1.nil? : !val1.nil? if val2.nil?
+
+      return operator == :not_equal if val1.nil?
+
       if val1.date?
         if val2.time?
           date1 = val1.to_date
@@ -103,9 +107,19 @@ module Conductor
         return res unless res.nil?
       end
 
+      val2 = if val2.strip =~ %r{^/.*?/$}
+               val2.gsub(%r{(^/|/$)}, '')
+             else
+               Regexp.escape(val2)
+             end
+
       case operator
       when :contains
         val1.to_s =~ /#{val2}/i
+      when :not_starts_with
+        val1.to_s !~ /^#{val2}/i
+      when :not_ends_with
+        val1.to_s !~ /#{val2}$/i
       when :starts_with
         val1.to_s =~ /^#{val2}/i
       when :ends_with
@@ -131,6 +145,16 @@ module Conductor
       else
         test_tree(dir, value, operator)
       end
+    end
+
+    def test_truthy(value1, value2, operator)
+      return false unless value2.bool?
+
+      value2.to_bool!
+
+      res = value1 == value2
+
+      operator == :not_equal ? !res : res
     end
 
     def test_condition(condition)
@@ -167,11 +191,15 @@ module Conductor
           value1 = value1.join(',') if value1.is_a?(Array)
           if %i[type_of not_type_of].include?(operator)
             test_type(value1, value, operator)
+          elsif value1.is_a?(Boolean)
+            test_truthy(value1, value, operator)
+          elsif value1.number? && value2.number? && %i[gt lt equal not_equal].include?(operator)
+            test_operator(value1, value, operator)
           else
             test_string(value1, value, operator)
           end
         else
-          res = yaml.key?(value)
+          res = value? ? yaml.key?(value) : true
           operator == :not_equal ? !res : res
         end
       else
@@ -187,19 +215,23 @@ module Conductor
         :gt
       when /(lt|less( than)?|<|(?:is )?before)/i
         :lt
-      when /(has|contains|includes|\*=)/i
+      when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
         :contains
+      when /not (suffix|ends? with)/i
+        :not_ends_with
+      when /not (prefix|(starts?|begins?) with)/i
+        :not_starts_with
       when /(suffix|ends with|\$=)/i
         :ends_with
-      when /(prefix|starts with|\^=)/i
+      when /(prefix|(starts?|begins?) with|\^=)/i
         :starts_with
       when /is not (an?|type( of)?)/i
         :not_type_of
       when /is (an?|type( of)?)/i
         :type_of
-      when /((?:is )?not|!==?)/i
+      when /((?:(?:is|does) )?not(?: equals?)?|!==?)/i
         :not_equal
-      when /(is|==?)/i
+      when /(is|==?|equals?)/i
         :equal
       end
     end

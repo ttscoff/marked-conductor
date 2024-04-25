@@ -33,4 +33,30 @@ class ::String
     t = time == :end ? '23:59' : '00:00'
     Chronic.parse("#{self.strip_time} #{t}")
   end
+
+  def number?
+    to_f > 0
+  end
+
+  def bool?
+    match(/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/) ? true : false
+  end
+
+  def to_bool!
+    replace to_bool
+  end
+
+  ##
+  ## Returns a bool representation of the string.
+  ##
+  ## @return     [Boolean] Bool representation of the object.
+  ##
+  def to_bool
+    case self
+    when /^[yt]/i
+      true
+    else
+      false
+    end
+  end
 end

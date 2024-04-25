@@ -18,7 +18,7 @@ module Conductor
                 script_dir = File.expand_path('~/.config/conductor/scripts')
                 if File.exist?(File.join(script_dir, path))
                   File.join(script_dir, path)
-                elsif TTY::Which.which?(path)
+                elsif TTY::Which.exist?(path)
                   TTY::Which.which(path)
                 else
                   raise "Path to #{path} not found"

@@ -3,7 +3,7 @@
 
 require_relative '../lib/conductor'
 
-raise 'No input on STDIN' unless Conductor.stdin
+# raise 'No input on STDIN' unless Conductor.stdin
 
 include Conductor
 

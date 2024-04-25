@@ -1,4 +1,4 @@
-
+<!--README-->
 
 # Marked Conductor
 
@@ -24,8 +24,8 @@ To use Conductor, you need to set up a configuration file in `~/.config/conducto
 
 Once configured, you can set up conductor as a Custom Processor in Marked. Run `which conductor | pbcopy` to get the full path to the binary and copy it, then open <b>Marked Preferences > Advanced</b> and select either Custom Processor or Custom Preprocessor (or both) and paste into the <b>Path:</b> field. You can select <i>Automatically enable for new windows</i> to have the processor enabled by default when opening documents.
 
-
-![Marked preferences](images/preferences.jpg)
+<!--JEKYLL {% img aligncenter /uploads/2024/04/marked-preferences-conductor.jpg 593 673 "marked-preferences-conductor.jpg" %}-->
+<!--GITHUB-->![Marked preferences](images/preferences.jpg)<!--END GITHUB-->
 
 Conductor requires that it be run from Marked 2, and won't function on the command line. This is because Marked defines special environment variables that can be used in scripts, and these won't exist when running from your shell. If you want to be able to test Conductor from the command line, see [Testing](#testing).
 
@@ -129,7 +129,7 @@ Further, input on STDIN is required, unless the script/command being matched con
 
 To test which conditions are being met, you can just set the `command:` for a track to `echo "meaningful message"`, where the message is something that indicates which condition(s) have passed.
 
-
+<!--GITHUB-->
 
 ## Contributing
 
@@ -142,4 +142,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Marked::Conductor project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/ttscoff/marked-conductor/blob/main/CODE_OF_CONDUCT.md).
-
+<!--END GITHUB-->
+<!--END README-->
