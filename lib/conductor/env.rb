@@ -28,11 +28,11 @@ module Conductor
         css_path: '/Applications/Marked 2.app/Contents/Resources/swiss.css',
         ext: 'md',
         includes: [],
-        origin: '/Users/ttscoff/Library/Mobile Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/nvALT2.2/',
-        filepath: '/Users/ttscoff/Library/Mobile Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/nvALT2.2/bt.com App Review- AeroPress timer for iPhone.md',
+        origin: '/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/',
+        filepath: '/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/README.md',
         phase: 'PREPROCESS',
         outline: 'NONE',
-        path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Library/Mobile Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/nvALT2.2'
+        path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Work/Oracle/oci-ai-industry-dbsolutions/text-analysis-and-translation/'
       }
     end
 

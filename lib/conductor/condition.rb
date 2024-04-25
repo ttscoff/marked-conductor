@@ -182,10 +182,11 @@ module Conductor
         test_string(IO.read(@env[:filepath]), value, operator) ? true : false
       when /^(yaml|headers|frontmatter)(?::(.*?))?$/i
         m = Regexp.last_match
-        content = IO.read(@env[:filepath])
+        content = IO.read(@env[:filepath]).force_encoding('utf-8')
         return false unless content =~ /^---/
 
         yaml = YAML.safe_load(content.split(/(---|\.\.\.)/)[1])
+        return false unless yaml
         if m[2]
           value1 = yaml[m[2]]
           value1 = value1.join(',') if value1.is_a?(Array)

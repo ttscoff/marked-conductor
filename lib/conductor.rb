@@ -19,7 +19,7 @@ require_relative 'conductor/condition'
 module Conductor
   class << self
     def stdin
-      @stdin ||= $stdin.read.strip if $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
+      @stdin ||= $stdin.read.strip.force_encoding('utf-8') if $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
     end
   end
 end
