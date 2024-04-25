@@ -1,3 +1,12 @@
+### 1.0.5
+
+2024-04-25 17:00
+
+#### FIXED
+
+- First-run config creating directory instead of file
+- Frozen string/encoding issue on string comparisons
+
 ### 1.0.3
 
 2024-04-25 14:32
