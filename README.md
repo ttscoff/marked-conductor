@@ -1,38 +1,31 @@
-# Marked::Conductor
+# Marked Conductor
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/marked/conductor`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A "train conductor" for [Marked 2](https://marked2app.com). Conductor can be set up as a Custom Preprocessor or Custom Processor for Marked, and can run different commands and scripts based on conditions in a YAML configuration file, allowing you to have multiple processors that run based on predicates.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'marked-conductor'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
     $ gem install marked-conductor
+
+If you run into errors, try running with the `--user-install` flag:
+
+    $ gem install --user-install marked-conductor
+
+> I've noticed lately with `asdf` that I have to run `asdf reshim` after installing gems containing binaries.
+
+If you use Homebrew, you can run 
+
+    $ brew gem install marked-conductor
 
 ## Usage
 
-TODO: Write usage instructions here
+To use Conductor, you need to set up a configuration file in `~/.config/conductor/tracks.yaml`. Run `conductor` once to create the directory and an empty configuration. See [Configuration](#configuration) below for details on setting up your "tracks." 
 
-## Development
+Once configured, you can set up conductor as a Custom Processor in Marked. Run `which conductor | pbcopy` to get the full path to the binary and copy it, then open <b>Marked Preferences > Advanced</b> and select either Custom Processor or Custom Preprocessor (or both) and paste into the <b>Path:</b> field. You can select <i>Automatically enable for new windows</i> to have the processor enabled by default when opening documents.
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/me@brettterpstra.com/marked-conductor. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/me@brettterpstra.com/marked-conductor/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/ttscoff/marked-conductor. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/ttscoff/marked-conductor/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
