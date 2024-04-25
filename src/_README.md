@@ -114,6 +114,12 @@ All of the [capabilities and requirements](https://marked2app.com/help/Custom_Pr
 
 A script run by Conductor already knows it has the right type of file with the expected data and path, so your script can focus on just processing one file type. It's recommended to separate all of that logic you may already have written out into separate scripts and let Conductor handle the forking based on various criteria.
 
+## Tips
+
+- You can see what condition matched in Marked by opening <b>Help->Show Custom Processor Log</b> and checking the STDERR output.
+- To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `text matches /source: *bear/`
+- To run a custom processor for Obsidian, use the condition `tree contains .obsidian`
+
 ## Testing
 
 In order to test from the command line, you'll need certain environment variables set. This can be done by exporting the following variables with your own definitions, or by running conductor with all of the variables preceding the command, e.g. `$ MARKED_ORIGIN=/path/to/markdown_file.md [...] conductor`.
