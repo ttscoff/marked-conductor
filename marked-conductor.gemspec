@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+require_relative "lib/conductor/version"
+
+Gem::Specification.new do |spec|
+  spec.name          = "marked-conductor"
+  spec.version       = Conductor::VERSION
+  spec.authors       = ["Brett Terpstra"]
+  spec.email         = ["me@brettterpstra.com"]
+
+  spec.summary       = "A custom processor manager for Marked 2 (Mac)"
+  spec.description   = "Conductor allows easy configuration of multiple scripts that are run as custom pre/processors for Marked based on conditional statements."
+  spec.homepage      = "https://github.com/ttscoff/marked-conductor"
+  spec.license       = "MIT"
+  spec.required_ruby_version = ">= 2.6.0"
+
+  spec.metadata["allowed_push_host"] = "https://example.com"
+
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/ttscoff/marked-conductor"
+  spec.metadata["changelog_uri"] = "https://github.com/ttscoff/marked-conductor/CHANGELOG.md"
+
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject do |f|
+      (f == __FILE__) || f.match(%r{\A(?:(?:test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
+    end
+  end
+  spec.bindir        = "bin"
+  spec.executables   = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
+
+  spec.add_development_dependency "pry", "~> 0.14.2"
+  spec.add_development_dependency "awesome_print", "~> 1.9.2"
+
+  # Uncomment to register a new dependency of your gem
+  spec.add_dependency "tty-which", "~> 0.5.0"
+  spec.add_dependency "chronic", "~> 0.10.2"
+  # For more information and examples about making a new gem, checkout our
+  # guide at: https://bundler.io/guides/creating_gem.html
+end
