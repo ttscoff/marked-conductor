@@ -18,7 +18,7 @@ module Conductor
 
   def create_config(config_file)
     config_dir = File.dirname(config_file)
-    scripts_dir = File.dirname(File.join(config_file, 'scripts'))
+    scripts_dir = File.dirname(File.join(config_dir, 'scripts'))
     FileUtils.mkdir_p(config_dir) unless File.directory?(config_dir)
     FileUtils.mkdir_p(scripts_dir) unless File.directory?(scripts_dir)
     File.open(config_file, 'w') { |f| f.puts sample_config }
