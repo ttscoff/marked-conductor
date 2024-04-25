@@ -108,6 +108,12 @@ Commands are interpreted as shell commands. If a command exists in the `$PATH`, 
 
 Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
 
+## Custom Processors
+
+All of the [capabilities and requirements](https://marked2app.com/help/Custom_Processor) of a Custom Processor script or command still apply, and all of the [environment variables that Marked sets](https://marked2app.com/help/Custom_Processor#environmentvariables) are still available. You just no longer have to have one huge script that forks on the various environment variables and you don't have to write your own tests for handling different scenarios.
+
+A script run by Conductor already knows it has the right type of file with the expected data and path, so your script can focus on just processing one file type. It's recommended to separate all of that logic you may already have written out into separate scripts and let Conductor handle the forking based on various criteria.
+
 ## Testing
 
 In order to test from the command line, you'll need certain environment variables set. This can be done by exporting the following variables with your own definitions, or by running conductor with all of the variables preceding the command, e.g. `$ MARKED_ORIGIN=/path/to/markdown_file.md [...] conductor`.
