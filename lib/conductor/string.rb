@@ -42,6 +42,14 @@ class ::String
     dup.force_encoding('utf-8').match(/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/) ? true : false
   end
 
+  def meta?
+    self =~ /^---/m
+  end
+
+  def yaml?
+    self =~ /^\w+: +\S+/m
+  end
+
   def to_bool!
     replace to_bool
   end

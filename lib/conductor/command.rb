@@ -45,7 +45,6 @@ module Conductor
       if use_stdin
         `echo #{Shellwords.escape(stdin)} | #{Env} #{path} #{args}`
       else
-        puts "#{Env} #{path} #{args}"
         `#{Env} #{path} #{args}`
       end
     end

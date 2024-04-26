@@ -159,6 +159,59 @@ module Conductor
       operator == :not_equal ? !res : res
     end
 
+    def test_yaml(content, value, key, operator)
+      yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
+
+      return operator == :not_equal ? true : false unless yaml
+
+      if key
+        value1 = yaml[key]
+        return operator == :not_equal ? true : false if value1.nil?
+
+        value1 = value1.join(',') if value1.is_a?(Array)
+        if %i[type_of not_type_of].include?(operator)
+          test_type(value1, value, operator)
+        elsif value1.bool?
+          test_truthy(value1, value, operator)
+        elsif value1.number? && value2.number? && %i[gt lt equal not_equal].include?(operator)
+          test_operator(value1, value, operator)
+        else
+          test_string(value1, value, operator)
+        end
+      else
+        res = value ? yaml.key?(value) : true
+        operator == :not_equal ? !res : res
+      end
+    end
+
+    def test_meta(content, value, key, operator)
+      headers = []
+      content.split(/\n/).each do |line|
+        break if line == /^ *\n$/ || line !~ /\w+: *\S/
+
+        headers << line
+      end
+
+      return operator == :not_equal if headers.empty?
+
+      return operator != :not_equal if value.nil?
+
+      meta = {}
+      headers.each do |h|
+        parts = h.split(/ *: */)
+        k = parts[0].strip.downcase.gsub(/ +/, '')
+        v = parts[1..].join(':').strip
+        meta[k] = v
+      end
+
+      if key
+        test_string(meta[key], value, operator)
+      else
+        res = value ? meta.key?(value) : true
+        operator == :not_equal ? !res : res
+      end
+    end
+
     def test_condition(condition)
       type, value, operator = split_condition(condition)
 
@@ -181,35 +234,23 @@ module Conductor
       when /^phase/i
         test_string(@env[:phase], value, :starts_with) ? true : false
       when /^text/i
-        puts IO.read(@env[:filepath]).force_encoding('utf-8')
         test_string(IO.read(@env[:filepath]).force_encoding('utf-8'), value, operator) ? true : false
       when /^(yaml|headers|frontmatter)(?::(.*?))?$/i
         m = Regexp.last_match
+
+        key = m[2] || nil
+
         content = IO.read(@env[:filepath]).force_encoding('utf-8')
-        return false unless content =~ /^---/m
 
-        yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
+        content.yaml? ? test_yaml(content, value, key, operator) : false
+      when /^(mmd|meta(?:data)?)(?::(.*?))?$/i
+        m = Regexp.last_match
 
-        return false unless yaml
+        key = m[2] || nil
 
-        if m[2]
-          value1 = yaml[m[2]]
-          return false if value1.nil?
+        content = IO.read(@env[:filepath]).force_encoding('utf-8')
 
-          value1 = value1.join(',') if value1.is_a?(Array)
-          if %i[type_of not_type_of].include?(operator)
-            test_type(value1, value, operator)
-          elsif value1.bool?
-            test_truthy(value1, value, operator)
-          elsif value1.number? && value2.number? && %i[gt lt equal not_equal].include?(operator)
-            test_operator(value1, value, operator)
-          else
-            test_string(value1, value, operator)
-          end
-        else
-          res = value? ? yaml.key?(value) : true
-          operator == :not_equal ? !res : res
-        end
+        content.meta? ? test_meta(content, value, key, operator) : false
       else
         false
       end

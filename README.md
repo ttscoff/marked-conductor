@@ -1,3 +1,4 @@
+style: swiss
 
 [![RubyGems.org](https://img.shields.io/gem/v/marked-conductor)](https://rubygems.org/gems/marked-conductor)
 
