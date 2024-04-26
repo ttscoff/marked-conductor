@@ -1,3 +1,15 @@
+### 1.0.7
+
+2024-04-26 11:53
+
+#### NEW
+
+- Added test for MMD metadata, either for presence of meta or for specific keys or key values
+
+#### FIXED
+
+- Remove some debugging garbage
+
 ### 1.0.6
 
 2024-04-26 11:17
