@@ -150,7 +150,7 @@ module Conductor
     end
 
     def test_truthy(value1, value2, operator)
-      return false unless value2.bool?
+      return false unless value2&.bool?
 
       value2 = value2.to_bool if value2.is_a?(String)
 
@@ -177,21 +177,25 @@ module Conductor
       when /^tree/i
         test_tree(@env[:origin], value, operator)
       when /^(path|dir)/i
-        test_string(@env[:origin], value, operator) ? true : false
+        test_string(@env[:filepath], value, operator) ? true : false
       when /^phase/i
         test_string(@env[:phase], value, :starts_with) ? true : false
       when /^text/i
-        test_string(IO.read(@env[:filepath]), value, operator) ? true : false
+        puts IO.read(@env[:filepath]).force_encoding('utf-8')
+        test_string(IO.read(@env[:filepath]).force_encoding('utf-8'), value, operator) ? true : false
       when /^(yaml|headers|frontmatter)(?::(.*?))?$/i
         m = Regexp.last_match
         content = IO.read(@env[:filepath]).force_encoding('utf-8')
-        return false unless content =~ /^---/
+        return false unless content =~ /^---/m
 
         yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
 
         return false unless yaml
+
         if m[2]
           value1 = yaml[m[2]]
+          return false if value1.nil?
+
           value1 = value1.join(',') if value1.is_a?(Array)
           if %i[type_of not_type_of].include?(operator)
             test_type(value1, value, operator)

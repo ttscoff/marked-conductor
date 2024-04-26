@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    marked-conductor (0.1.0)
+    marked-conductor (1.0.5)
       chronic (~> 0.10.2)
       tty-which (~> 0.5.0)
 

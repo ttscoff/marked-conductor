@@ -2,12 +2,15 @@
 # frozen_string_literal: true
 
 require_relative '../lib/conductor'
+require 'optparse'
 
 # raise 'No input on STDIN' unless Conductor.stdin
 
 include Conductor
 
 config = Config.new
+
+stdin = Conductor.stdin
 
 def conduct(tracks, res = nil, condition = nil)
   tracks.each do |track|
@@ -40,6 +43,23 @@ def conduct(tracks, res = nil, condition = nil)
 
   [res, condition]
 end
+
+options = {}
+optparse = OptionParser.new do|opts|
+  opts.banner = "Called from Marked 2 as a Custom Pre/Processor"
+
+  opts.on('-v', '--version', 'Show version number') do
+    puts "conductor v#{Conductor::VERSION}"
+    Process.exit 0
+  end
+
+  opts.on('-h', '--help', 'Display this screen') do
+    puts opts
+    exit
+  end
+end
+
+optparse.parse!
 
 tracks = config.tracks
 res, condition = conduct(tracks)

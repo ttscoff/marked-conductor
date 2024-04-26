@@ -28,8 +28,8 @@ module Conductor
         css_path: '/Applications/Marked 2.app/Contents/Resources/swiss.css',
         ext: 'md',
         includes: [],
-        origin: '/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/',
-        filepath: '/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/marked-2-and-obsidian.md',
+        origin: '/Users/ttscoff/Desktop/Code/marked-conductor/',
+        filepath: '/Users/ttscoff/Desktop/Code/marked-conductor/README.md',
         phase: 'PREPROCESS',
         outline: 'NONE',
         path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/'

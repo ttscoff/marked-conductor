@@ -38,7 +38,7 @@ The top level key in the YAML file is `tracks:`. This is an array of hashes, eac
 
 A simple config would look like:
 
-```
+```yaml
 tracks:
   - condition: yaml includes comments
     script: blog-processor
@@ -52,7 +52,7 @@ Instead of a `script` or `command`, a track can contain another `tracks` key, in
  
 For example, the following functions the same as `condition: phase is pre AND tree contains .obsidian AND (extension is md or extension is markdown)`:
 
-```
+```yaml
 tracks:
   - condition: phase is pre
     tracks:
@@ -70,7 +70,7 @@ Available conditions are:
 
 - `extension` (or `ext`): This will test the extension of the file, e.g. `ext is md` or `ext contains task`
 - `tree contains ...`: This will test whether a given file or directory exists in any of the parent folders of the current file, starting with the current directory of the file. Example: `tree contains .obsidian` would test whether there was an `.obsidian` directory in any of the directories above the file (indicating it's within an Obsidian vault)
-- `path`: This tests just the path itself, allowing conditions like `path contains _drafts` or `path does not contain _posts`.
+- `path`: This tests just the path to the file itself, allowing conditions like `path contains _drafts` or `path does not contain _posts`.
 - `phase`: Tests whether Marked is in Preprocessor or Processor phase, allowing conditions like `phase is preprocess` or `phase is process` (which can be shortened to `pre` and `pro`).
 - `text`: This tests for any string match within the text of the document being processed. This can be used with operators `starts with`, `ends with`, or `contains`, e.g. `text contains @taskpaper` or `text does not contain <!--more-->`. 
     - If the test value is surrounded by forward slashes, it will be treated as a regular expression. Regexes are always flagged as case insensitive. Use it like `text contains /@\w+/`.

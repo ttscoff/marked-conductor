@@ -7,6 +7,7 @@ require 'fcntl'
 require 'time'
 require 'chronic'
 require 'fileutils'
+require_relative 'conductor/version'
 require_relative 'conductor/env'
 require_relative 'conductor/config'
 require_relative 'conductor/hash'
@@ -20,7 +21,8 @@ require_relative 'conductor/condition'
 module Conductor
   class << self
     def stdin
-      @stdin ||= $stdin.read.strip.force_encoding('utf-8') if $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
+      warn 'input on STDIN required' unless $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
+      @stdin ||= $stdin.read.strip.force_encoding('utf-8')
     end
   end
 end
