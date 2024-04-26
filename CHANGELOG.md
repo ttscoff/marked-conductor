@@ -1,3 +1,13 @@
+### 1.0.6
+
+2024-04-26 11:15
+
+#### FIXED
+
+- Always wait for STDIN or Marked will crash. Still possible to use $file in script/command values
+- More string encoding fixes
+- "path contains" was returning $PATH instead of the filepath
+
 ### 1.0.5
 
 2024-04-25 17:00
