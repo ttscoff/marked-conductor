@@ -21,7 +21,7 @@ module Conductor
         bool = nil
         prev = false
         split.each do |cond|
-          if cond =~ /((?:AND )?NOT|AND|OR)/
+          if cond =~ /((?:AND )?NOT|AND|OR|&&|\|\||!!)/
             bool = cond.bool_to_symbol
             next
           end
@@ -231,6 +231,8 @@ module Conductor
         test_tree(@env[:origin], value, operator)
       when /^(path|dir)/i
         test_string(@env[:filepath], value, operator) ? true : false
+      when /^(file)?name/i
+        test_string(@env[:filename], value, operator) ? true : false
       when /^phase/i
         test_string(@env[:phase], value, :starts_with) ? true : false
       when /^text/i

@@ -82,7 +82,6 @@ Available conditions are:
     - If the YAML key is a date, it can be tested against with `before`, `after`, and `is`, and the value can be a natural language date, e.g. `yaml:date is after may 3, 2024`
     - If both the YAML key value and the test value are numbers, you can use operators `greater than` (`>`), `less than` (`<`), `equal`/`is` (`=`/`==`), and `is not equal`/`not equals` (`!=`/`!==`). Numbers will be interpreted as floats.
     - If the YAML value is a boolean, you can test with `is true` or `is not true` (or `is false`)
-- `mmd` or `meta` will test for MultiMarkdown metadata using the same formatting as `yaml`.
 - The following keywords act as a catchall and can be used as the last track in the config to act on any documents that aren't matched by preceding rules:
     - `any`
     - `else`
@@ -117,9 +116,8 @@ A script run by Conductor already knows it has the right type of file with the e
 
 ## Tips
 
-- Config file must be valid YAML. Any value containing colons, brackets, or other special characters should be quoted, e.g. (`condition: "text contains my:text"`)
 - You can see what condition matched in Marked by opening <b>Help->Show Custom Processor Log</b> and checking the STDERR output.
-- To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `"text contains <!-- source: bear.app -->"`
+- To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `text contains /source: *bear/`
 - To run a custom processor for Obsidian, use the condition `tree contains .obsidian`
 
 ## Testing

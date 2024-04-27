@@ -20,6 +20,8 @@ require_relative 'conductor/condition'
 
 module Conductor
   class << self
+    attr_writer :stdin
+
     def stdin
       warn 'input on STDIN required' unless $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
       @stdin ||= $stdin.read.strip.force_encoding('utf-8')

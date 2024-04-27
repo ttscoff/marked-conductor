@@ -4,9 +4,9 @@
 class ::String
   def bool_to_symbol
     case self
-    when /NOT/
+    when /(NOT|!!)/
       :not
-    when /AND/
+    when /(AND|&&)/
       :and
     else
       :or

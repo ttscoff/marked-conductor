@@ -13,6 +13,7 @@ module Conductor
                    includes: ENV['MARKED_INCLUDES'],
                    origin: ENV['MARKED_ORIGIN'],
                    filepath: ENV['MARKED_PATH'],
+                   filename: File.basename(filepath),
                    phase: ENV['MARKED_PHASE'],
                    outline: ENV['OUTLINE'],
                    path: ENV['PATH']
@@ -30,6 +31,7 @@ module Conductor
         includes: [],
         origin: '/Users/ttscoff/Desktop/Code/marked-conductor/',
         filepath: '/Users/ttscoff/Desktop/Code/marked-conductor/README.md',
+        filename: 'README.md',
         phase: 'PREPROCESS',
         outline: 'NONE',
         path: '/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/'
