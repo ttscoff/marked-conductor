@@ -86,12 +86,20 @@ module Conductor
     ## @return [Array] Value, value to compare, operator
     ##
     def split_condition(condition)
-      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?)(:\S+)?/i)
+      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?|pandoc)(:\S+)?/i)
         m = Regexp.last_match
         op = m[1].nil? ? :contains : :not_contains
-        type = m[2] =~ /^m/i ? "mmd" : "yaml"
+        type = case m[2]
+               when /^m/i
+                 "mmd"
+               when /^p/i
+                 "pandoc"
+               else
+                 "yaml"
+               end
         return ["#{type}#{m[3]}", nil, op]
       end
+
       res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
       [res["val1"], res["val2"], operator_to_symbol(res["op"])]
     end
@@ -312,6 +320,11 @@ module Conductor
       end
     end
 
+    def test_pandoc(content, operator)
+      res = content.match(/^%% /)
+      %i[not_contains not_equal].include?(operator) ? !res.nil? : res.nil?
+    end
+
     def test_condition(condition)
       type, value, operator = split_condition(condition)
 
@@ -343,6 +356,8 @@ module Conductor
       when /^(?:mmd|meta(?:data)?)(?::(.*?))?$/i
         key = Regexp.last_match(1) || nil
         Conductor.stdin.meta? ? test_meta(Conductor.stdin, value, key, operator) : false
+      when /^pandoc/
+        test_pandoc(Conductor.stdin, operator)
       else
         false
       end
@@ -356,7 +371,7 @@ module Conductor
         :gt
       when /(lt|less( than)?|<|(?:is )?before)/i
         :lt
-      when /not (ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
+      when /not (ha(?:s|ve)|contains|includes|match(es)?)/i
         :not_contains
       when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
         :contains
