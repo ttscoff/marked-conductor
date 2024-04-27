@@ -64,6 +64,10 @@ tracks:
         command: obsidian-md-filter
 ```
 
+#### Adding a title
+
+Tracks can contain a `title` key. This is only used in the STDERR output of the track, where 'Met condition: ...' is shown for debugging. If a title is not present, the condition itself will be shown for debugging. If a title is defined, it replaces the condition in the STDERR output. This is mostly for shortening long condition strings to something more meaningful for debugging.
+
 ### Sequencing
 
 A track can also contain a sequence of scripts and/or commands. STDIN will be passed into the first script/command, then the STDOUT of that will be piped to the next script/command. To do this, add a key called `sequence` that contains an array of scripts and commands:
@@ -99,7 +103,7 @@ Available conditions are:
     - If the YAML key is a date, it can be tested against with `before`, `after`, and `is`, and the value can be a natural language date, e.g. `yaml:date is after may 3, 2024`
     - If both the YAML key value and the test value are numbers, you can use operators `greater than` (`>`), `less than` (`<`), `equal`/`is` (`=`/`==`), and `is not equal`/`not equals` (`!=`/`!==`). Numbers will be interpreted as floats.
     - If the YAML value is a boolean, you can test with `is true` or `is not true` (or `is false`)
-- `mmd` or `meta` will test for MultiMarkdown metadata using the same formatting as `yaml`.
+- `mmd` or `meta` will test for MultiMarkdown metadata using the same formatting as `yaml` above.
 - The following keywords act as a catchall and can be used as the last track in the config to act on any documents that aren't matched by preceding rules:
     - `any`
     - `else`
@@ -132,6 +136,9 @@ All of the [capabilities and requirements](https://marked2app.com/help/Custom_Pr
 
 A script run by Conductor already knows it has the right type of file with the expected data and path, so your script can focus on just processing one file type. It's recommended to separate all of that logic you may already have written out into separate scripts and let Conductor handle the forking based on various criteria.
 
+> Custom processors **must** wait for input on STDIN. Most markdown CLIs will do this automatically, but scripts should include a call to read STDIN. This will pause the script and wait for the data to be sent. Without this, Marked will launch the script, and if it closes the pipe, it will try to write data to a closed pipe and crash immediately. This is a very difficult error to trap in Marked, so it's crucial that all scripts keep the STDIN pipe open.
+<!--JEKYLL{:.warn}-->
+
 ## Tips
 
 - Config file must be valid YAML. Any value containing colons, brackets, or other special characters should be quoted, e.g. (`condition: "text contains my:text"`)
@@ -140,6 +147,12 @@ A script run by Conductor already knows it has the right type of file with the e
 - To run a custom processor for Obsidian, use the condition `tree contains .obsidian`
 
 ## Testing
+
+You can test conductor setups using Marked's `Help->Show Custom Processor Log`, or by running from the command line. The easiest way to test conditions is to set the track's command to `echo "meaningful definition"` and see what conditions are met when conductor is run.
+
+In Marked's Custom Processor Log, you can see both the STDOUT output and the STDERR messages. When running Conductor, the STDERR output will show what conditions were met (as well as any errors reported).
+
+### From the command line
 
 In order to test from the command line, you'll need certain environment variables set. This can be done by exporting the following variables with your own definitions, or by running conductor with all of the variables preceding the command, e.g. `$ MARKED_ORIGIN=/path/to/markdown_file.md [...] conductor`.
 

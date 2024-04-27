@@ -86,6 +86,12 @@ module Conductor
     ## @return [Array] Value, value to compare, operator
     ##
     def split_condition(condition)
+      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?)(:\S+)?/i)
+        m = Regexp.last_match
+        op = m[1].nil? ? :contains : :not_contains
+        type = m[2] =~ /^m/i ? "mmd" : "yaml"
+        return ["#{type}#{m[3]}", nil, op]
+      end
       res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
       [res["val1"], res["val2"], operator_to_symbol(res["op"])]
     end
@@ -99,6 +105,12 @@ module Conductor
     ##
     def test_type(val1, val2, operator)
       res = case val2
+            when /number/
+              val1.is_a?(Numeric)
+            when /int(eger)?/
+              val1.is_a?(Integer)
+            when /(float|decimal)/
+              val1.is_a?(Float)
             when /array/i
               val1.is_a?(Array)
             when /(string|text)/i
@@ -237,12 +249,20 @@ module Conductor
         value1 = yaml[key]
         return operator == :not_equal if value1.nil?
 
-        value1 = value1.join(",") if value1.is_a?(Array)
+        if value.nil?
+          has_key = !value1.nil?
+          return operator == :not_equal ? !has_key : has_key
+        end
+
         if %i[type_of not_type_of].include?(operator)
-          test_type(value1, value, operator)
-        elsif value1.bool?
+          return test_type(value1, value, operator)
+        end
+
+        value1 = value1.join(",") if value1.is_a?(Array)
+
+        if value1.bool?
           test_truthy(value1, value, operator)
-        elsif value1.number? && value2.number? && %i[gt lt equal not_equal].include?(operator)
+        elsif value1.number? && value.number? && %i[gt lt equal not_equal].include?(operator)
           test_operator(value1, value, operator)
         else
           test_string(value1, value, operator)
@@ -316,23 +336,13 @@ module Conductor
       when /^phase/i
         test_string(@env[:phase], value, :starts_with) ? true : false
       when /^text/i
-        test_string(IO.read(@env[:filepath]).force_encoding("utf-8"), value, operator) ? true : false
-      when /^(yaml|headers|frontmatter)(?::(.*?))?$/i
-        m = Regexp.last_match
-
-        key = m[2] || nil
-
-        content = IO.read(@env[:filepath]).force_encoding("utf-8")
-
-        content.yaml? ? test_yaml(content, value, key, operator) : false
-      when /^(mmd|meta(?:data)?)(?::(.*?))?$/i
-        m = Regexp.last_match
-
-        key = m[2] || nil
-
-        content = IO.read(@env[:filepath]).force_encoding("utf-8")
-
-        content.meta? ? test_meta(content, value, key, operator) : false
+        test_string(Conductor.stdin, value, operator) ? true : false
+      when /^(?:yaml|headers|frontmatter)(?::(.*?))?$/i
+        key = Regexp.last_match(1) || nil
+        Conductor.stdin.yaml? ? test_yaml(Conductor.stdin, value, key, operator) : false
+      when /^(?:mmd|meta(?:data)?)(?::(.*?))?$/i
+        key = Regexp.last_match(1) || nil
+        Conductor.stdin.meta? ? test_meta(Conductor.stdin, value, key, operator) : false
       else
         false
       end
@@ -346,6 +356,8 @@ module Conductor
         :gt
       when /(lt|less( than)?|<|(?:is )?before)/i
         :lt
+      when /not (ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
+        :not_contains
       when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
         :contains
       when /not (suffix|ends? with)/i

@@ -46,8 +46,11 @@ def conduct(tracks, res = nil, condition = nil)
 
     next unless cond.true?
 
+
+    # Build "matched condition" message
+    title = track[:title] || track[:condition]
     condition ||= ['']
-    condition << track[:condition]
+    condition << title
     condition.push(track.key?(:continue) ? ', ' : ' -> ')
 
     res = execute_track(track)

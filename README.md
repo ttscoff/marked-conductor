@@ -1,4 +1,6 @@
-
+---
+date: 2024-04-27 12:00
+---
 [![RubyGems.org](https://img.shields.io/gem/v/marked-conductor)](https://rubygems.org/gems/marked-conductor)
 
 # Marked Conductor
@@ -75,9 +77,9 @@ Available conditions are:
 - `text`: This tests for any string match within the text of the document being processed. This can be used with operators `starts with`, `ends with`, or `contains`, e.g. `text contains @taskpaper` or `text does not contain <!--more-->`. 
     - If the test value is surrounded by forward slashes, it will be treated as a regular expression. Regexes are always flagged as case insensitive. Use it like `text contains /@\w+/`.
 - `yaml`, `headers`, or `frontmatter` will test for YAML headers. If a `yaml:KEY` is defined, a specific YAML key will be tested for. If a value is defined with an operator, it will be tested against the value key.
-    - `yaml` tests for the presence of YAML frontmatter.
-    - `yaml:comments` tests for the presence of a `comments` key.
-    - `yaml:comments is true` tests whether `comments: true` exists.
+    - `yaml` or `has yaml` tests for the presence of YAML frontmatter.
+    - `yaml:comments` tests for the presence of a `comments` key in YAML.
+    - `yaml:comments is true` tests whether the value of `comments` is true.
     - `yaml:tags contains appreview` will test whether the tags array contains `appreview`.
     - If the YAML key is a date, it can be tested against with `before`, `after`, and `is`, and the value can be a natural language date, e.g. `yaml:date is after may 3, 2024`
     - If both the YAML key value and the test value are numbers, you can use operators `greater than` (`>`), `less than` (`<`), `equal`/`is` (`=`/`==`), and `is not equal`/`not equals` (`!=`/`!==`). Numbers will be interpreted as floats.
