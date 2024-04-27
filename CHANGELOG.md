@@ -1,6 +1,10 @@
 ### 1.0.9
 
-2024-04-27 14:12
+2024-04-27 14:24
+
+#### NEW
+
+- Test for pandoc metadata (%%) with `is pandoc` or `is not pandoc`
 
 ### 1.0.8
 

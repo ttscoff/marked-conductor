@@ -13,7 +13,7 @@ module Conductor
           includes: ENV["MARKED_INCLUDES"],
           origin: ENV["MARKED_ORIGIN"],
           filepath: ENV["MARKED_PATH"],
-          filename: File.basename(filepath),
+          filename: File.basename(ENV["MARKED_PATH"]),
           phase: ENV["MARKED_PHASE"],
           outline: ENV["OUTLINE"],
           path: ENV["PATH"]
@@ -29,12 +29,12 @@ module Conductor
         css_path: "/Applications/Marked 2.app/Contents/Resources/swiss.css",
         ext: "md",
         includes: [],
-        origin: "/Users/ttscoff/Desktop/Code/marked-conductor/",
-        filepath: "/Users/ttscoff/Desktop/Code/marked-conductor/README.md",
-        filename: "README.md",
-        phase: "PREPROCESS",
+        origin: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/",
+        filepath: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/advanced-features.md",
+        filename: "advanced-features.md",
+        phase: "PROCESS",
         outline: "NONE",
-        path: "/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Dropbox/Writing/brettterpstra.com/_drafts/"
+        path: "/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Desktop/Code/nvultra-docs/content/"
       }
     end
 
