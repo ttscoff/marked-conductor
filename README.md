@@ -1,6 +1,4 @@
----
-date: 2024-04-27 12:00
----
+
 [![RubyGems.org](https://img.shields.io/gem/v/marked-conductor)](https://rubygems.org/gems/marked-conductor)
 
 # Marked Conductor
@@ -66,6 +64,26 @@ tracks:
         command: obsidian-md-filter
 ```
 
+#### Adding a title
+
+Tracks can contain a `title` key. This is only used in the STDERR output of the track, where 'Met condition: ...' is shown for debugging. If a title is not present, the condition itself will be shown for debugging. If a title is defined, it replaces the condition in the STDERR output. This is mostly for shortening long condition strings to something more meaningful for debugging.
+
+### Sequencing
+
+A track can also contain a sequence of scripts and/or commands. STDIN will be passed into the first script/command, then the STDOUT of that will be piped to the next script/command. To do this, add a key called `sequence` that contains an array of scripts and commands:
+
+```yaml
+tracks:
+  - condition: phase is pro AND path contains README.md
+    sequence:
+      - script: strip_emoji
+      - command: rdiscount
+```
+
+A sequence can not contain nested tracks.
+
+By default, processing stops when a condition is met. If you want to continue processing after a condition is successful, add the `continue: true` to the track. This will only apply to tracks containing this key, and processing will stop when it gets to a successful condition that doesn't contain the `continue` key (or reaches the end of the tracks without another match).
+
 ### Conditions
 
 Available conditions are:
@@ -73,17 +91,19 @@ Available conditions are:
 - `extension` (or `ext`): This will test the extension of the file, e.g. `ext is md` or `ext contains task`
 - `tree contains ...`: This will test whether a given file or directory exists in any of the parent folders of the current file, starting with the current directory of the file. Example: `tree contains .obsidian` would test whether there was an `.obsidian` directory in any of the directories above the file (indicating it's within an Obsidian vault)
 - `path`: This tests just the path to the file itself, allowing conditions like `path contains _drafts` or `path does not contain _posts`.
+- `filename`: Tests only the filename, can be any string comparison (`starts with`, `is`, `contains`, etc.).
 - `phase`: Tests whether Marked is in Preprocessor or Processor phase, allowing conditions like `phase is preprocess` or `phase is process` (which can be shortened to `pre` and `pro`).
 - `text`: This tests for any string match within the text of the document being processed. This can be used with operators `starts with`, `ends with`, or `contains`, e.g. `text contains @taskpaper` or `text does not contain <!--more-->`. 
     - If the test value is surrounded by forward slashes, it will be treated as a regular expression. Regexes are always flagged as case insensitive. Use it like `text contains /@\w+/`.
 - `yaml`, `headers`, or `frontmatter` will test for YAML headers. If a `yaml:KEY` is defined, a specific YAML key will be tested for. If a value is defined with an operator, it will be tested against the value key.
-    - `yaml` or `has yaml` tests for the presence of YAML frontmatter.
-    - `yaml:comments` tests for the presence of a `comments` key in YAML.
-    - `yaml:comments is true` tests whether the value of `comments` is true.
+    - `yaml` tests for the presence of YAML frontmatter.
+    - `yaml:comments` tests for the presence of a `comments` key.
+    - `yaml:comments is true` tests whether `comments: true` exists.
     - `yaml:tags contains appreview` will test whether the tags array contains `appreview`.
     - If the YAML key is a date, it can be tested against with `before`, `after`, and `is`, and the value can be a natural language date, e.g. `yaml:date is after may 3, 2024`
     - If both the YAML key value and the test value are numbers, you can use operators `greater than` (`>`), `less than` (`<`), `equal`/`is` (`=`/`==`), and `is not equal`/`not equals` (`!=`/`!==`). Numbers will be interpreted as floats.
     - If the YAML value is a boolean, you can test with `is true` or `is not true` (or `is false`)
+- `mmd` or `meta` will test for MultiMarkdown metadata using the same formatting as `yaml` above.
 - The following keywords act as a catchall and can be used as the last track in the config to act on any documents that aren't matched by preceding rules:
     - `any`
     - `else`
@@ -116,13 +136,23 @@ All of the [capabilities and requirements](https://marked2app.com/help/Custom_Pr
 
 A script run by Conductor already knows it has the right type of file with the expected data and path, so your script can focus on just processing one file type. It's recommended to separate all of that logic you may already have written out into separate scripts and let Conductor handle the forking based on various criteria.
 
+> Custom processors **must** wait for input on STDIN. Most markdown CLIs will do this automatically, but scripts should include a call to read STDIN. This will pause the script and wait for the data to be sent. Without this, Marked will launch the script, and if it closes the pipe, it will try to write data to a closed pipe and crash immediately. This is a very difficult error to trap in Marked, so it's crucial that all scripts keep the STDIN pipe open.
+
+
 ## Tips
 
+- Config file must be valid YAML. Any value containing colons, brackets, or other special characters should be quoted, e.g. (`condition: "text contains my:text"`)
 - You can see what condition matched in Marked by opening <b>Help->Show Custom Processor Log</b> and checking the STDERR output.
-- To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `text contains /source: *bear/`
+- To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `"text contains <!-- source: bear.app -->"`
 - To run a custom processor for Obsidian, use the condition `tree contains .obsidian`
 
 ## Testing
+
+You can test conductor setups using Marked's `Help->Show Custom Processor Log`, or by running from the command line. The easiest way to test conditions is to set the track's command to `echo "meaningful definition"` and see what conditions are met when conductor is run.
+
+In Marked's Custom Processor Log, you can see both the STDOUT output and the STDERR messages. When running Conductor, the STDERR output will show what conditions were met (as well as any errors reported).
+
+### From the command line
 
 In order to test from the command line, you'll need certain environment variables set. This can be done by exporting the following variables with your own definitions, or by running conductor with all of the variables preceding the command, e.g. `$ MARKED_ORIGIN=/path/to/markdown_file.md [...] conductor`.
 

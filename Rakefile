@@ -4,7 +4,6 @@ require "bundler/gem_tasks"
 require "rubocop/rake_task"
 require "rspec/core/rake_task"
 require "rdoc/task"
-require "standard/rake"
 require "yard"
 
 Rake::RDocTask.new do |rd|
