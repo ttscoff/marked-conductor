@@ -1,3 +1,25 @@
+### 1.0.8
+
+2024-04-27 13:59
+
+#### NEW
+
+- Add sequence: key to allow running a series of scripts/commands, each piping to the next
+- Add `continue: true` for tracks to allow processing to continue after a script/command is successful
+- `filename` key for comparing to just filename (instead of full
+- Add `is a` tests for `number`, `integer`, and `float`
+- Tracks in YAML config can have a title key that will be shown in STDERR 'Conditions met:' output
+- Add `does not contain` handling for string and metadata comparisons
+
+#### IMPROVED
+
+- Allow `has yaml` or `has meta` (MultiMarkdown) as conditions
+
+#### FIXED
+
+- Use STDIN instead of reading file for conditionals
+- String tests read STDIN input, not reading the file itself, allowing for piping between multiple scripts
+
 ### 1.0.7
 
 2024-04-26 11:53
