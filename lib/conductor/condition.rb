@@ -11,6 +11,13 @@ module Conductor
       parse_condition
     end
 
+    ##
+    ## @brief      Splits booleans and tests components.
+    ##
+    ## @param      condition  The condition to test
+    ##
+    ## @return     [Boolean] test result
+    ##
     def split_booleans(condition)
       split = condition.split(/ ((?:AND )?NOT|AND|OR) /)
 
@@ -44,6 +51,15 @@ module Conductor
       end
     end
 
+    ##
+    ## @brief      Test operators
+    ##
+    ## @param      value1    Value
+    ## @param      value2    Value to test
+    ## @param      operator  The operator
+    ##
+    ## @return [Boolean] test result
+    ##
     def test_operator(value1, value2, operator)
       case operator
       when :gt
@@ -63,11 +79,24 @@ module Conductor
       end
     end
 
+    ##
+    ## @brief      Splits a natural language condition.
+    ##
+    ## @param      condition  The condition
+    ## @return [Array] Value, value to compare, operator
+    ##
     def split_condition(condition)
       res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
       [res["val1"], res["val2"], operator_to_symbol(res["op"])]
     end
 
+    ##
+    ## @brief      Test for type of value
+    ##
+    ## @param      val1      value
+    ## @param      val2      value to test against
+    ## @param      operator  The operator
+    ##
     def test_type(val1, val2, operator)
       res = case val2
             when /array/i
@@ -80,6 +109,15 @@ module Conductor
       operator == :type_of ? res : !res
     end
 
+    ##
+    ## @brief      Compare a string based on operator
+    ##
+    ## @param      val1      The string to test against
+    ## @param      val2      The value to test
+    ## @param      operator  The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
     def test_string(val1, val2, operator)
       return operator == :not_equal ? val1.nil? : !val1.nil? if val2.nil?
 
@@ -135,6 +173,17 @@ module Conductor
       end
     end
 
+    ##
+    ## @brief      Test for the existince of a
+    ##             file/directory in the parent tree
+    ##
+    ## @param      origin    Starting directory
+    ## @param      value     The file/directory to search
+    ##                       for
+    ## @param      operator  The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
     def test_tree(origin, value, operator)
       return true if File.exist?(File.join(origin, value))
 
@@ -149,6 +198,15 @@ module Conductor
       end
     end
 
+    ##
+    ## @brief      Test "truthiness"
+    ##
+    ## @param      value1    Value to test against
+    ## @param      value2    Value to test
+    ## @param      operator  The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
     def test_truthy(value1, value2, operator)
       return false unless value2&.bool?
 
@@ -159,6 +217,17 @@ module Conductor
       operator == :not_equal ? !res : res
     end
 
+    ##
+    ## @brief      Test for presence of yaml, optionall for
+    ##             a key, optionally for a key's value
+    ##
+    ## @param      content   Text content containing YAML
+    ## @param      value     The value to test for
+    ## @param      key       The key to test for
+    ## @param      operator  The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
     def test_yaml(content, value, key, operator)
       yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
 
@@ -184,6 +253,17 @@ module Conductor
       end
     end
 
+    ##
+    ## @brief      Test for MultiMarkdown metadata,
+    ##             optionally key and value
+    ##
+    ## @param      content   [String] The text content
+    ## @param      value     [String] The value to test for
+    ## @param      key       [String] The key to test for
+    ## @param      operator  [Symbol] The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
     def test_meta(content, value, key, operator)
       headers = []
       content.split("\n").each do |line|
