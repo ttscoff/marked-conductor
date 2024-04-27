@@ -1,10 +1,14 @@
 ### 1.0.9
 
-2024-04-27 14:24
+2024-04-27 16:00
 
 #### NEW
 
 - Test for pandoc metadata (%%) with `is pandoc` or `is not pandoc`
+
+#### FIXED
+
+- Filename comparison not working
 
 ### 1.0.8
 
