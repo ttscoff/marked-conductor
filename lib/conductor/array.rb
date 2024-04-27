@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ::Array
-
   def symbolize_keys!
     replace symbolize_keys
   end

@@ -30,12 +30,14 @@ def execute_track(track)
   elsif track[:script]
     script = Script.new(track[:script])
 
-    script.run
+    Conductor.stdin = script.run
   elsif track[:command]
     command = Command.new(track[:command])
 
-    command.run
+    Conductor.stdin = command.run
   end
+
+  Conductor.stdin
 end
 
 def conduct(tracks, res = nil, condition = nil)

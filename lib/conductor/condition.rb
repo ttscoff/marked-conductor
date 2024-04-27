@@ -21,7 +21,7 @@ module Conductor
         bool = nil
         prev = false
         split.each do |cond|
-          if cond =~ /((?:AND )?NOT|AND|OR|&&|\|\||!!)/
+          if /((?:AND )?NOT|AND|OR|&&|\|\||!!)/.match?(cond)
             bool = cond.bool_to_symbol
             next
           end
@@ -65,7 +65,7 @@ module Conductor
 
     def split_condition(condition)
       res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
-      [res['val1'], res['val2'], operator_to_symbol(res['op'])]
+      [res["val1"], res["val2"], operator_to_symbol(res["op"])]
     end
 
     def test_type(val1, val2, operator)
@@ -85,7 +85,7 @@ module Conductor
 
       return operator == :not_equal if val1.nil?
 
-      val2 = val2.force_encoding('utf-8')
+      val2 = val2.force_encoding("utf-8")
 
       if val1.date?
         if val2.time?
@@ -109,12 +109,12 @@ module Conductor
         return res unless res.nil?
       end
 
-      val2 = if val2.strip =~ %r{^/.*?/$}
-               val2.gsub(%r{(^/|/$)}, '')
+      val2 = if %r{^/.*?/$}.match?(val2.strip)
+               val2.gsub(%r{(^/|/$)}, "")
              else
                Regexp.escape(val2)
              end
-      val1 = val1.dup.to_s.force_encoding('utf-8')
+      val1 = val1.dup.to_s.force_encoding("utf-8")
       case operator
       when :contains
         val1 =~ /#{val2}/i
@@ -142,7 +142,7 @@ module Conductor
 
       if Dir.exist?(File.join(dir, value))
         true
-      elsif [Dir.home, '/'].include?(dir)
+      elsif [Dir.home, "/"].include?(dir)
         false
       else
         test_tree(dir, value, operator)
@@ -162,13 +162,13 @@ module Conductor
     def test_yaml(content, value, key, operator)
       yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
 
-      return operator == :not_equal ? true : false unless yaml
+      return operator == :not_equal unless yaml
 
       if key
         value1 = yaml[key]
-        return operator == :not_equal ? true : false if value1.nil?
+        return operator == :not_equal if value1.nil?
 
-        value1 = value1.join(',') if value1.is_a?(Array)
+        value1 = value1.join(",") if value1.is_a?(Array)
         if %i[type_of not_type_of].include?(operator)
           test_type(value1, value, operator)
         elsif value1.bool?
@@ -180,13 +180,13 @@ module Conductor
         end
       else
         res = value ? yaml.key?(value) : true
-        operator == :not_equal ? !res : res
+        (operator == :not_equal) ? !res : res
       end
     end
 
     def test_meta(content, value, key, operator)
       headers = []
-      content.split(/\n/).each do |line|
+      content.split("\n").each do |line|
         break if line == /^ *\n$/ || line !~ /\w+: *\S/
 
         headers << line
@@ -199,8 +199,8 @@ module Conductor
       meta = {}
       headers.each do |h|
         parts = h.split(/ *: */)
-        k = parts[0].strip.downcase.gsub(/ +/, '')
-        v = parts[1..].join(':').strip
+        k = parts[0].strip.downcase.gsub(/ +/, "")
+        v = parts[1..].join(":").strip
         meta[k] = v
       end
 
@@ -236,13 +236,13 @@ module Conductor
       when /^phase/i
         test_string(@env[:phase], value, :starts_with) ? true : false
       when /^text/i
-        test_string(IO.read(@env[:filepath]).force_encoding('utf-8'), value, operator) ? true : false
+        test_string(IO.read(@env[:filepath]).force_encoding("utf-8"), value, operator) ? true : false
       when /^(yaml|headers|frontmatter)(?::(.*?))?$/i
         m = Regexp.last_match
 
         key = m[2] || nil
 
-        content = IO.read(@env[:filepath]).force_encoding('utf-8')
+        content = IO.read(@env[:filepath]).force_encoding("utf-8")
 
         content.yaml? ? test_yaml(content, value, key, operator) : false
       when /^(mmd|meta(?:data)?)(?::(.*?))?$/i
@@ -250,7 +250,7 @@ module Conductor
 
         key = m[2] || nil
 
-        content = IO.read(@env[:filepath]).force_encoding('utf-8')
+        content = IO.read(@env[:filepath]).force_encoding("utf-8")
 
         content.meta? ? test_meta(content, value, key, operator) : false
       else

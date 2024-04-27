@@ -8,37 +8,37 @@ module Conductor
     def initialize(command)
       parts = Shellwords.split(command)
       self.path = parts[0]
-      self.args = parts[1..].join(' ')
+      self.args = parts[1..].join(" ")
     end
 
     def path=(path)
-      @path = if path =~ %r{^[%/]}
-                File.expand_path(path)
-              else
-                which = TTY::Which.which(path)
-                which || path
-              end
+      @path = if %r{^[%/]}.match?(path)
+        File.expand_path(path)
+      else
+        which = TTY::Which.which(path)
+        which || path
+      end
     end
 
     def args=(array)
       @args = if array.is_a?(Array)
-                array.join(' ')
-              else
-                array
-              end
+        array.join(" ")
+      else
+        array
+      end
     end
 
     def run
       stdin = Conductor.stdin
 
-      raise 'Command path not found' unless @path
+      raise "Command path not found" unless @path
 
       use_stdin = true
-      if args =~ /\$\{?file\}?/
+      if /\$\{?file\}?/.match?(args)
         use_stdin = false
         args.sub!(/\$\{?file\}?/, %("#{Env.env[:filepath]}"))
       else
-        raise 'No input' unless stdin
+        raise "No input" unless stdin
 
       end
 
