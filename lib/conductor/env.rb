@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 module Conductor
+  # Environment variables
   module Env
+    ##
+    ## Define @env using Marked environment variables
+    ##
     def self.env
-      @env ||= if ENV["CONDUCTOR_TEST"] == "true"
+      if ENV["CONDUCTOR_TEST"] == "true"
         load_test_env
       else
         @env ||= {
@@ -23,6 +27,9 @@ module Conductor
       @env
     end
 
+    ##
+    ## Loads a test environment.
+    ##
     def self.load_test_env
       @env = {
         home: "/Users/ttscoff",
@@ -38,8 +45,13 @@ module Conductor
       }
     end
 
+    ##
+    ## env to string
+    ##
+    ## @return     [String] shell-compatible string representation of @env
+    ##
     def self.to_s
-      out_h = {
+      {
         "HOME" => @env[:home],
         "MARKED_CSS_PATH" => @env[:css_path],
         "MARKED_EXT" => @env[:ext],
@@ -49,8 +61,7 @@ module Conductor
         "MARKED_PHASE" => @env[:phase],
         "OUTLINE" => @env[:outline],
         "PATH" => @env[:path]
-      }
-      out_h.map { |k, v| %(#{k}="#{v}") }.join(" ")
+      }.map { |k, v| %(#{k}="#{v}") }.join(" ")
     end
   end
 end

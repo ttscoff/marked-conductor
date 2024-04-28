@@ -2,9 +2,8 @@
 
 # String helpers
 class ::String
-
   ##
-  ## @brief      Convert a string boolean to symbol
+  ## Convert a string boolean to symbol
   ##
   ## @return     [Symbol] symbolized version
   ##
@@ -20,7 +19,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test a string to see if it's a UTC date
+  ## Test a string to see if it's a UTC date
   ##
   ## @return     [Boolean] test result
   ##
@@ -29,7 +28,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test a string to see if it includes a time
+  ## Test a string to see if it includes a time
   ##
   ## @return     [Boolean] test result
   ##
@@ -38,7 +37,7 @@ class ::String
   end
 
   ##
-  ## @brief      Convert a natural language string to a Date
+  ## Convert a natural language string to a Date
   ##             object
   ##
   ## @return     [Date] Resulting Date object
@@ -48,7 +47,7 @@ class ::String
   end
 
   ##
-  ## @brief      Remove time from string
+  ## Remove time from string
   ##
   ## @return     [String] string with time removed
   ##
@@ -62,7 +61,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test if a string is a number
+  ## Test if a string is a number
   ##
   ## @return     [Boolean] test result
   ##
@@ -71,7 +70,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test if a string is a boolean
+  ## Test if a string is a boolean
   ##
   ## @return     [Boolean] test result
   ##
@@ -80,7 +79,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test if string starts with YAML
+  ## Test if string starts with YAML
   ##
   ## @return     [Boolean] test result
   ##
@@ -89,7 +88,7 @@ class ::String
   end
 
   ##
-  ## @brief      Test if a string starts with MMD metadata
+  ## Test if a string starts with MMD metadata
   ##
   ## @return     [Boolean] test result
   ##
@@ -98,7 +97,7 @@ class ::String
   end
 
   ##
-  ## @brief      Destructive version of #to_bool
+  ## Destructive version of #to_bool
   ##
   ##
   ## @see        #to_bool

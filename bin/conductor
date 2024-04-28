@@ -7,9 +7,8 @@ require "optparse"
 # Main Conductor class
 module Conductor
   class << self
-
     ##
-    ## @brief      Execute commands/scripts in the track
+    ## Execute commands/scripts in the track
     ##
     ## @param      track  The track
     ##
@@ -44,7 +43,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Main function to parse conditions and
+    ## Main function to parse conditions and
     ##             execute actions. Executes recursively for
     ##             sub-tracks.
     ##
@@ -113,7 +112,7 @@ tracks = config.tracks
 res, condition = Conductor.conduct(tracks)
 
 ##
-## @brief      Clean up conditions for output
+## Clean up conditions for output
 ##
 ## @param      condition  The condition
 ##

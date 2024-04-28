@@ -2,17 +2,28 @@
 
 module Conductor
   class Condition
+
+    ##
+    ## Initializes the given condition.
+    ##
+    ## @param      condition  The condition
+    ##
     def initialize(condition)
       @condition = condition
       @env = Conductor::Env.env
     end
 
+    ##
+    ## Tests condition
+    ##
+    ## @return     [Boolean] test result
+    ##
     def true?
       parse_condition
     end
 
     ##
-    ## @brief      Splits booleans and tests components.
+    ## Splits booleans and tests components.
     ##
     ## @param      condition  The condition to test
     ##
@@ -52,7 +63,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test operators
+    ## Test operators
     ##
     ## @param      value1    Value
     ## @param      value2    Value to test
@@ -80,7 +91,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Splits a natural language condition.
+    ## Splits a natural language condition.
     ##
     ## @param      condition  The condition
     ## @return [Array] Value, value to compare, operator
@@ -105,7 +116,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test for type of value
+    ## Test for type of value
     ##
     ## @param      val1      value
     ## @param      val2      value to test against
@@ -130,7 +141,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Compare a string based on operator
+    ## Compare a string based on operator
     ##
     ## @param      val1      The string to test against
     ## @param      val2      The value to test
@@ -194,7 +205,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test for the existince of a
+    ## Test for the existince of a
     ##             file/directory in the parent tree
     ##
     ## @param      origin    Starting directory
@@ -219,7 +230,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test "truthiness"
+    ## Test "truthiness"
     ##
     ## @param      value1    Value to test against
     ## @param      value2    Value to test
@@ -238,7 +249,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test for presence of yaml, optionall for
+    ## Test for presence of yaml, optionall for
     ##             a key, optionally for a key's value
     ##
     ## @param      content   Text content containing YAML
@@ -286,7 +297,7 @@ module Conductor
     end
 
     ##
-    ## @brief      Test for MultiMarkdown metadata,
+    ## Test for MultiMarkdown metadata,
     ##             optionally key and value
     ##
     ## @param      content   [String] The text content
