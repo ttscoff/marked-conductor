@@ -1,4 +1,4 @@
-= Marked Commander
+= Marked Conductor
 
 A command line tool that functions as a custom processor handler for Marked 2.
 

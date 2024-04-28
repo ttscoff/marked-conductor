@@ -20,6 +20,7 @@ require_relative "conductor/condition"
 
 module Conductor
   class << self
+    attr_accessor :original_input
     attr_writer :stdin
 
     def stdin

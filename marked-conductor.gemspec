@@ -29,20 +29,20 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "pry", "~> 0.14.2"
   spec.add_development_dependency "awesome_print", "~> 1.9.2"
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "gem-release", "~> 2.2"
   spec.add_development_dependency "parse_gemspec-cli", "~> 1.0"
+  spec.add_development_dependency "pry", "~> 0.14.2"
   spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "yard", "~> 0.9", ">= 0.9.26"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov", "~> 0.21"
   spec.add_development_dependency "simplecov-console", "~> 0.9"
+  spec.add_development_dependency "yard", "~> 0.9", ">= 0.9.26"
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "tty-which", "~> 0.5.0"
   spec.add_dependency "chronic", "~> 0.10.2"
+  spec.add_dependency "tty-which", "~> 0.5.0"
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 end

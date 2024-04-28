@@ -1,88 +1,82 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -W1
 # frozen_string_literal: true
 
-require_relative '../lib/conductor'
-require 'optparse'
+require_relative "../lib/conductor"
+require "optparse"
 
-# raise 'No input on STDIN' unless Conductor.stdin
+module Conductor
+  class << self
+    def execute_track(track)
+      if track[:sequence]
+        track[:sequence].each do |cmd|
+          if cmd[:script]
+            script = Script.new(cmd[:script])
 
-include Conductor
+            res = script.run
+          elsif cmd[:command]
+            command = Command.new(cmd[:command])
 
-config = Config.new
+            res = command.run
+          end
 
-stdin = Conductor.stdin
+          Conductor.stdin = res unless res.nil?
+        end
+      elsif track[:script]
+        script = Script.new(track[:script])
 
-def execute_track(track)
-  if track[:sequence]
-    track[:sequence].each do |cmd|
-      if cmd[:script]
-        script = Script.new(cmd[:script])
+        Conductor.stdin = script.run
+      elsif track[:command]
+        command = Command.new(track[:command])
 
-        res = script.run
-      elsif cmd[:command]
-        command = Command.new(cmd[:command])
-
-        res = command.run
+        Conductor.stdin = command.run
       end
 
-      Conductor.stdin = res unless res.nil?
-    end
-  elsif track[:script]
-    script = Script.new(track[:script])
-
-    Conductor.stdin = script.run
-  elsif track[:command]
-    command = Command.new(track[:command])
-
-    Conductor.stdin = command.run
-  end
-
-  Conductor.stdin
-end
-
-def conduct(tracks, res = nil, condition = nil)
-  tracks.each do |track|
-    cond = Condition.new(track[:condition])
-
-    next unless cond.true?
-
-
-    # Build "matched condition" message
-    title = track[:title] || track[:condition]
-    condition ||= ['']
-    condition << title
-    condition.push(track.key?(:continue) ? ', ' : ' -> ')
-
-    res = execute_track(track)
-
-    if track[:tracks]
-      ts = track[:tracks]
-
-      res, condition = conduct(ts, res, condition)
-
-      next if res.nil?
+      Conductor.stdin
     end
 
-    break unless track[:continue]
+    def conduct(tracks, res = nil, condition = nil)
+      tracks.each do |track|
+        cond = Condition.new(track[:condition])
+
+        next unless cond.true?
+
+        # Build "matched condition" message
+        title = track[:title] || track[:condition]
+        condition ||= [""]
+        condition << title
+        condition.push(track.key?(:continue) ? ", " : " -> ")
+
+        res = execute_track(track)
+
+        if track[:tracks]
+          ts = track[:tracks]
+
+          res, condition = conduct(ts, res, condition)
+
+          next if res.nil?
+        end
+
+        break unless track[:continue]
+      end
+
+      if res == Conductor.original_input
+        [nil, "No change in output"]
+      else
+        [res, condition]
+      end
+    end
   end
-
-  [res, condition]
 end
 
-def clean_condition(condition)
-  condition.join('').sub(/ *(->|,) *$/, '')
-end
-
-options = {}
-optparse = OptionParser.new do|opts|
+optparse = OptionParser.new do |opts|
   opts.banner = "Called from Marked 2 as a Custom Pre/Processor"
 
-  opts.on('-v', '--version', 'Show version number') do
+  opts.on("-v", "--version", "Show version number") do
     puts "conductor v#{Conductor::VERSION}"
     Process.exit 0
   end
 
-  opts.on('-h', '--help', 'Display this screen') do
+  opts.on("-h", "--help", "Display this screen") do
     puts opts
     exit
   end
@@ -90,14 +84,27 @@ end
 
 optparse.parse!
 
-tracks = config.tracks
-res, condition = conduct(tracks)
+config = Conductor::Config.new
 
-if res.nil?
-  $stderr.puts('No conditions satisfied')
-  puts 'NOCUSTOM'
-else
-  $stderr.puts("Met condition: #{clean_condition(condition)}")
-  puts res
+Conductor.stdin
+Conductor.original_input = Conductor.stdin
+
+tracks = config.tracks
+res, condition = Conductor.conduct(tracks)
+
+def clean_condition(condition)
+  condition.join("").sub(/ *(->|,) *$/, "")
 end
 
+if res.nil?
+  warn "No conditions satisfied"
+  puts "NOCUSTOM"
+else
+  if res == Conductor.original_input
+    warn "No change in output"
+    puts "NOCUSTOM"
+  else
+    warn "Met condition: #{clean_condition(condition)}"
+    puts res
+  end
+end

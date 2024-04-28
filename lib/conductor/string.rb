@@ -42,12 +42,12 @@ class ::String
     dup.force_encoding("utf-8").match?(/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/)
   end
 
-  def meta?
-    self =~ /^---/m
+  def yaml?
+    dup.force_encoding('utf-8').match?(/^---/m)
   end
 
-  def yaml?
-    self =~ /^\w+: +\S+/m
+  def meta?
+    dup.force_encoding('utf-8').match?(/^\w+: +\S+/m)
   end
 
   def to_bool!
@@ -60,7 +60,7 @@ class ::String
   ## @return     [Boolean] Bool representation of the object.
   ##
   def to_bool
-    case self
+    case self.force_encoding('utf-8')
     when /^[yt]/i
       true
     else

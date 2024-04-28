@@ -249,7 +249,11 @@ module Conductor
     ## @return     [Boolean] test result
     ##
     def test_yaml(content, value, key, operator)
-      yaml = YAML.safe_load(content.split(/^(?:---|\.\.\.)/)[1])
+      begin
+        yaml = YAML.load(content.split(/^(?:---|\.\.\.)/)[1])
+      rescue StandardError
+        return false
+      end
 
       return operator == :not_equal unless yaml
 
