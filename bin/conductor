@@ -4,8 +4,17 @@
 require_relative "../lib/conductor"
 require "optparse"
 
+# Main Conductor class
 module Conductor
   class << self
+
+    ##
+    ## @brief      Execute commands/scripts in the track
+    ##
+    ## @param      track  The track
+    ##
+    ## @return     Resulting STDOUT output
+    ##
     def execute_track(track)
       if track[:sequence]
         track[:sequence].each do |cmd|
@@ -34,6 +43,17 @@ module Conductor
       Conductor.stdin
     end
 
+    ##
+    ## @brief      Main function to parse conditions and
+    ##             execute actions. Executes recursively for
+    ##             sub-tracks.
+    ##
+    ## @param      tracks     The tracks to process
+    ## @param      res        The current result
+    ## @param      condition  The current condition
+    ##
+    ## @return     [Array] result, matched condition(s)
+    ##
     def conduct(tracks, res = nil, condition = nil)
       tracks.each do |track|
         cond = Condition.new(track[:condition])
@@ -44,7 +64,7 @@ module Conductor
         title = track[:title] || track[:condition]
         condition ||= [""]
         condition << title
-        condition.push(track.key?(:continue) ? ", " : " -> ")
+        condition.push(track.key?(:continue) ? " -> " : ", ")
 
         res = execute_track(track)
 
@@ -92,6 +112,11 @@ Conductor.original_input = Conductor.stdin
 tracks = config.tracks
 res, condition = Conductor.conduct(tracks)
 
+##
+## @brief      Clean up conditions for output
+##
+## @param      condition  The condition
+##
 def clean_condition(condition)
   condition.join("").sub(/ *(->|,) *$/, "")
 end

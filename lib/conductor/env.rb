@@ -32,7 +32,7 @@ module Conductor
         origin: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/",
         filepath: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/advanced-features.md",
         filename: "advanced-features.md",
-        phase: "PROCESS",
+        phase: "PREPROCESS",
         outline: "NONE",
         path: "/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Desktop/Code/nvultra-docs/content/"
       }
