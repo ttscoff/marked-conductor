@@ -157,7 +157,7 @@
           
 
           <div class="method-source-code" id="operator_to_symbol-source">
-            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 366</span>
+            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 370</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">operator_to_symbol</span>(<span class="ruby-identifier">operator</span>)
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">operator</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">operator</span>.<span class="ruby-identifier">nil?</span>
 
@@ -207,7 +207,7 @@
           
 
           <div class="method-source-code" id="parse_condition-source">
-            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 397</span>
+            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 401</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_condition</span>
   <span class="ruby-identifier">cond</span> = <span class="ruby-ivar">@condition</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\((.*?)\)/</span>) <span class="ruby-keyword">do</span>
     <span class="ruby-identifier">condition</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>(<span class="ruby-value">1</span>)
@@ -331,7 +331,7 @@
           
 
           <div class="method-source-code" id="test_condition-source">
-            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 328</span>
+            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 332</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_condition</span>(<span class="ruby-identifier">condition</span>)
   <span class="ruby-identifier">type</span>, <span class="ruby-identifier">value</span>, <span class="ruby-identifier">operator</span> = <span class="ruby-identifier">split_condition</span>(<span class="ruby-identifier">condition</span>)
 
@@ -395,7 +395,7 @@
 <p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="test_meta-source">
-            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 295</span>
+            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 299</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_meta</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">value</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">operator</span>)
   <span class="ruby-identifier">headers</span> = []
   <span class="ruby-identifier">content</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
@@ -484,7 +484,7 @@
           
 
           <div class="method-source-code" id="test_pandoc-source">
-            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 323</span>
+            <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 327</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_pandoc</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">operator</span>)
   <span class="ruby-identifier">res</span> = <span class="ruby-identifier">content</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^%% /</span>)
   <span class="ruby-node">%i[not_contains not_equal]</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">operator</span>) <span class="ruby-operator">?</span> <span class="ruby-operator">!</span><span class="ruby-identifier">res</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">res</span>.<span class="ruby-identifier">nil?</span>
@@ -709,7 +709,11 @@
           <div class="method-source-code" id="test_yaml-source">
             <pre><span class="ruby-comment"># File lib/conductor/condition.rb, line 251</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_yaml</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">value</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">operator</span>)
-  <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">safe_load</span>(<span class="ruby-identifier">content</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/^(?:---|\.\.\.)/</span>)[<span class="ruby-value">1</span>])
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">content</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/^(?:---|\.\.\.)/</span>)[<span class="ruby-value">1</span>])
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">StandardError</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+  <span class="ruby-keyword">end</span>
 
   <span class="ruby-keyword">return</span> <span class="ruby-identifier">operator</span> <span class="ruby-operator">==</span> <span class="ruby-value">:not_equal</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">yaml</span>
 

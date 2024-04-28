@@ -65,14 +65,6 @@
 </div>
 
     
-<div id="includes-section" class="nav-section">
-  <h3>Included Modules</h3>
-
-  <ul class="link-list">
-    <li><a class="include" href="Conductor.html">Conductor</a>
-  </ul>
-</div>
-
     
     
 <!-- Method Quickref -->
@@ -81,8 +73,6 @@
 
   <ul class="link-list" role="directory">
     <li ><a href="#method-i-clean_condition">#clean_condition</a>
-    <li ><a href="#method-i-conduct">#conduct</a>
-    <li ><a href="#method-i-execute_track">#execute_track</a>
   </ul>
 </div>
 
@@ -122,104 +112,9 @@
           
 
           <div class="method-source-code" id="clean_condition-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 72</span>
+            <pre><span class="ruby-comment"># File bin/conductor, line 95</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clean_condition</span>(<span class="ruby-identifier">condition</span>)
-  <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;&#39;</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ *(-&gt;|,) *$/</span>, <span class="ruby-string">&#39;&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-conduct" class="method-detail ">
-        <div class="method-header">
-          <div class="method-heading">
-            <span class="method-name">conduct</span><span
-              class="method-args">(tracks, res = nil, condition = nil)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-        </div>
-
-        <div class="method-description">
-          
-
-          <div class="method-source-code" id="conduct-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 43</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">conduct</span>(<span class="ruby-identifier">tracks</span>, <span class="ruby-identifier">res</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">condition</span> = <span class="ruby-keyword">nil</span>)
-  <span class="ruby-identifier">tracks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">track</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">cond</span> = <span class="ruby-constant">Condition</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:condition</span>])
-
-    <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">cond</span>.<span class="ruby-identifier">true?</span>
-
-
-    <span class="ruby-comment"># Build &quot;matched condition&quot; message</span>
-    <span class="ruby-identifier">title</span> = <span class="ruby-identifier">track</span>[<span class="ruby-value">:title</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:condition</span>]
-    <span class="ruby-identifier">condition</span> <span class="ruby-operator">||=</span> [<span class="ruby-string">&#39;&#39;</span>]
-    <span class="ruby-identifier">condition</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">title</span>
-    <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">track</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:continue</span>) <span class="ruby-operator">?</span> <span class="ruby-string">&#39;, &#39;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39; -&gt; &#39;</span>)
-
-    <span class="ruby-identifier">res</span> = <span class="ruby-identifier">execute_track</span>(<span class="ruby-identifier">track</span>)
-
-    <span class="ruby-keyword">if</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:tracks</span>]
-      <span class="ruby-identifier">ts</span> = <span class="ruby-identifier">track</span>[<span class="ruby-value">:tracks</span>]
-
-      <span class="ruby-identifier">res</span>, <span class="ruby-identifier">condition</span> = <span class="ruby-identifier">conduct</span>(<span class="ruby-identifier">ts</span>, <span class="ruby-identifier">res</span>, <span class="ruby-identifier">condition</span>)
-
-      <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">res</span>.<span class="ruby-identifier">nil?</span>
-    <span class="ruby-keyword">end</span>
-
-    <span class="ruby-keyword">break</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:continue</span>]
-  <span class="ruby-keyword">end</span>
-
-  [<span class="ruby-identifier">res</span>, <span class="ruby-identifier">condition</span>]
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-execute_track" class="method-detail ">
-        <div class="method-header">
-          <div class="method-heading">
-            <span class="method-name">execute_track</span><span
-              class="method-args">(track)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-        </div>
-
-        <div class="method-description">
-          
-
-          <div class="method-source-code" id="execute_track-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 15</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">execute_track</span>(<span class="ruby-identifier">track</span>)
-  <span class="ruby-keyword">if</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:sequence</span>]
-    <span class="ruby-identifier">track</span>[<span class="ruby-value">:sequence</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cmd</span><span class="ruby-operator">|</span>
-      <span class="ruby-keyword">if</span> <span class="ruby-identifier">cmd</span>[<span class="ruby-value">:script</span>]
-        <span class="ruby-identifier">script</span> = <span class="ruby-constant">Script</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cmd</span>[<span class="ruby-value">:script</span>])
-
-        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">script</span>.<span class="ruby-identifier">run</span>
-      <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">cmd</span>[<span class="ruby-value">:command</span>]
-        <span class="ruby-identifier">command</span> = <span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cmd</span>[<span class="ruby-value">:command</span>])
-
-        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">command</span>.<span class="ruby-identifier">run</span>
-      <span class="ruby-keyword">end</span>
-
-      <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">res</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">res</span>.<span class="ruby-identifier">nil?</span>
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:script</span>]
-    <span class="ruby-identifier">script</span> = <span class="ruby-constant">Script</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:script</span>])
-
-    <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">script</span>.<span class="ruby-identifier">run</span>
-  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:command</span>]
-    <span class="ruby-identifier">command</span> = <span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:command</span>])
-
-    <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">command</span>.<span class="ruby-identifier">run</span>
-  <span class="ruby-keyword">end</span>
-
-  <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span>
+  <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;&quot;</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ *(-&gt;|,) *$/</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>

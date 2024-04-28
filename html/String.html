@@ -201,9 +201,9 @@
           
 
           <div class="method-source-code" id="meta-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 45</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 49</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">meta?</span>
-  <span class="ruby-keyword">self</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^---/m</span>
+  <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^\w+: +\S+/m</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -297,7 +297,7 @@
           <div class="method-source-code" id="to_bool-source">
             <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 62</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_bool</span>
-  <span class="ruby-keyword">case</span> <span class="ruby-keyword">self</span>
+  <span class="ruby-keyword">case</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>)
   <span class="ruby-keyword">when</span> <span class="ruby-regexp">/^[yt]/i</span>
     <span class="ruby-keyword">true</span>
   <span class="ruby-keyword">else</span>
@@ -393,9 +393,9 @@
           
 
           <div class="method-source-code" id="yaml-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 49</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 45</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">yaml?</span>
-  <span class="ruby-keyword">self</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^\w+: +\S+/m</span>
+  <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^---/m</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
