@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module Conductor - Marked Conductor</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search (/) for a class, method, ..." spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    
+<!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    <li ><a href="#method-c-stdin">::stdin</a>
+    <li ><a href="#method-i-create_config">#create_config</a>
+    <li ><a href="#method-i-sample_config">#sample_config</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-Conductor">
+  <h1 id="module-Conductor" class="module">
+    module Conductor
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  <section id="5Buntitled-5D" class="documentation-section">
+
+
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+        <dt id="VERSION">VERSION
+        <dd>
+      </dl>
+    </section>
+
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      <div id="attribute-c-stdin" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">stdin</span><span
+            class="attribute-access-type">[W]</span>
+        </div>
+
+        <div class="method-description">
+        
+        </div>
+      </div>
+    </section>
+
+
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+      <div id="method-c-stdin" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">stdin</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="stdin-source">
+            <pre><span class="ruby-comment"># File lib/conductor.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stdin</span>
+  <span class="ruby-identifier">warn</span> <span class="ruby-string">&quot;input on STDIN required&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">positive?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">fcntl</span>(<span class="ruby-constant">Fcntl</span><span class="ruby-operator">::</span><span class="ruby-constant">F_GETFL</span>, <span class="ruby-value">0</span>).<span class="ruby-identifier">zero?</span>
+  <span class="ruby-ivar">@stdin</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+      <div id="method-i-create_config" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">create_config</span><span
+              class="method-args">(config_file)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="create_config-source">
+            <pre><span class="ruby-comment"># File lib/conductor/config.rb, line 19</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_config</span>(<span class="ruby-identifier">config_file</span>)
+  <span class="ruby-identifier">config_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-identifier">config_file</span>)
+  <span class="ruby-identifier">scripts_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config_dir</span>, <span class="ruby-string">&quot;scripts&quot;</span>))
+  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">config_dir</span>) <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">config_dir</span>)
+  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">scripts_dir</span>) <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">scripts_dir</span>)
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config_file</span>, <span class="ruby-string">&quot;w&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">sample_config</span> }
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Sample config created at #{config_file}&quot;</span>
+
+  <span class="ruby-constant">Process</span>.<span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-sample_config" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">sample_config</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="sample_config-source">
+            <pre><span class="ruby-comment"># File lib/conductor/config.rb, line 30</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">sample_config</span>
+    <span class="ruby-identifier">&lt;&lt;~EOCONFIG</span>
+<span class="ruby-value">      tracks:
+        - condition: phase is pre
+          tracks:
+          - condition: tree contains .obsidian
+            tracks:
+            - condition: extension is md
+              script: obsidian-md-filter
+          - condition: extension is md
+            command: rdiscount $file
+        - condition: yaml includes comments
+          script: blog-processor
+        - condition: any
+          command: echo &#39;NOCUSTOM&#39;
+</span><span class="ruby-identifier">    EOCONFIG</span>
+  <span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.6.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

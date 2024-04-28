@@ -1,3 +1,17 @@
+### 1.0.10
+
+2024-04-28 14:05
+
+#### IMPROVED
+
+- Return NOCUSTOM if changes are not made by scripts/commands, even though condition was matched
+- Use YAML.load instead of .safe_load to allow more flexibility
+- Trap errors reading YAML and fail gracefully
+
+#### FIXED
+
+- Encoding errors on string methods
+
 ### 1.0.9
 
 2024-04-27 16:00
