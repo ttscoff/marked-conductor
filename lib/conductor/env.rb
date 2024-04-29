@@ -36,12 +36,12 @@ module Conductor
         css_path: "/Applications/Marked 2.app/Contents/Resources/swiss.css",
         ext: "md",
         includes: [],
-        origin: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/",
-        filepath: "/Users/ttscoff/Desktop/Code/nvultra-docs/content/advanced-features.md",
+        origin: "/Users/ttscoff/Sites/dev/bt/source/_posts/",
+        filepath: "/Users/ttscoff/Sites/dev/bt/source/_posts/2024-04-01-automating-the-dimspirations-workflow.md",
         filename: "advanced-features.md",
-        phase: "PREPROCESS",
+        phase: "PROCESS",
         outline: "NONE",
-        path: "/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Desktop/Code/nvultra-docs/content/"
+        path: "/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ttscoff/Sites/dev/bt/source/_posts"
       }
     end
 
