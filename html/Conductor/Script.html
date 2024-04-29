@@ -140,10 +140,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Initializes the given script.</p>
+
+<p>@param      script  The script/path</p>
 
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 8</span>
+            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 13</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">script</span>)
   <span class="ruby-identifier">parts</span> = <span class="ruby-constant">Shellwords</span>.<span class="ruby-identifier">split</span>(<span class="ruby-identifier">script</span>)
   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">path</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>]
@@ -172,16 +174,18 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Set the args array</p>
+
+<p>@param      array  The array</p>
 
           <div class="method-source-code" id="args-3D-source">
-            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 30</span>
+            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 45</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">args=</span>(<span class="ruby-identifier">array</span>)
   <span class="ruby-ivar">@args</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">array</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)
-    <span class="ruby-identifier">array</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>)
-  <span class="ruby-keyword">else</span>
-    <span class="ruby-identifier">array</span>
-  <span class="ruby-keyword">end</span>
+            <span class="ruby-identifier">array</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>)
+          <span class="ruby-keyword">else</span>
+            <span class="ruby-identifier">array</span>
+          <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -199,24 +203,26 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Set script path, automatically expands/tests</p>
+
+<p>@param      path  The path</p>
 
           <div class="method-source-code" id="path-3D-source">
-            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 14</span>
+            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 24</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path=</span>(<span class="ruby-identifier">path</span>)
   <span class="ruby-ivar">@path</span> = <span class="ruby-keyword">if</span> <span class="ruby-regexp">%r{^[%/]}</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-identifier">path</span>)
-    <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-identifier">path</span>)
-  <span class="ruby-keyword">else</span>
-    <span class="ruby-identifier">script_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~/.config/conductor/scripts&quot;</span>)
-    <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">script_dir</span>, <span class="ruby-identifier">path</span>))
-      <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">script_dir</span>, <span class="ruby-identifier">path</span>)
-    <span class="ruby-keyword">elsif</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">path</span>)
-      <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-identifier">path</span>)
-    <span class="ruby-keyword">else</span>
-      <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Path to #{path} not found&quot;</span>
+            <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-identifier">path</span>)
+          <span class="ruby-keyword">else</span>
+            <span class="ruby-identifier">script_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~/.config/conductor/scripts&quot;</span>)
+            <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">script_dir</span>, <span class="ruby-identifier">path</span>))
+              <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">script_dir</span>, <span class="ruby-identifier">path</span>)
+            <span class="ruby-keyword">elsif</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">path</span>)
+              <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-identifier">path</span>)
+            <span class="ruby-keyword">else</span>
+              <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Path to #{path} not found&quot;</span>
 
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
+            <span class="ruby-keyword">end</span>
+          <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -234,14 +240,18 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Execute the script</p>
+
+<p>@return     [String] script results (STDOUT)</p>
 
           <div class="method-source-code" id="run-source">
-            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 38</span>
+            <pre><span class="ruby-comment"># File lib/conductor/script.rb, line 58</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run</span>
   <span class="ruby-identifier">stdin</span> = <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span>
 
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;Script path not defined&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@path</span>
+
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;Script not executable&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">executable?</span>(<span class="ruby-ivar">@path</span>)
 
   <span class="ruby-identifier">use_stdin</span> = <span class="ruby-keyword">true</span>
   <span class="ruby-keyword">if</span> <span class="ruby-regexp">/\$\{?file\}?/</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-identifier">args</span>)
@@ -253,9 +263,9 @@
   <span class="ruby-keyword">end</span>
 
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">use_stdin</span>
-    <span class="ruby-node">`echo #{Shellwords.escape(stdin)} | #{Env} #{path} #{args}`</span>
+    <span class="ruby-node">`echo #{Shellwords.escape(stdin)} | #{Env} #{@path} #{@args}`</span>
   <span class="ruby-keyword">else</span>
-    <span class="ruby-node">`#{Env} #{path} #{args}`</span>
+    <span class="ruby-node">`#{Env} #{@path} #{@args}`</span>
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>

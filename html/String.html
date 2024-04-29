@@ -122,10 +122,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test if a string is a boolean</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="bool-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 41</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 77</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">bool?</span>
   <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^(?:y(?:es)?|no?|t(?:rue)?|f(?:alse)?)$/</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -145,10 +147,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Convert a string boolean to symbol</p>
+
+<p>@return     [Symbol] symbolized version</p>
 
           <div class="method-source-code" id="bool_to_symbol-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 5</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 10</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">bool_to_symbol</span>
   <span class="ruby-keyword">case</span> <span class="ruby-keyword">self</span>
   <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(NOT|!!)/</span>
@@ -175,12 +179,14 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test a string to see if it’s a UTC date</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="date-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 16</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 26</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">date?</span>
-  <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^\d{4}-\d{2}-\d{2}/</span>)
+  <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^\d{4}-\d{2}-\d{2}( \d\d:\d\d)?$/</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -198,10 +204,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test if a string starts with MMD metadata</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="meta-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 49</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 95</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">meta?</span>
   <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^\w+: +\S+/m</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -221,10 +229,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test if a string is a number</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="number-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 37</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 68</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">number?</span>
   <span class="ruby-identifier">to_f</span>.<span class="ruby-identifier">positive?</span>
 <span class="ruby-keyword">end</span></pre>
@@ -244,10 +254,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Remove time from string</p>
+
+<p>@return     [String] string with time removed</p>
 
           <div class="method-source-code" id="strip_time-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 28</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 54</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">strip_time</span>
   <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ \d{1,2}(:\d\d)? *([ap]m)?/i</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -267,10 +279,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test a string to see if it includes a time</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="time-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 20</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 35</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">time?</span>
   <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>).<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/ \d{1,2}(:\d\d)? *([ap]m)?/i</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -295,7 +309,7 @@
 <p>@return     [Boolean] Bool representation of the object.</p>
 
           <div class="method-source-code" id="to_bool-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 62</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 114</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_bool</span>
   <span class="ruby-keyword">case</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>)
   <span class="ruby-keyword">when</span> <span class="ruby-regexp">/^[yt]/i</span>
@@ -320,10 +334,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Destructive version of <a href="String.html#method-i-to_bool"><code>to_bool</code></a></p>
+
+<p>@see        <a href="String.html#method-i-to_bool"><code>to_bool</code></a></p>
 
           <div class="method-source-code" id="to_bool-21-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 53</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 105</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_bool!</span>
   <span class="ruby-identifier">replace</span> <span class="ruby-identifier">to_bool</span>
 <span class="ruby-keyword">end</span></pre>
@@ -343,10 +359,15 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Convert a natural language string to a Date</p>
+
+<pre class="ruby"><span class="ruby-identifier">object</span>
+</pre>
+
+<p>@return     [Date] Resulting Date object</p>
 
           <div class="method-source-code" id="to_date-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 24</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 45</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_date</span>
   <span class="ruby-constant">Chronic</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>))
 <span class="ruby-keyword">end</span></pre>
@@ -369,7 +390,7 @@
           
 
           <div class="method-source-code" id="to_day-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 32</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 58</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_day</span>(<span class="ruby-identifier">time</span> = <span class="ruby-value">:end</span>)
   <span class="ruby-identifier">t</span> = <span class="ruby-identifier">time</span> <span class="ruby-operator">==</span> <span class="ruby-value">:end</span> <span class="ruby-operator">?</span> <span class="ruby-string">&quot;23:59&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&quot;00:00&quot;</span>
   <span class="ruby-constant">Chronic</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-node">&quot;#{strip_time} #{t}&quot;</span>)
@@ -390,10 +411,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Test if string starts with YAML</p>
+
+<p>@return     [Boolean] test result</p>
 
           <div class="method-source-code" id="yaml-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 45</span>
+            <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 86</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">yaml?</span>
   <span class="ruby-identifier">dup</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&#39;utf-8&#39;</span>).<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/^---/m</span>)
 <span class="ruby-keyword">end</span></pre>

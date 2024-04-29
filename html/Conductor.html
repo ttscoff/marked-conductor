@@ -84,6 +84,8 @@
 
   <section class="description">
     
+<p>Main <a href="Conductor.html"><code>Conductor</code></a> class</p>
+
   </section>
 
   <section id="5Buntitled-5D" class="documentation-section">
@@ -142,10 +144,17 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Main function to parse conditions and</p>
+
+<pre>execute actions. Executes recursively for
+sub-tracks.</pre>
+
+<p>@param      tracks     The tracks to process @param      res        The current result @param      condition  The current condition</p>
+
+<p>@return     [Array] result, matched condition(s)</p>
 
           <div class="method-source-code" id="conduct-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 37</span>
+            <pre><span class="ruby-comment"># File bin/conductor, line 56</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">conduct</span>(<span class="ruby-identifier">tracks</span>, <span class="ruby-identifier">res</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">condition</span> = <span class="ruby-keyword">nil</span>)
   <span class="ruby-identifier">tracks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">track</span><span class="ruby-operator">|</span>
     <span class="ruby-identifier">cond</span> = <span class="ruby-constant">Condition</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:condition</span>])
@@ -156,7 +165,7 @@
     <span class="ruby-identifier">title</span> = <span class="ruby-identifier">track</span>[<span class="ruby-value">:title</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:condition</span>]
     <span class="ruby-identifier">condition</span> <span class="ruby-operator">||=</span> [<span class="ruby-string">&quot;&quot;</span>]
     <span class="ruby-identifier">condition</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">title</span>
-    <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">track</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:continue</span>) <span class="ruby-operator">?</span> <span class="ruby-string">&quot;, &quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&quot; -&gt; &quot;</span>)
+    <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">track</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:continue</span>) <span class="ruby-operator">?</span> <span class="ruby-string">&quot; -&gt; &quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&quot;, &quot;</span>)
 
     <span class="ruby-identifier">res</span> = <span class="ruby-identifier">execute_track</span>(<span class="ruby-identifier">track</span>)
 
@@ -193,10 +202,14 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Execute commands/scripts in the track</p>
+
+<p>@param      track  The track</p>
+
+<p>@return     Resulting STDOUT output</p>
 
           <div class="method-source-code" id="execute_track-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 9</span>
+            <pre><span class="ruby-comment"># File bin/conductor, line 17</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">execute_track</span>(<span class="ruby-identifier">track</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:sequence</span>]
     <span class="ruby-identifier">track</span>[<span class="ruby-value">:sequence</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cmd</span><span class="ruby-operator">|</span>

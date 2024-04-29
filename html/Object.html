@@ -109,10 +109,12 @@
         </div>
 
         <div class="method-description">
-          
+          <p>Clean up conditions for output</p>
+
+<p>@param      condition  The condition</p>
 
           <div class="method-source-code" id="clean_condition-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 95</span>
+            <pre><span class="ruby-comment"># File bin/conductor, line 119</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clean_condition</span>(<span class="ruby-identifier">condition</span>)
   <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;&quot;</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ *(-&gt;|,) *$/</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
