@@ -1,3 +1,12 @@
+### 1.0.11
+
+2024-04-29 09:46
+
+#### FIXED
+
+- Reversed symbols when outputting condition matches to STDERR
+- Only assume date if it's not part of a filename
+
 ### 1.0.10
 
 2024-04-28 14:05
