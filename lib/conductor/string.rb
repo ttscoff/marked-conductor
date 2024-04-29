@@ -24,7 +24,7 @@ class ::String
   ## @return     [Boolean] test result
   ##
   def date?
-    dup.force_encoding("utf-8").match?(/^\d{4}-\d{2}-\d{2}$/)
+    dup.force_encoding("utf-8").match?(/^\d{4}-\d{2}-\d{2}( \d\d:\d\d)?$/)
   end
 
   ##
