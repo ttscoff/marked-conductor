@@ -25,7 +25,7 @@ module Conductor
 
     def stdin
       warn "input on STDIN required" unless $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
-      @stdin ||= $stdin.read.strip.force_encoding("utf-8")
+      @stdin ||= $stdin.read.force_encoding("utf-8")
     end
   end
 end
