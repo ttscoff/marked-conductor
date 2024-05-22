@@ -154,6 +154,8 @@ In Marked's Custom Processor Log, you can see both the STDOUT output and the STD
 
 ### From the command line
 
+> There's a script included in the repo called [test.sh](https://github.com/ttscoff/marked-conductor/blob/main/test.sh) that will take a file path as an argument and set all of the environment variables for testing. Run `test.sh -h` for usage instructions.
+
 In order to test from the command line, you'll need certain environment variables set. This can be done by exporting the following variables with your own definitions, or by running conductor with all of the variables preceding the command, e.g. `$ MARKED_ORIGIN=/path/to/markdown_file.md [...] conductor`.
 
 The following need to be defined. Some can be left as empty or to defaults, such as `MARKED_INCLUDES` and `MARKED_OUTLINE`, but all need to be set to something.
