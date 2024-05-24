@@ -25,6 +25,10 @@ module Conductor
             command = Command.new(cmd[:command])
 
             res = command.run
+          elsif cmd[:filter]
+            filter = Filter.new(cmd[:filter])
+
+            res = filter.process
           end
 
           Conductor.stdin = res unless res.nil?
@@ -37,6 +41,10 @@ module Conductor
         command = Command.new(track[:command])
 
         Conductor.stdin = command.run
+      elsif track[:filter]
+        filter = Filter.new(track[:filter])
+
+        Conductor.stdin = filter.process
       end
 
       Conductor.stdin
