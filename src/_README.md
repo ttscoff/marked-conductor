@@ -122,13 +122,37 @@ Conditions can be combined with AND or OR (must be uppercase) and simple parenth
 
 ### Actions
 
-The action can be either `script` or `command`. 
+The action can be `script`, `command`, or `filter`. 
 
-Scripts are located in `~/.config/conductor/scripts/` and should be executable files that take input on STDIN (unless `$file` is specified in the `script` definition). If a script is defined starting with `~` or `/`, that will be interpreted as a full path to an alternate location.
+**Scripts** are located in `~/.config/conductor/scripts/` and should be executable files that take input on STDIN (unless `$file` is specified in the `script` definition). If a script is defined starting with `~` or `/`, that will be interpreted as a full path to an alternate location.
 
-Commands are interpreted as shell commands. If a command exists in the `$PATH`, a full path will automatically be determined, so a command can be as simple as just `pandoc`. Add any arguments needed after the command.
+> Example:
+> 
+>    script: github_pre
 
-Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
+**Commands** are interpreted as shell commands. If a command exists in the `$PATH`, a full path will automatically be determined, so a command can be as simple as just `pandoc`. Add any arguments needed after the command.
+
+> Example:
+> 
+>    command: multimarkdown
+
+
+> Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
+
+**Filters** are simple actions that can be run on the content without having to write a separate script for it. Available filters are:
+
+- `addMeta(key, value)`/`setMeta(key, value)` -- adds or updates a meta key, aware of YAML and MMD
+- `stripMeta` -- strips all metadata (YAML or MMD) from the content
+- `stripMeta(key)` -- removes a specific key (YAML or MMD) 
+- `setStyle(name)` -- sets the Marked preview style to a preconfigured Style name
+- `replace(search, replace)`/`replaceAll(search, replace)` -- performs a search and replace (global with `replaceAll`). If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
+
+> Example:
+> 
+>    filter: setStyle(github)
+
+
+> Filters can be camel case (replaceAll) or snake case (replace_all), either will work, case insensitive.
 
 ## Custom Processors
 
