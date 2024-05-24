@@ -23,7 +23,7 @@ If you use Homebrew, you can run
 
 To use Conductor, you need to set up a configuration file in `~/.config/conductor/tracks.yaml`. Run `conductor` once to create the directory and an empty configuration. See [Configuration](#configuration) below for details on setting up your "tracks." 
 
-Once configured, you can set up conductor as a Custom Processor in Marked. Run `which conductor | pbcopy` to get the full path to the binary and copy it, then open <b>Marked Preferences > Advanced</b> and select either Custom Processor or Custom Preprocessor (or both) and paste into the <b>Path:</b> field. You can select <i>Automatically enable for new windows</i> to have the processor enabled by default when opening documents.
+Once configured, you can set up conductor as a Custom Processor in Marked. Run `which conductor | pbcopy` to get the full path to the binary and copy it, then open **Marked Preferences > Advanced** and select either Custom Processor or Custom Preprocessor (or both) and paste into the **Path:** field. You can select *Automatically enable for new windows* to have the processor enabled by default when opening documents.
 
 <!--JEKYLL {% img aligncenter /uploads/2024/04/marked-preferences-conductor.jpg 593 673 "marked-preferences-conductor.jpg" %}-->
 <!--GITHUB-->![Marked preferences](images/preferences.jpg)<!--END GITHUB-->
