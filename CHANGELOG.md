@@ -1,3 +1,11 @@
+### 1.0.13
+
+2024-05-24 13:12
+
+#### NEW
+
+- New type of command -- filter: filterName(parameters), allows things like setStyle(github) or replace_all(regex, pattern) instead of having to write scripts for simple things like this. Can be run in sequences.
+
 ### 1.0.12
 
 2024-05-01 13:06
