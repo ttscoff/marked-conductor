@@ -154,7 +154,7 @@ sub-tracks.</pre>
 <p>@return     [Array] result, matched condition(s)</p>
 
           <div class="method-source-code" id="conduct-source">
-            <pre><span class="ruby-comment"># File bin/conductor, line 56</span>
+            <pre><span class="ruby-comment"># File bin/conductor, line 64</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">conduct</span>(<span class="ruby-identifier">tracks</span>, <span class="ruby-identifier">res</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">condition</span> = <span class="ruby-keyword">nil</span>)
   <span class="ruby-identifier">tracks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">track</span><span class="ruby-operator">|</span>
     <span class="ruby-identifier">cond</span> = <span class="ruby-constant">Condition</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:condition</span>])
@@ -221,6 +221,10 @@ sub-tracks.</pre>
         <span class="ruby-identifier">command</span> = <span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cmd</span>[<span class="ruby-value">:command</span>])
 
         <span class="ruby-identifier">res</span> = <span class="ruby-identifier">command</span>.<span class="ruby-identifier">run</span>
+      <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">cmd</span>[<span class="ruby-value">:filter</span>]
+        <span class="ruby-identifier">filter</span> = <span class="ruby-constant">Filter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cmd</span>[<span class="ruby-value">:filter</span>])
+
+        <span class="ruby-identifier">res</span> = <span class="ruby-identifier">filter</span>.<span class="ruby-identifier">process</span>
       <span class="ruby-keyword">end</span>
 
       <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">res</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">res</span>.<span class="ruby-identifier">nil?</span>
@@ -233,6 +237,10 @@ sub-tracks.</pre>
     <span class="ruby-identifier">command</span> = <span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:command</span>])
 
     <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">command</span>.<span class="ruby-identifier">run</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">track</span>[<span class="ruby-value">:filter</span>]
+    <span class="ruby-identifier">filter</span> = <span class="ruby-constant">Filter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">track</span>[<span class="ruby-value">:filter</span>])
+
+    <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span> = <span class="ruby-identifier">filter</span>.<span class="ruby-identifier">process</span>
   <span class="ruby-keyword">end</span>
 
   <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span>
@@ -256,7 +264,7 @@ sub-tracks.</pre>
           
 
           <div class="method-source-code" id="stdin-source">
-            <pre><span class="ruby-comment"># File lib/conductor.rb, line 26</span>
+            <pre><span class="ruby-comment"># File lib/conductor.rb, line 27</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">stdin</span>
   <span class="ruby-identifier">warn</span> <span class="ruby-string">&quot;input on STDIN required&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">positive?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">fcntl</span>(<span class="ruby-constant">Fcntl</span><span class="ruby-operator">::</span><span class="ruby-constant">F_GETFL</span>, <span class="ruby-value">0</span>).<span class="ruby-identifier">zero?</span>
   <span class="ruby-ivar">@stdin</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">force_encoding</span>(<span class="ruby-string">&quot;utf-8&quot;</span>)

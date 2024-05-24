@@ -72,17 +72,33 @@
   <h3>Methods</h3>
 
   <ul class="link-list" role="directory">
+    <li ><a href="#method-i-add_comment">#add_comment</a>
+    <li ><a href="#method-i-add_mmd">#add_mmd</a>
+    <li ><a href="#method-i-add_yaml">#add_yaml</a>
     <li ><a href="#method-i-bool-3F">#bool?</a>
     <li ><a href="#method-i-bool_to_symbol">#bool_to_symbol</a>
     <li ><a href="#method-i-date-3F">#date?</a>
+    <li ><a href="#method-i-delete_meta">#delete_meta</a>
+    <li ><a href="#method-i-delete_mmd">#delete_mmd</a>
+    <li ><a href="#method-i-delete_yaml">#delete_yaml</a>
+    <li ><a href="#method-i-has_comment-3F">#has_comment?</a>
     <li ><a href="#method-i-meta-3F">#meta?</a>
+    <li ><a href="#method-i-meta_insert_point">#meta_insert_point</a>
+    <li ><a href="#method-i-meta_type">#meta_type</a>
+    <li ><a href="#method-i-normalize_filter">#normalize_filter</a>
     <li ><a href="#method-i-number-3F">#number?</a>
+    <li ><a href="#method-i-replace">#replace</a>
+    <li ><a href="#method-i-replace_all">#replace_all</a>
+    <li ><a href="#method-i-set_meta">#set_meta</a>
+    <li ><a href="#method-i-strip_meta">#strip_meta</a>
     <li ><a href="#method-i-strip_time">#strip_time</a>
     <li ><a href="#method-i-time-3F">#time?</a>
     <li ><a href="#method-i-to_bool">#to_bool</a>
     <li ><a href="#method-i-to_bool-21">#to_bool!</a>
     <li ><a href="#method-i-to_date">#to_date</a>
     <li ><a href="#method-i-to_day">#to_day</a>
+    <li ><a href="#method-i-to_pattern">#to_pattern</a>
+    <li ><a href="#method-i-to_rx">#to_rx</a>
     <li ><a href="#method-i-yaml-3F">#yaml?</a>
   </ul>
 </div>
@@ -99,6 +115,8 @@
     
 <p><a href="String.html"><code>String</code></a> helpers</p>
 
+<p><a href="String.html"><code>String</code></a> helpers</p>
+
   </section>
 
   <section id="5Buntitled-5D" class="documentation-section">
@@ -111,6 +129,92 @@
        <header>
          <h3>Public Instance Methods</h3>
        </header>
+
+      <div id="method-i-add_comment" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">add_comment</span><span
+              class="method-args">(key, value)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="add_comment-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 97</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_comment</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">has_comment?</span>(<span class="ruby-identifier">key</span>)
+    <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ *#{key}: .*?$/</span>, <span class="ruby-node">&quot;#{key}: #{value}&quot;</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">insert</span>(<span class="ruby-identifier">meta_insert_point</span>, <span class="ruby-node">&quot;&lt;!--\n#{key}: #{value}\n--&gt;&quot;</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-add_mmd" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">add_mmd</span><span
+              class="method-args">(key, value)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="add_mmd-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 79</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_mmd</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span>(<span class="ruby-regexp">/(\A|\n) *#{key}: *\S+/i</span>)
+    <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^ *#{key}:.*?\n/i</span>, <span class="ruby-node">&quot;#{key}: #{value}\n&quot;</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">insert</span>(<span class="ruby-identifier">meta_insert_point</span>, <span class="ruby-node">&quot;#{key}: #{value}&quot;</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-add_yaml" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">add_yaml</span><span
+              class="method-args">(key, value)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="add_yaml-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_yaml</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^---.*?\n(---|\.\.\.)/m</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
+    <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">m</span>[<span class="ruby-value">0</span>])
+    <span class="ruby-identifier">yaml</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+    <span class="ruby-node">&quot;#{YAML.dump(yaml)}\n---\n&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
 
       <div id="method-i-bool-3F" class="method-detail ">
         <div class="method-header">
@@ -194,6 +298,108 @@
 
       </div>
 
+      <div id="method-i-delete_meta" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">delete_meta</span><span
+              class="method-args">(key)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="delete_meta-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 107</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_meta</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">meta_type</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
+    <span class="ruby-identifier">delete_yaml</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:mmd</span>
+    <span class="ruby-identifier">delete_mmd</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-delete_mmd" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">delete_mmd</span><span
+              class="method-args">(key)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="delete_mmd-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_mmd</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^ *#{key}:.*?\n/i</span>, <span class="ruby-string">&quot;&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-delete_yaml" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">delete_yaml</span><span
+              class="method-args">(key)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="delete_yaml-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_yaml</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^---.*?\n(---|\.\.\.)/m</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
+    <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">m</span>[<span class="ruby-value">0</span>])
+    <span class="ruby-identifier">yaml</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">key</span>)
+    <span class="ruby-node">&quot;#{YAML.dump(yaml)}\n---\n&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-has_comment-3F" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">has_comment?</span><span
+              class="method-args">(key)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="has_comment-3F-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 93</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">has_comment?</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^&lt;!--.*?#{key}: \S.*?--&gt;/m</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
       <div id="method-i-meta-3F" class="method-detail ">
         <div class="method-header">
           <div class="method-heading">
@@ -219,6 +425,108 @@
 
       </div>
 
+      <div id="method-i-meta_insert_point" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">meta_insert_point</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="meta_insert_point-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 24</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">meta_insert_point</span>
+  <span class="ruby-identifier">insert_point</span> = <span class="ruby-value">0</span>
+
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">meta_type</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">shift</span>
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span>, <span class="ruby-identifier">idx</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^(...|---) *$/</span>
+
+      <span class="ruby-identifier">insert_point</span> = <span class="ruby-identifier">idx</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword">break</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:mmd</span>
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span>, <span class="ruby-identifier">idx</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^ *[ \w]+: +\S+/</span>
+
+      <span class="ruby-identifier">insert_point</span> = <span class="ruby-identifier">idx</span>
+      <span class="ruby-keyword">break</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">insert_point</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-meta_type" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">meta_type</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="meta_type-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">meta_type</span>
+  <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">lines</span>[<span class="ruby-value">0</span>]
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/^--- *$/</span>
+    <span class="ruby-value">:yaml</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/^ *[ \w]+: +\S+/</span>
+    <span class="ruby-value">:mmd</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-value">:none</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-normalize_filter" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">normalize_filter</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="normalize_filter-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">normalize_filter</span>
+  <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">match</span>(<span class="ruby-regexp">/(?&lt;filter&gt;[\w_]+)(?:\((?&lt;paren&gt;.*?)\))?$/i</span>)
+  <span class="ruby-identifier">filter</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-string">&quot;filter&quot;</span>].<span class="ruby-identifier">downcase</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/_/</span>, <span class="ruby-string">&quot;&quot;</span>)
+  <span class="ruby-identifier">params</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-string">&quot;paren&quot;</span>]&amp;.<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/ *, */</span>)
+  [<span class="ruby-identifier">filter</span>, <span class="ruby-identifier">params</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
       <div id="method-i-number-3F" class="method-detail ">
         <div class="method-header">
           <div class="method-heading">
@@ -237,6 +545,111 @@
             <pre><span class="ruby-comment"># File lib/conductor/string.rb, line 68</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">number?</span>
   <span class="ruby-identifier">to_f</span>.<span class="ruby-identifier">positive?</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-replace" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">replace</span><span
+              class="method-args">(regex, pattern)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="replace-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 130</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">pattern</span>)
+  <span class="ruby-identifier">sub</span>(<span class="ruby-identifier">regex</span>.<span class="ruby-identifier">to_rx</span>, <span class="ruby-identifier">pattern</span>.<span class="ruby-identifier">to_pattern</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-replace_all" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">replace_all</span><span
+              class="method-args">(regex, pattern)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="replace_all-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 126</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace_all</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">pattern</span>)
+  <span class="ruby-identifier">gsub</span>(<span class="ruby-identifier">regex</span>.<span class="ruby-identifier">to_rx</span>, <span class="ruby-identifier">pattern</span>.<span class="ruby-identifier">to_pattern</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-set_meta" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">set_meta</span><span
+              class="method-args">(key, value, style: :comment)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="set_meta-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 50</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_meta</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>, <span class="ruby-value">style:</span> <span class="ruby-value">:comment</span>)
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">style</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
+    <span class="ruby-identifier">add_yaml</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:mmd</span>
+    <span class="ruby-identifier">add_mmd</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">else</span> <span class="ruby-comment"># comment or none</span>
+    <span class="ruby-identifier">add_comment</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-strip_meta" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">strip_meta</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="strip_meta-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">strip_meta</span>
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">meta_type</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
+    <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^---.*?(---|...)/m</span>, <span class="ruby-string">&quot;&quot;</span>)
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:mmd</span>
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">lines</span>[<span class="ruby-identifier">meta_insert_point</span><span class="ruby-operator">..</span>]
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -394,6 +807,59 @@
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_day</span>(<span class="ruby-identifier">time</span> = <span class="ruby-value">:end</span>)
   <span class="ruby-identifier">t</span> = <span class="ruby-identifier">time</span> <span class="ruby-operator">==</span> <span class="ruby-value">:end</span> <span class="ruby-operator">?</span> <span class="ruby-string">&quot;23:59&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&quot;00:00&quot;</span>
   <span class="ruby-constant">Chronic</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-node">&quot;#{strip_time} #{t}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-to_pattern" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">to_pattern</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="to_pattern-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 145</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_pattern</span>
+  <span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\$(\d+)/</span>, <span class="ruby-string">&#39;\\\\\1&#39;</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/(^[&quot;&#39;]|[&quot;&#39;]$)/</span>, <span class="ruby-string">&#39;&#39;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-to_rx" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">to_rx</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="to_rx-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 134</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_rx</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r{^/(.*?)/([im]+)?$}</span>
+    <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
+    <span class="ruby-identifier">regex</span> = <span class="ruby-identifier">m</span>[<span class="ruby-value">1</span>]
+    <span class="ruby-identifier">flags</span> = <span class="ruby-identifier">m</span>[<span class="ruby-value">2</span>]
+    <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">flags</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-keyword">self</span>))
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
