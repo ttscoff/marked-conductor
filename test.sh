@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# ./test.sh PATH [pr[eo]]
+# ./test.sh OPTIONS PATH
+# test.sh -h for options
 
-OPTIND=1         # Reset in case getopts has been used previously in the shell.
-
-# Initialize our own variables:
-output_file=""
-verbose=0
+OPTIND=1
 
 show_help() {
 	echo "$(basename $0): Shortcut for testing conductor with a given file"
@@ -18,7 +15,7 @@ show_help() {
 	echo "  $0 [-p PHASE] [-o OUTPUT] FILE_PATH"
 }
 
-if [[ -d bin ]]; then
+if [[ -f bin/conductor ]]; then
 	CMD="./bin/conductor"
 else
 	CMD="$(which conductor)"
