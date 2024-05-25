@@ -11,6 +11,28 @@ class ::String
     split(/(\W)/).map(&:capitalize).join
   end
 
+  def normalize_position
+    case self
+    when /^(be|s|t)/
+      :start
+    when /h1/
+      :h1
+    else
+      :end
+    end
+  end
+
+  def normalize_include_type
+    case self
+    when /^c/
+      :code
+    when /^r/
+      :raw
+    else
+      :file
+    end
+  end
+
   ##
   ## Convert a string boolean to symbol
   ##

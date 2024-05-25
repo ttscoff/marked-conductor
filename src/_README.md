@@ -144,12 +144,16 @@ The action can be `script`, `command`, or `filter`.
 | :----  | :---------- |
 | `setMeta(key, value)` | adds or updates a meta key, aware of YAML and MMD |
 | `stripMeta` | strips all metadata (YAML or MMD) from the content |
-| `stripMeta(key)` | removes a specific key (YAML or MMD) |
-| `setStyle(name)` | sets the Marked preview style to a preconfigured Style name
+| `deleteMeta(key)` | removes a specific key (YAML or MMD) |
+| `setStyle(name)` | sets the Marked preview style to a preconfigured Style name |
 | `replace(search, replace)` | performs a (single) search and replace on content | 
 | `replaceAll(search, replace)` | global version of `replaceAll`) |
 | `insertTitle` | adds a title to the document, either from metadata or filename |
 | `insertScript(path[,path])` | injects javascript(s) |
+| `insertTOC(max, after)` | insert TOC (max=max levels, after=start, \*h1, or h2) |
+| `prepend/appendFile(path)` | insert a file as Markdown at beginning or end of content |
+| `prepend/appendRaw(path)` | insert a file as raw HTML at beginning or end of content |
+| `prepend/appendCode(path)` | insert a file as a code block at beginning or end of content |
 
 For `insertScript`, if path is just a filename it will look for a match in `~/.config/conductor/javascript` or `~/.config/conductor/scripts` and turn that into an absolute path if the file is found.
 
