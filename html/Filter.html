@@ -72,7 +72,7 @@
   <h3>Methods</h3>
 
   <ul class="link-list" role="directory">
-    <li ><a href="#method-c-new">::new</a>
+    <li class="calls-super" ><a href="#method-c-new">::new</a>
     <li ><a href="#method-i-process">#process</a>
   </ul>
 </div>
@@ -139,11 +139,16 @@
 
         <div class="method-description">
           
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
 
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 154</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 221</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">filter</span>)
   <span class="ruby-ivar">@filter</span>, <span class="ruby-ivar">@params</span> = <span class="ruby-identifier">filter</span>.<span class="ruby-identifier">normalize_filter</span>
+  <span class="ruby-keyword">super</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -171,11 +176,19 @@
           
 
           <div class="method-source-code" id="process-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 158</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 226</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">process</span>
   <span class="ruby-identifier">content</span> = <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span>
 
   <span class="ruby-keyword">case</span> <span class="ruby-ivar">@filter</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(insert|add|inject)title/</span>
+    <span class="ruby-identifier">content</span>.<span class="ruby-identifier">insert_title</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(insert|add|inject)script/</span>
+    <span class="ruby-identifier">content</span> = <span class="ruby-identifier">content</span>.<span class="ruby-identifier">append</span>(<span class="ruby-string">&quot;\n\n&lt;div&gt;&quot;</span>)
+    <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">script</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">content</span> = <span class="ruby-identifier">content</span>.<span class="ruby-identifier">insert_script</span>(<span class="ruby-identifier">script</span>)
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-node">&quot;#{content}&lt;/div&gt;&quot;</span>
   <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(add|set)meta/</span>
     <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span>
       <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Invalid filter parameters: #{@filter}(#{@params.join(&quot;,&quot;)})&quot;</span>

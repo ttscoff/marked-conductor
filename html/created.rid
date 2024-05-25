@@ -1,4 +1,4 @@
-Fri, 24 May 2024 13:12:53 -0500
+Sat, 25 May 2024 06:41:22 -0500
 README.rdoc	Sun, 28 Apr 2024 13:21:34 -0500
 lib/conductor.rb	Fri, 24 May 2024 12:23:17 -0500
 lib/conductor/array.rb	Sat, 27 Apr 2024 11:54:28 -0500
@@ -7,9 +7,9 @@ lib/conductor/command.rb	Sat, 27 Apr 2024 11:54:28 -0500
 lib/conductor/condition.rb	Mon, 29 Apr 2024 09:19:15 -0500
 lib/conductor/config.rb	Sat, 27 Apr 2024 11:54:28 -0500
 lib/conductor/env.rb	Mon, 29 Apr 2024 09:28:21 -0500
-lib/conductor/filter.rb	Fri, 24 May 2024 13:02:38 -0500
+lib/conductor/filter.rb	Sat, 25 May 2024 06:38:24 -0500
 lib/conductor/hash.rb	Sat, 27 Apr 2024 11:54:28 -0500
 lib/conductor/script.rb	Sun, 28 Apr 2024 16:21:49 -0500
-lib/conductor/string.rb	Mon, 29 Apr 2024 09:46:03 -0500
-lib/conductor/version.rb	Wed, 01 May 2024 13:06:29 -0500
+lib/conductor/string.rb	Sat, 25 May 2024 06:20:54 -0500
+lib/conductor/version.rb	Fri, 24 May 2024 13:13:06 -0500
 bin/conductor	Fri, 24 May 2024 12:39:06 -0500
