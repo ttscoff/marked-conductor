@@ -1,3 +1,12 @@
+### 1.0.14
+
+2024-05-25 06:41
+
+#### NEW
+
+- InsertTitle filter will extract title from metadata or filename and insert an H1 title into the content
+- InsertScript will inject a javascript at the end of the content, allows passing multiple scripts separated by comma, and if the path is just a filename, it will look for it in ~/.config/conductor/javascript and insert an absolute path
+
 ### 1.0.13
 
 2024-05-24 13:12
