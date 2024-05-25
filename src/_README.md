@@ -124,11 +124,15 @@ Conditions can be combined with AND or OR (must be uppercase) and simple parenth
 
 The action can be `script`, `command`, or `filter`. 
 
+#### Scripts
+
 **Scripts** are located in `~/.config/conductor/scripts/` and should be executable files that take input on STDIN (unless `$file` is specified in the `script` definition). If a script is defined starting with `~` or `/`, that will be interpreted as a full path to an alternate location.
 
 > Example:
 > 
 >    script: github_pre
+
+#### Commands
 
 **Commands** are interpreted as shell commands. If a command exists in the `$PATH`, a full path will automatically be determined, so a command can be as simple as just `pandoc`. Add any arguments needed after the command.
 
@@ -138,6 +142,8 @@ The action can be `script`, `command`, or `filter`.
 
 
 > Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
+
+#### Filters
 
 **Filters** are simple actions that can be run on the content without having to write a separate script for it. Available filters are:
 
@@ -156,9 +162,11 @@ The action can be `script`, `command`, or `filter`.
 | `prepend/appendRaw(path)` | insert a file as raw HTML at beginning or end of content |
 | `prepend/appendCode(path)` | insert a file as a code block at beginning or end of content |
 
+For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
+
 For `insertScript`, if path is just a filename it will look for a match in `~/.config/conductor/javascript` or `~/.config/conductor/scripts` and turn that into an absolute path if the file is found.
 
-For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
+For all of the prepend/append file filters, you can store files in `~/.config/conductor/files` and reference them with just a filename. Otherwise a full path will be assumed.
 
 > Example:
 > 
