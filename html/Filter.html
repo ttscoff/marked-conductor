@@ -145,7 +145,7 @@
             </div>
 
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 221</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 288</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">filter</span>)
   <span class="ruby-ivar">@filter</span>, <span class="ruby-ivar">@params</span> = <span class="ruby-identifier">filter</span>.<span class="ruby-identifier">normalize_filter</span>
   <span class="ruby-keyword">super</span>
@@ -176,7 +176,7 @@
           
 
           <div class="method-source-code" id="process-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 226</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 293</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">process</span>
   <span class="ruby-identifier">content</span> = <span class="ruby-constant">Conductor</span>.<span class="ruby-identifier">stdin</span>
 
@@ -189,6 +189,25 @@
       <span class="ruby-identifier">content</span> = <span class="ruby-identifier">content</span>.<span class="ruby-identifier">insert_script</span>(<span class="ruby-identifier">script</span>)
     <span class="ruby-keyword">end</span>
     <span class="ruby-node">&quot;#{content}&lt;/div&gt;&quot;</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(prepend|append|insert|inject)(raw|file|code)/</span>
+    <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
+
+    <span class="ruby-identifier">position</span> = <span class="ruby-keyword">if</span> <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span>
+      <span class="ruby-ivar">@params</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">normalize_position</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">m</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">normalize_position</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">content</span>.<span class="ruby-identifier">insert_file</span>(<span class="ruby-ivar">@params</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">m</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">normalize_include_type</span>, <span class="ruby-identifier">position</span>)
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/inserttoc/</span>
+    <span class="ruby-identifier">max</span> = <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">count</span>.<span class="ruby-identifier">positive?</span> <span class="ruby-operator">?</span> <span class="ruby-ivar">@params</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span>
+      <span class="ruby-identifier">after</span> = <span class="ruby-ivar">@params</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">=~</span> <span class="ruby-regexp">/2/</span> <span class="ruby-operator">?</span> <span class="ruby-value">:h2</span> <span class="ruby-operator">:</span> <span class="ruby-value">:h1</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">after</span> = <span class="ruby-value">:start</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">content</span>.<span class="ruby-identifier">insert_toc</span>(<span class="ruby-identifier">max</span>, <span class="ruby-identifier">after</span>)
   <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(add|set)meta/</span>
     <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-value">2</span>
       <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Invalid filter parameters: #{@filter}(#{@params.join(&quot;,&quot;)})&quot;</span>
@@ -198,8 +217,8 @@
     <span class="ruby-comment"># needs to test for existing meta, setting key if exists, adding if not</span>
     <span class="ruby-comment"># should recognize yaml and mmd</span>
     <span class="ruby-identifier">content</span>.<span class="ruby-identifier">set_meta</span>(<span class="ruby-ivar">@params</span>[<span class="ruby-value">0</span>], <span class="ruby-ivar">@params</span>[<span class="ruby-value">1</span>], <span class="ruby-value">style:</span> <span class="ruby-identifier">content</span>.<span class="ruby-identifier">meta_type</span>)
-  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(strip|remove)meta/</span>
-    <span class="ruby-keyword">if</span> <span class="ruby-ivar">@params</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/(strip|remove|delete)meta/</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-ivar">@params</span>&amp;.<span class="ruby-identifier">count</span>.<span class="ruby-identifier">positive?</span>
       <span class="ruby-identifier">content</span>.<span class="ruby-identifier">delete_meta</span>(<span class="ruby-ivar">@params</span>[<span class="ruby-value">0</span>])
     <span class="ruby-keyword">else</span>
       <span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip_meta</span>
