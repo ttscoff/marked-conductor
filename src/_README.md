@@ -140,6 +140,7 @@ The action can be `script`, `command`, or `filter`.
 > Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
 
 **Filters** are simple actions that can be run on the content without having to write a separate script for it. Available filters are:
+
 | filter | description |
 | :----  | :---------- |
 | `setMeta(key, value)` | adds or updates a meta key, aware of YAML and MMD |
