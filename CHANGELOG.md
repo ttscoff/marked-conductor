@@ -1,3 +1,12 @@
+### 1.0.15
+
+2024-05-25 11:14
+
+#### NEW
+
+- New filter insertTOC(max, after) to insert a table of contents, optionally with max levels and after (start, *h1, or h2)
+- New filter prepend/appendFile(path) to include a file (also pre/appendRaw and pre/appendCode)
+
 ### 1.0.14
 
 2024-05-25 06:41
