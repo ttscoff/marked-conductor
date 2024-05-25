@@ -47,6 +47,73 @@ class ::String
     insert_point
   end
 
+  def append(string)
+    "#{self}\n#{string}"
+  end
+
+  def insert_script(path)
+    path.strip!
+    path = "#{path}.js" unless path =~ /\.js$/
+
+    if path =~ %r{^[~/]}
+      path = File.expand_path(path)
+    else
+      new_path = if File.directory?(File.expand_path("~/.config/conductor/javascript"))
+                   File.expand_path("~/.config/conductor/javascript/#{path}")
+                 elsif File.directory?(File.expand_path("~/.config/conductor/javascripts"))
+                   File.expand_path("~/.config/conductor/javascripts/#{path}")
+                 else
+                   File.expand_path("~/.config/conductor/scripts/#{path}")
+                 end
+
+      path = new_path if File.exist?(new_path)
+    end
+
+    %(#{self}\n<script type="javascript" src="#{path}"></script>\n)
+  end
+
+  def title_from_slug
+    filename = File.basename(Conductor::Env.env[:filepath]).sub(/\.[a-z]+$/i, "")
+    filename.sub!(/-?\d{4}-\d{2}-\d{2}-?/, "")
+    filename.sub!(/\bdot\b/, ".")
+    filename.sub!(/ dash /, "-")
+    filename
+  end
+
+  def get_title
+    title = nil
+
+    case meta_type
+    when :yaml
+      m = match(/^---.*?\n(---|\.\.\.)/m)
+      yaml = YAML.load(m[0])
+      title = yaml["title"]
+    when :mmd
+      split(/\n/).each do |line|
+        if line =~ /^ *title: *(\S.*?)$/i
+          title = Regexp.last_match(1)
+          break
+        end
+      end
+    else
+      m = match(/title: (.*?)$/i)
+      title = m ? m[0] : nil
+    end
+
+    title ||= title_from_slug.titleize
+
+    title
+  end
+
+  def insert_title
+    title = get_title
+    lines = split(/\n/)
+    insert_point = meta_insert_point
+    insert_at = insert_point.positive? ? insert_point + 1 : 0
+    lines.insert(insert_at, "# #{title}\n")
+    lines.join("\n")
+  end
+
   def set_meta(key, value, style: :comment)
     case style
     when :yaml
@@ -143,7 +210,7 @@ class ::String
   end
 
   def to_pattern
-    gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, '')
+    gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, "")
   end
 end
 
@@ -153,12 +220,21 @@ class Filter < String
 
   def initialize(filter)
     @filter, @params = filter.normalize_filter
+    super
   end
 
   def process
     content = Conductor.stdin
 
     case @filter
+    when /(insert|add|inject)title/
+      content.insert_title
+    when /(insert|add|inject)script/
+      content = content.append("\n\n<div>")
+      @params.each do |script|
+        content = content.insert_script(script)
+      end
+      "#{content}</div>"
     when /(add|set)meta/
       unless @params.count == 2
         warn "Invalid filter parameters: #{@filter}(#{@params.join(",")})"

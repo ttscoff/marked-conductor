@@ -3,6 +3,15 @@
 # String helpers
 class ::String
   ##
+  ## Titlecase a string
+  ##
+  ## @return     Titleized string
+  ##
+  def titleize
+    split(/(\W)/).map(&:capitalize).join
+  end
+
+  ##
   ## Convert a string boolean to symbol
   ##
   ## @return     [Symbol] symbolized version

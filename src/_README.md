@@ -140,12 +140,20 @@ The action can be `script`, `command`, or `filter`.
 > Using `$file` as an argument to a script or command will bypass processing of STDIN input, and instead use the value of $MARKED_PATH to read the contents of the specified file.
 
 **Filters** are simple actions that can be run on the content without having to write a separate script for it. Available filters are:
+| filter | description |
+| :----  | :---------- |
+| `setMeta(key, value)` | adds or updates a meta key, aware of YAML and MMD |
+| `stripMeta` | strips all metadata (YAML or MMD) from the content |
+| `stripMeta(key)` | removes a specific key (YAML or MMD) |
+| `setStyle(name)` | sets the Marked preview style to a preconfigured Style name
+| `replace(search, replace)` | performs a (single) search and replace on content | 
+| `replaceAll(search, replace)` | global version of `replaceAll`) |
+| `insertTitle` | adds a title to the document, either from metadata or filename |
+| `insertScript(path[,path])` | injects javascript(s) |
 
-- `addMeta(key, value)`/`setMeta(key, value)` -- adds or updates a meta key, aware of YAML and MMD
-- `stripMeta` -- strips all metadata (YAML or MMD) from the content
-- `stripMeta(key)` -- removes a specific key (YAML or MMD) 
-- `setStyle(name)` -- sets the Marked preview style to a preconfigured Style name
-- `replace(search, replace)`/`replaceAll(search, replace)` -- performs a search and replace (global with `replaceAll`). If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
+For `insertScript`, if path is just a filename it will look for a match in `~/.config/conductor/javascript` or `~/.config/conductor/scripts` and turn that into an absolute path if the file is found.
+
+For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
 
 > Example:
 > 
