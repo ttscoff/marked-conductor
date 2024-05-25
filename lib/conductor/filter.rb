@@ -47,6 +47,73 @@ class ::String
     insert_point
   end
 
+  def first_h1
+    first = 0
+    split(/\n/).each_with_index do |line, idx|
+      if line =~ /^(# *\S|={2,} *$)/
+        first = idx
+        break
+      end
+    end
+    first
+  end
+
+  def first_h2
+    first = 0
+    split(/\n/).each_with_index do |line, idx|
+      if line =~ /^(## *\S|-{2,} *$)/
+        first = idx
+        break
+      end
+    end
+    first
+  end
+
+  def insert_toc(max = nil, after: :h1)
+    lines = content.split(/\n/)
+    max = max && max.positive? ? " max#{max}" : ""
+    line = case after.to_sym
+           when :h2
+             first_h2.positive? first_h2 + 1 : 0
+           when :h1
+             first_h1.positive? first_h1 + 1 : 0
+           else
+             0
+           end
+
+    lines.insert(line, "\n<!--toc#{max}-->\n").join("\n")
+  end
+
+  def insert_file(path, type = :file, position = :end)
+    path.strip!
+
+    if path =~ %r{^[~/]}
+      path = File.expand_path(path)
+    elsif File.directory?(File.expand_path("~/.config/conductor/files"))
+      new_path = File.expand_path("~/.config/conductor/files/#{path}")
+      path = new_path if File.exist?(new_path)
+    end
+
+    out = case type
+          when :code
+            "<<(#{path})"
+          when :raw
+            "<<{#{path}}"
+          else
+            "<<[#{path}]"
+          end
+    out = "\n#{out}\n"
+
+    case position
+    when :start
+      "#{out}\n#{self}"
+    when :h1
+      split(/\n/).insert(first_h1 + 1, out).join("\n")
+    else
+      "#{self}\n#{out}"
+    end
+  end
+
   def append(string)
     "#{self}\n#{string}"
   end
@@ -235,6 +302,25 @@ class Filter < String
         content = content.insert_script(script)
       end
       "#{content}</div>"
+    when /(prepend|append|insert|inject)(raw|file|code)/
+      m = Regexp.last_match
+
+      position = if @params.count == 2
+        @params[1].normalize_position
+      else
+        m[1].normalize_position
+      end
+      insert_file(@params[0], m[2].normalize_include_type, position)
+    when /inserttoc/
+      max = @params.count.positive? ? @params[0] : nil
+
+      if @params.count == 2
+        after = @params[1] =~ /2/ ? :h2 : :h1
+      else
+        after = :start
+      end
+
+      insert_toc(max, after)
     when /(add|set)meta/
       unless @params.count == 2
         warn "Invalid filter parameters: #{@filter}(#{@params.join(",")})"
@@ -244,8 +330,8 @@ class Filter < String
       # needs to test for existing meta, setting key if exists, adding if not
       # should recognize yaml and mmd
       content.set_meta(@params[0], @params[1], style: content.meta_type)
-    when /(strip|remove)meta/
-      if @params
+    when /(strip|remove|delete)meta/
+      if @params&.count.positive?
         content.delete_meta(@params[0])
       else
         content.strip_meta
