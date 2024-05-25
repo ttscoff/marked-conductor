@@ -69,14 +69,14 @@ class ::String
     first
   end
 
-  def insert_toc(max = nil, after: :h1)
-    lines = content.split(/\n/)
-    max = max && max.positive? ? " max#{max}" : ""
+  def insert_toc(max = nil, after = :h1)
+    lines = split(/\n/)
+    max = max && max.to_i.positive? ? " max#{max}" : ""
     line = case after.to_sym
            when :h2
-             first_h2.positive? first_h2 + 1 : 0
+             first_h2.positive? ? first_h2 + 1 : 0
            when :h1
-             first_h1.positive? first_h1 + 1 : 0
+             first_h1.positive? ? first_h1 + 1 : 0
            else
              0
            end
@@ -310,7 +310,7 @@ class Filter < String
       else
         m[1].normalize_position
       end
-      insert_file(@params[0], m[2].normalize_include_type, position)
+      content.insert_file(@params[0], m[2].normalize_include_type, position)
     when /inserttoc/
       max = @params.count.positive? ? @params[0] : nil
 
@@ -320,7 +320,7 @@ class Filter < String
         after = :start
       end
 
-      insert_toc(max, after)
+      content.insert_toc(max, after)
     when /(add|set)meta/
       unless @params.count == 2
         warn "Invalid filter parameters: #{@filter}(#{@params.join(",")})"
