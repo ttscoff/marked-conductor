@@ -189,7 +189,7 @@ A script run by Conductor already knows it has the right type of file with the e
 - Config file must be valid YAML. Any value containing colons, brackets, or other special characters should be quoted, e.g. (`condition: "text contains my:text"`)
 - You can see what condition matched in Marked by opening **Help->Show Custom Processor Log** and checking the STDERR output.
 - To run [a custom processor for Bear](https://brettterpstra.com/2023/10/08/marked-and-bear/), use the condition `"text contains <!-- source: bear.app -->"`. You might consider running a commonmark CLI with Bear to support more of its syntax.
-- To run a custom processor for Obsidian, use the condition `tree contains .obsidian`
+- To run a [custom processor for Obsidian](https://brettterpstra.com/2024/05/16/marked-2-and-obsidian/), use the condition `tree contains .obsidian`
 
 ## Testing
 
