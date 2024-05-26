@@ -3,7 +3,7 @@
 
 # Marked Conductor
 
-A "train conductor" for [Marked 2](https://marked2app.com). Conductor can be set up as a Custom Preprocessor or Custom Processor for Marked, and can run different commands and scripts based on conditions in a YAML configuration file, allowing you to have multiple processors that run based on predicates.
+A "train conductor" for [Marked 2](https://marked2app.com) (Mac only). Conductor can be set up as a Custom Preprocessor or Custom Processor for Marked, and can run different commands and scripts based on conditions in a YAML configuration file, allowing you to have multiple processors that run based on predicates.
 
 ## Installation
 
