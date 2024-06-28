@@ -84,6 +84,42 @@ class ::String
     lines.insert(line, "\n<!--toc#{max}-->\n").join("\n")
   end
 
+  def wrap_style
+    if match(%r{<style>.*?</style>}m)
+      self
+    else
+      "<style>#{self}</style>"
+    end
+  end
+
+  def insert_css(path)
+    path.sub!(/(\.css)?$/, '.css')
+
+    if path =~ %r{^[~/]}
+      path = File.expand_path(path)
+    elsif File.directory?(File.expand_path("~/.config/conductor/css"))
+      new_path = File.expand_path("~/.config/conductor/css/#{path}")
+      path = new_path if File.exist?(new_path)
+    elsif File.directory?(File.expand_path("~/.config/conductor/files"))
+      new_path = File.expand_path("~/.config/conductor/files/#{path}")
+      path = new_path if File.exist?(new_path)
+    end
+
+    if File.exist?(path)
+      content = IO.read(path)
+      yui = YuiCompressor::Yui.new
+      content = yui.compress(content)
+      lines = split(/\n/)
+      insert_point = meta_insert_point
+      insert_at = insert_point.positive? ? insert_point + 1 : 0
+      lines.insert(insert_at, "#{content.wrap_style}\n\n")
+      lines.join("\n")
+    else
+      warn "File not found (#{path})"
+      self
+    end
+  end
+
   def insert_file(path, type = :file, position = :end)
     path.strip!
 
@@ -294,6 +330,11 @@ class Filter < String
     content = Conductor.stdin
 
     case @filter
+    when /(insert|add|inject)(css|style)/
+      @params.each do |css|
+        content = content.insert_css(css)
+      end
+      content
     when /(insert|add|inject)title/
       content.insert_title
     when /(insert|add|inject)script/

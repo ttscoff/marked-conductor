@@ -18,6 +18,7 @@ require_relative "conductor/filter"
 require_relative "conductor/script"
 require_relative "conductor/command"
 require_relative "conductor/condition"
+require_relative "conductor/yui-compressor"
 
 module Conductor
   class << self
