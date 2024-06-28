@@ -86,6 +86,7 @@
     <li ><a href="#method-i-first_h2">#first_h2</a>
     <li ><a href="#method-i-get_title">#get_title</a>
     <li ><a href="#method-i-has_comment-3F">#has_comment?</a>
+    <li ><a href="#method-i-insert_css">#insert_css</a>
     <li ><a href="#method-i-insert_file">#insert_file</a>
     <li ><a href="#method-i-insert_script">#insert_script</a>
     <li ><a href="#method-i-insert_title">#insert_title</a>
@@ -111,6 +112,7 @@
     <li ><a href="#method-i-to_day">#to_day</a>
     <li ><a href="#method-i-to_pattern">#to_pattern</a>
     <li ><a href="#method-i-to_rx">#to_rx</a>
+    <li ><a href="#method-i-wrap_style">#wrap_style</a>
     <li ><a href="#method-i-yaml-3F">#yaml?</a>
   </ul>
 </div>
@@ -155,7 +157,7 @@
           
 
           <div class="method-source-code" id="add_comment-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 231</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 267</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_comment</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">has_comment?</span>(<span class="ruby-identifier">key</span>)
     <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/ *#{key}: .*?$/</span>, <span class="ruby-node">&quot;#{key}: #{value}&quot;</span>)
@@ -184,7 +186,7 @@
           
 
           <div class="method-source-code" id="add_mmd-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 213</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 249</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_mmd</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span>(<span class="ruby-regexp">/(\A|\n) *#{key}: *\S+/i</span>)
     <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^ *#{key}:.*?\n/i</span>, <span class="ruby-node">&quot;#{key}: #{value}\n&quot;</span>)
@@ -213,7 +215,7 @@
           
 
           <div class="method-source-code" id="add_yaml-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 195</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 231</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_yaml</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
   <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^---.*?\n(---|\.\.\.)/m</span>) <span class="ruby-keyword">do</span>
     <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
@@ -241,7 +243,7 @@
           
 
           <div class="method-source-code" id="append-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 117</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 153</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">append</span>(<span class="ruby-identifier">string</span>)
   <span class="ruby-node">&quot;#{self}\n#{string}&quot;</span>
 <span class="ruby-keyword">end</span></pre>
@@ -346,7 +348,7 @@
           
 
           <div class="method-source-code" id="delete_meta-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 241</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 277</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_meta</span>(<span class="ruby-identifier">key</span>)
   <span class="ruby-keyword">case</span> <span class="ruby-identifier">meta_type</span>
   <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
@@ -374,7 +376,7 @@
           
 
           <div class="method-source-code" id="delete_mmd-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 223</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 259</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_mmd</span>(<span class="ruby-identifier">key</span>)
   <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^ *#{key}:.*?\n/i</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -397,7 +399,7 @@
           
 
           <div class="method-source-code" id="delete_yaml-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 204</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 240</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_yaml</span>(<span class="ruby-identifier">key</span>)
   <span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/^---.*?\n(---|\.\.\.)/m</span>) <span class="ruby-keyword">do</span>
     <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
@@ -485,7 +487,7 @@
           
 
           <div class="method-source-code" id="get_title-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 150</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 186</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">get_title</span>
   <span class="ruby-identifier">title</span> = <span class="ruby-keyword">nil</span>
 
@@ -529,9 +531,56 @@
           
 
           <div class="method-source-code" id="has_comment-3F-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 227</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 263</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">has_comment?</span>(<span class="ruby-identifier">key</span>)
   <span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^&lt;!--.*?#{key}: \S.*?--&gt;/m</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-insert_css" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">insert_css</span><span
+              class="method-args">(path)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="insert_css-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 95</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">insert_css</span>(<span class="ruby-identifier">path</span>)
+  <span class="ruby-identifier">path</span>.<span class="ruby-identifier">sub!</span>(<span class="ruby-regexp">/(\.css)?$/</span>, <span class="ruby-string">&#39;.css&#39;</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r{^[~/]}</span>
+    <span class="ruby-identifier">path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-identifier">path</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~/.config/conductor/css&quot;</span>))
+    <span class="ruby-identifier">new_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-node">&quot;~/.config/conductor/css/#{path}&quot;</span>)
+    <span class="ruby-identifier">path</span> = <span class="ruby-identifier">new_path</span> <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">new_path</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~/.config/conductor/files&quot;</span>))
+    <span class="ruby-identifier">new_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-node">&quot;~/.config/conductor/files/#{path}&quot;</span>)
+    <span class="ruby-identifier">path</span> = <span class="ruby-identifier">new_path</span> <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">new_path</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">path</span>)
+    <span class="ruby-identifier">content</span> = <span class="ruby-constant">IO</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">path</span>)
+    <span class="ruby-identifier">yui</span> = <span class="ruby-constant">YuiCompressor</span><span class="ruby-operator">::</span><span class="ruby-constant">Yui</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">content</span> = <span class="ruby-identifier">yui</span>.<span class="ruby-identifier">compress</span>(<span class="ruby-identifier">content</span>)
+    <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
+    <span class="ruby-identifier">insert_point</span> = <span class="ruby-identifier">meta_insert_point</span>
+    <span class="ruby-identifier">insert_at</span> = <span class="ruby-identifier">insert_point</span>.<span class="ruby-identifier">positive?</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">insert_point</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span> <span class="ruby-operator">:</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">insert</span>(<span class="ruby-identifier">insert_at</span>, <span class="ruby-node">&quot;#{content.wrap_style}\n\n&quot;</span>)
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;File not found (#{path})&quot;</span>
+    <span class="ruby-keyword">self</span>
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -552,7 +601,7 @@
           
 
           <div class="method-source-code" id="insert_file-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 87</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 123</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">insert_file</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">type</span> = <span class="ruby-value">:file</span>, <span class="ruby-identifier">position</span> = <span class="ruby-value">:end</span>)
   <span class="ruby-identifier">path</span>.<span class="ruby-identifier">strip!</span>
 
@@ -601,7 +650,7 @@
           
 
           <div class="method-source-code" id="insert_script-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 121</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 157</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">insert_script</span>(<span class="ruby-identifier">path</span>)
   <span class="ruby-identifier">path</span>.<span class="ruby-identifier">strip!</span>
   <span class="ruby-identifier">path</span> = <span class="ruby-node">&quot;#{path}.js&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/\.js$/</span>
@@ -641,7 +690,7 @@
           
 
           <div class="method-source-code" id="insert_title-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 175</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 211</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">insert_title</span>
   <span class="ruby-identifier">title</span> = <span class="ruby-identifier">get_title</span>
   <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\n/</span>)
@@ -915,7 +964,7 @@
           
 
           <div class="method-source-code" id="replace-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 264</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 300</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">pattern</span>)
   <span class="ruby-identifier">sub</span>(<span class="ruby-identifier">regex</span>.<span class="ruby-identifier">to_rx</span>, <span class="ruby-identifier">pattern</span>.<span class="ruby-identifier">to_pattern</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -938,7 +987,7 @@
           
 
           <div class="method-source-code" id="replace_all-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 260</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 296</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace_all</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">pattern</span>)
   <span class="ruby-identifier">gsub</span>(<span class="ruby-identifier">regex</span>.<span class="ruby-identifier">to_rx</span>, <span class="ruby-identifier">pattern</span>.<span class="ruby-identifier">to_pattern</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -961,7 +1010,7 @@
           
 
           <div class="method-source-code" id="set_meta-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 184</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 220</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_meta</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>, <span class="ruby-value">style:</span> <span class="ruby-value">:comment</span>)
   <span class="ruby-keyword">case</span> <span class="ruby-identifier">style</span>
   <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
@@ -991,7 +1040,7 @@
           
 
           <div class="method-source-code" id="strip_meta-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 250</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 286</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">strip_meta</span>
   <span class="ruby-keyword">case</span> <span class="ruby-identifier">meta_type</span>
   <span class="ruby-keyword">when</span> <span class="ruby-value">:yaml</span>
@@ -1070,7 +1119,7 @@
           
 
           <div class="method-source-code" id="title_from_slug-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 142</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 178</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">title_from_slug</span>
   <span class="ruby-identifier">filename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-constant">Conductor</span><span class="ruby-operator">::</span><span class="ruby-constant">Env</span>.<span class="ruby-identifier">env</span>[<span class="ruby-value">:filepath</span>]).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/\.[a-z]+$/i</span>, <span class="ruby-string">&quot;&quot;</span>)
   <span class="ruby-identifier">filename</span>.<span class="ruby-identifier">sub!</span>(<span class="ruby-regexp">/-?\d{4}-\d{2}-\d{2}-?/</span>, <span class="ruby-string">&quot;&quot;</span>)
@@ -1229,7 +1278,7 @@
           
 
           <div class="method-source-code" id="to_pattern-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 279</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 315</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_pattern</span>
   <span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\$(\d+)/</span>, <span class="ruby-string">&#39;\\\\\1&#39;</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/(^[&quot;&#39;]|[&quot;&#39;]$)/</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -1252,7 +1301,7 @@
           
 
           <div class="method-source-code" id="to_rx-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 268</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 304</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_rx</span>
   <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r{^/(.*?)/([im]+)?$}</span>
     <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
@@ -1261,6 +1310,33 @@
     <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-identifier">flags</span>)
   <span class="ruby-keyword">else</span>
     <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-keyword">self</span>))
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-wrap_style" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">wrap_style</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="wrap_style-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 87</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">wrap_style</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r{&lt;style&gt;.*?&lt;/style&gt;}m</span>)
+    <span class="ruby-keyword">self</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-node">&quot;&lt;style&gt;#{self}&lt;/style&gt;&quot;</span>
   <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -1302,7 +1378,7 @@
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="https://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.6.2.
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.7.0.
   <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 
