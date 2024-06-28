@@ -1,3 +1,12 @@
+### 1.0.16
+
+2024-06-28 12:40
+
+#### NEW
+
+- New insertCSS filter to inject a stylesheet
+- YUI compression for injected CSS
+
 ### 1.0.15
 
 2024-05-25 11:14
