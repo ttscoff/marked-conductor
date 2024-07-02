@@ -168,17 +168,11 @@ class ::String
     %(#{self}\n<script type="javascript" src="#{path.strip}"></script>\n)
   end
 
-  def insert_raw_script(content)
-    %(<script type="javascript>">\n#{content}\n</script>)
-  end
-
   def insert_script(path)
     path.strip!
     return insert_javascript(path) if path =~ /^http/
 
-    return insert_raw_script(path) if path =~ /\(.*?\)/
-
-    path = "#{path}.js" unless path =~ /\.js$/
+    path.sub!(/(\.js)?$/, '.js')
 
     if path =~ %r{^[~/]}
       path = File.expand_path(path)

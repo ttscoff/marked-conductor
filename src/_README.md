@@ -170,6 +170,8 @@ For `insertScript`, if path is just a filename it will look for a match in `~/.c
 
 For `insertCSS`, if path is just a filename (with or without .css extension), the file will be searched for in `~/.config/conductor/css` or `~/.config/conductor/files` and injected. CSS will be compressed using the YUI algorithm and inserted at the top of the document, but after any existing metadata.
 
+If the path for `insertScript` or `insertCSS` is a URL instead of a filename, the URL will be properly inserted instead of a file path. Inserted scripts will be surrounded with `<div>` tags, which fixes a quirk with javascript in Marked.
+
 For all of the prepend/append file filters, you can store files in `~/.config/conductor/files` and reference them with just a filename. Otherwise a full path will be assumed.
 
 For `autoLink`, any URL that's not contained in parenthesis or following a `[]: url` pattern will be autolinked (surrounded by angle brackets). URLs must contain `//` to be recognized, but any protocol will work, e.g. `x-marked://refresh`.
