@@ -78,7 +78,7 @@ class ::String
            when :h1
              first_h1.positive? ? first_h1 + 1 : 0
            else
-             0
+             meta_insert_point.positive? ? meta_insert_point + 1 : 0
            end
 
     lines.insert(line, "\n<!--toc#{max}-->\n").join("\n")
@@ -93,7 +93,7 @@ class ::String
   end
 
   def insert_stylesheet(path)
-    %(<link rel="stylesheet" href="#{path.strip}">\n\n#{self})
+    inject_after_meta(%(<link rel="stylesheet" href="#{path.strip}">))
   end
 
   def insert_css(path)
@@ -115,15 +115,19 @@ class ::String
       content = IO.read(path)
       yui = YuiCompressor::Yui.new
       content = yui.compress(content)
-      lines = split(/\n/)
-      insert_point = meta_insert_point
-      insert_at = insert_point.positive? ? insert_point + 1 : 0
-      lines.insert(insert_at, "#{content.wrap_style}\n\n")
-      lines.join("\n")
+      inject_after_meta(content.wrap_style)
     else
       warn "File not found (#{path})"
       self
     end
+  end
+
+  def inject_after_meta(content)
+    lines = split(/\n/)
+    insert_point = meta_insert_point
+    insert_at = insert_point.positive? ? insert_point + 1 : 0
+    lines.insert(insert_at, "#{content}\n\n")
+    lines.join("\n")
   end
 
   def insert_file(path, type = :file, position = :end)
@@ -148,7 +152,7 @@ class ::String
 
     case position
     when :start
-      "#{out}\n#{self}"
+      inject_after_meta(out)
     when :h1
       split(/\n/).insert(first_h1 + 1, out).join("\n")
     else
