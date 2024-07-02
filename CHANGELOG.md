@@ -1,3 +1,15 @@
+### 1.0.18
+
+2024-07-02 11:08
+
+#### NEW
+
+- InsertScript or insertCSS arguments that are URLs will be inserted properly
+
+#### FIXED
+
+- When prepending styles/files/titles, always inject AFTER existing metadata (YAML or MMD)
+
 ### 1.0.17
 
 2024-07-02 10:27
