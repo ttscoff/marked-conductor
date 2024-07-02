@@ -15,6 +15,8 @@ module Conductor
       @tracks = @config["tracks"].symbolize_keys
     end
 
+    private
+
     def create_config(config_file)
       config_dir = File.dirname(config_file)
       scripts_dir = File.dirname(File.join(config_dir, "scripts"))
