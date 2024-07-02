@@ -301,6 +301,10 @@ class ::String
     sub(regex.to_rx, pattern.to_pattern)
   end
 
+  def autolink
+    gsub(/(?mi)(?<!\(|]: )\b((?:[\w\-]+?:\/\/)[-a-zA-Z0-9@:%._+~#=]{2,256}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*))/, '<\1>')
+  end
+
   def to_rx
     if self =~ %r{^/(.*?)/([im]+)?$}
       m = Regexp.last_match
@@ -394,6 +398,8 @@ class Filter < String
       end
 
       content.replace(@params[0], @params[1])
+    when /(auto|self)link/
+      content.autolink
     end
   end
 end

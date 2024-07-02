@@ -162,6 +162,7 @@ The action can be `script`, `command`, or `filter`.
 | `prepend/appendRaw(path)` | insert a file as raw HTML at beginning or end of content |
 | `prepend/appendCode(path)` | insert a file as a code block at beginning or end of content |
 | `insertCSS(path)` | insert custom CSS into document |
+| `autoLink()` | Turn bare URLs into \<self-linked\> urls |
 
 For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
 
@@ -170,6 +171,8 @@ For `insertScript`, if path is just a filename it will look for a match in `~/.c
 For `insertCSS`, if path is just a filename (with or without .css extension), the file will be searched for in `~/.config/conductor/css` or `~/.config/conductor/files` and injected. CSS will be compressed using the YUI algorithm and inserted at the top of the document, but after any existing metadata.
 
 For all of the prepend/append file filters, you can store files in `~/.config/conductor/files` and reference them with just a filename. Otherwise a full path will be assumed.
+
+For `autoLink`, any URL that's not contained in parenthesis or following a `[]: url` pattern will be autolinked (surrounded by angle brackets). URLs must contain `//` to be recognized, but any protocol will work, e.g. `x-marked://refresh`.
 
 > Example:
 > 
