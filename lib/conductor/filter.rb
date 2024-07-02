@@ -92,7 +92,13 @@ class ::String
     end
   end
 
+  def insert_stylesheet(path)
+    %(<link rel="stylesheet" href="#{path.strip}">\n\n#{self})
+  end
+
   def insert_css(path)
+    return insert_stylesheet(path) if path.strip =~ /^http/
+
     path.sub!(/(\.css)?$/, '.css')
 
     if path =~ %r{^[~/]}
@@ -154,8 +160,24 @@ class ::String
     "#{self}\n#{string}"
   end
 
+  def append!(string)
+    replace append(string)
+  end
+
+  def insert_javascript(path)
+    %(#{self}\n<script type="javascript" src="#{path.strip}"></script>\n)
+  end
+
+  def insert_raw_script(content)
+    %(<script type="javascript>">\n#{content}\n</script>)
+  end
+
   def insert_script(path)
     path.strip!
+    return insert_javascript(path) if path =~ /^http/
+
+    return insert_raw_script(path) if path =~ /\(.*?\)/
+
     path = "#{path}.js" unless path =~ /\.js$/
 
     if path =~ %r{^[~/]}
@@ -172,7 +194,7 @@ class ::String
       path = new_path if File.exist?(new_path)
     end
 
-    %(#{self}\n<script type="javascript" src="#{path}"></script>\n)
+    insert_javascript(path)
   end
 
   def title_from_slug
@@ -297,12 +319,12 @@ class ::String
     gsub(regex.to_rx, pattern.to_pattern)
   end
 
-  def replace(regex, pattern)
+  def replace_one(regex, pattern)
     sub(regex.to_rx, pattern.to_pattern)
   end
 
   def autolink
-    gsub(%r{(?mi)(?<!\(|]: )\b((?:[\w-]+?://)[-a-zA-Z0-9@:%._+~#=]{2,256}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*))},
+    gsub(%r{(?mi)(?<!\(|\]: |")\b((?:[\w-]+?://)[-a-zA-Z0-9@:%._+~#=]{2,256}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*))},
          '<\1>')
   end
 
@@ -343,7 +365,7 @@ class Filter < String
     when /(insert|add|inject)title/
       content.insert_title
     when /(insert|add|inject)script/
-      content = content.append("\n\n<div>")
+      content.append!("\n\n<div>")
       @params.each do |script|
         content = content.insert_script(script)
       end
@@ -352,19 +374,19 @@ class Filter < String
       m = Regexp.last_match
 
       position = if @params.count == 2
-        @params[1].normalize_position
-      else
-        m[1].normalize_position
-      end
+                   @params[1].normalize_position
+                 else
+                   m[1].normalize_position
+                 end
       content.insert_file(@params[0], m[2].normalize_include_type, position)
     when /inserttoc/
       max = @params.count.positive? ? @params[0] : nil
 
-      if @params.count == 2
-        after = @params[1] =~ /2/ ? :h2 : :h1
-      else
-        after = :start
-      end
+      after = if @params.count == 2
+                @params[1] =~ /2/ ? :h2 : :h1
+              else
+                :start
+              end
 
       content.insert_toc(max, after)
     when /(add|set)meta/
@@ -377,7 +399,7 @@ class Filter < String
       # should recognize yaml and mmd
       content.set_meta(@params[0], @params[1], style: content.meta_type)
     when /(strip|remove|delete)meta/
-      if @params&.count.positive?
+      if @params.count.positive?
         content.delete_meta(@params[0])
       else
         content.strip_meta
@@ -398,7 +420,7 @@ class Filter < String
         return content
       end
 
-      content.replace(@params[0], @params[1])
+      content.replace_one(@params[0], @params[1])
     when /(auto|self)link/
       content.autolink
     end
