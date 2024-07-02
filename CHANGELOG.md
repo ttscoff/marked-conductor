@@ -1,3 +1,11 @@
+### 1.0.17
+
+2024-07-02 10:27
+
+#### NEW
+
+- AutoLink() filter will self-link bare URLs
+
 ### 1.0.16
 
 2024-06-28 12:40
