@@ -172,9 +172,15 @@ class ::String
     %(#{self}\n<script type="javascript" src="#{path.strip}"></script>\n)
   end
 
+  def insert_raw_javascript(content)
+    %(#{self}\n<script>#{content}</script>)
+  end
+
   def insert_script(path)
     path.strip!
     return insert_javascript(path) if path =~ /^http/
+
+    return insert_raw_javascript(path) if path =~ /\(.*?\)/
 
     path.sub!(/(\.js)?$/, '.js')
 
