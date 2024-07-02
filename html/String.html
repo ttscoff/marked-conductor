@@ -76,6 +76,7 @@
     <li ><a href="#method-i-add_mmd">#add_mmd</a>
     <li ><a href="#method-i-add_yaml">#add_yaml</a>
     <li ><a href="#method-i-append">#append</a>
+    <li ><a href="#method-i-autolink">#autolink</a>
     <li ><a href="#method-i-bool-3F">#bool?</a>
     <li ><a href="#method-i-bool_to_symbol">#bool_to_symbol</a>
     <li ><a href="#method-i-date-3F">#date?</a>
@@ -246,6 +247,30 @@
             <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 153</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">append</span>(<span class="ruby-identifier">string</span>)
   <span class="ruby-node">&quot;#{self}\n#{string}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-autolink" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">autolink</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="autolink-source">
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 304</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">autolink</span>
+  <span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">%r{(?mi)(?&lt;!\(|]: )\b((?:[\w-]+?://)[-a-zA-Z0-9@:%._+~#=]{2,256}\b(?:[-a-zA-Z0-9@:%_+.~#?&amp;/=]*))}</span>,
+       <span class="ruby-string">&#39;&lt;\1&gt;&#39;</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -1278,7 +1303,7 @@
           
 
           <div class="method-source-code" id="to_pattern-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 315</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 320</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_pattern</span>
   <span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\$(\d+)/</span>, <span class="ruby-string">&#39;\\\\\1&#39;</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/(^[&quot;&#39;]|[&quot;&#39;]$)/</span>, <span class="ruby-string">&quot;&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -1301,7 +1326,7 @@
           
 
           <div class="method-source-code" id="to_rx-source">
-            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 304</span>
+            <pre><span class="ruby-comment"># File lib/conductor/filter.rb, line 309</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_rx</span>
   <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r{^/(.*?)/([im]+)?$}</span>
     <span class="ruby-identifier">m</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">last_match</span>
