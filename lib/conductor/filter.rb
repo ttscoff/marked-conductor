@@ -69,9 +69,17 @@ class ::String
     first
   end
 
+  def shift_headers(amt = 1)
+    gsub(/^#/, "#{"#" * amt}#")
+  end
+
+  def shift_headers!(amt = 1)
+    replace shift_headers(amt)
+  end
+
   def insert_toc(max = nil, after = :h1)
     lines = split(/\n/)
-    max = max && max.to_i.positive? ? " max#{max}" : ""
+    max = max.to_i&.positive? ? " max#{max}" : ""
     line = case after.to_sym
            when :h2
              first_h2.positive? ? first_h2 + 1 : 0
@@ -234,10 +242,12 @@ class ::String
     title
   end
 
-  def insert_title
+  def insert_title(shift: 0)
+    content = dup
     title = get_title
-    lines = split(/\n/)
-    insert_point = meta_insert_point
+    content.shift_headers!(shift) if shift.positive?
+    lines = content.split(/\n/)
+    insert_point = content.meta_insert_point
     insert_at = insert_point.positive? ? insert_point + 1 : 0
     lines.insert(insert_at, "# #{title}\n")
     lines.join("\n")
@@ -367,7 +377,15 @@ class Filter < String
       end
       content
     when /(insert|add|inject)title/
-      content.insert_title
+      amt = 0
+      if @params
+        amt = if @params[0] =~ /^[yts]/
+                1
+              else
+                @params[0].to_i
+              end
+      end
+      content.insert_title(shift: amt)
     when /(insert|add|inject)script/
       content.append!("\n\n<div>")
       @params.each do |script|

@@ -170,11 +170,15 @@ For `insertScript`, if path is just a filename it will look for a match in `~/.c
 
 For `insertCSS`, if path is just a filename (with or without .css extension), the file will be searched for in `~/.config/conductor/css` or `~/.config/conductor/files` and injected. CSS will be compressed using the YUI algorithm and inserted at the top of the document, but after any existing metadata.
 
+For `insertTitle`, if an argument of `true` or a number is given (e.g. `insertTitle(true)`, the headers in the document will be shifted by 1 (or by the number given) so that there's only one H1 in the document.
+
 If the path for `insertScript` or `insertCSS` is a URL instead of a filename, the URL will be properly inserted instead of a file path. Inserted scripts will be surrounded with `<div>` tags, which fixes a quirk with javascript in Marked.
 
 For all of the prepend/append file filters, you can store files in `~/.config/conductor/files` and reference them with just a filename. Otherwise a full path will be assumed.
 
 For `autoLink`, any URL that's not contained in parenthesis or following a `[]: url` pattern will be autolinked (surrounded by angle brackets). URLs must contain `//` to be recognized, but any protocol will work, e.g. `x-marked://refresh`.
+
+**Note:** successive filters in a sequence that insert or prepend will always insert content before/above the result of the previous insert filter. So if you have an `insertTitle` filter followed by an `insertCSS` filter, the CSS will appear above the inserted title. If you want elements inserted in reverse order, reverse the order of the inserts in the sequence.
 
 > Example:
 > 
