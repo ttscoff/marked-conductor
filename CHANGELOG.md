@@ -1,3 +1,15 @@
+### 1.0.20
+
+2024-07-04 12:18
+
+#### NEW
+
+- The `insertTitle` filter can now take an argument of `true` or a number and will shift the remaining headlines in the document by 1 (or the number given in the argument), allowing for title insertion while only having 1 H1 in the document.
+
+#### IMPROVED
+
+- Ignore self-linking urls in single quotes, just in case they're used in a script line
+
 ### 1.0.19
 
 2024-07-02 11:25
