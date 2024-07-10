@@ -1,3 +1,11 @@
+### 1.0.21
+
+2024-07-10 12:18
+
+#### NEW
+
+- New filter `fixHeaders` will adapt all headlines in the document to be in semantic order
+
 ### 1.0.20
 
 2024-07-04 12:18
