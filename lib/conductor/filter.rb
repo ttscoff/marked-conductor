@@ -69,12 +69,35 @@ class ::String
     first
   end
 
-  def shift_headers(amt = 1)
-    gsub(/^#/, "#{"#" * amt}#")
+  ##
+  ## Count the characters in a string
+  ##
+  ## @return     [Integer] number of characters
+  ##
+  def chars
+    split(//).count
   end
 
-  def shift_headers!(amt = 1)
-    replace shift_headers(amt)
+  def decrease_headers(amt = 1)
+    gsub(/^(\#{1,6})(?!=#)/) do
+      m = Regexp.last_match
+      level = m[1].chars
+      level -= amt
+      level = 1 if level < 1
+      "#{"#" * level}"
+    end
+  end
+
+  def decrease_headers!(amt = 1)
+    replace decrease_headers(amt)
+  end
+
+  def increase_headers(amt = 1)
+    gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, '######')
+  end
+
+  def increase_headers!(amt = 1)
+    replace increase_headers(amt)
   end
 
   def insert_toc(max = nil, after = :h1)
@@ -245,7 +268,7 @@ class ::String
   def insert_title(shift: 0)
     content = dup
     title = get_title
-    content.shift_headers!(shift) if shift.positive?
+    content.increase_headers!(shift) if shift.positive?
     lines = content.split(/\n/)
     insert_point = content.meta_insert_point
     insert_at = insert_point.positive? ? insert_point + 1 : 0
@@ -342,6 +365,121 @@ class ::String
          '<\1>')
   end
 
+  ##
+  ## Count the number of h1 headers in the document
+  ##
+  ## @return     Number of h1s.
+  ##
+  def count_h1s
+    scan(/^#[^#]/).count
+  end
+
+  ##
+  ## Normalize Setext headers to ATX
+  ##
+  ## @return [String] content with headers updated
+  ##
+  def normalize_headers
+    gsub(/^(\S.*)\n([=-]+)\n/) do
+      m = Regexp.last_match
+      case m[2]
+      when /\=/
+        "# #{m[1]}\n\n"
+      else
+        "## #{m[1]}\n\n"
+      end
+    end
+  end
+
+  def normalize_headers!
+    replace normalize_headers
+  end
+
+  ##
+  ## Ensure there's at least 1 h1 in the document
+  ##
+  ## If no h1 is found, converts the lowest level header (first one) into an h1
+  ##
+  ## @return     [String] content with at least 1 h1
+  ##
+  def ensure_h1
+    headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
+    return self if headers.select { |h| h[1].chars == 1 }.count.positive?
+
+    lowest_header = headers.min_by { |h| h[1].chars }
+    level = lowest_header[1].chars
+
+    sub(/#{Regexp.escape(lowest_header[0])}/, "# #{lowest_header[2].strip}").decrease_headers(level)
+  end
+
+  def ensure_h1!
+    replace ensure_h1
+  end
+
+  ##
+  ## Bump all headers except for first H1
+  ##
+  ## @return     Content with adjusted headers
+  ##
+  def fix_headers
+    return self if count_h1s == 1
+
+    first_h1 = true
+
+    gsub(%r/^(\#{1,6})([^#].*?)$/m) do
+      m = Regexp.last_match
+      level = m[1].chars
+      content = m[2].strip
+      if level == 1 && first_h1
+        first_h1 = false
+        m[0]
+      else
+        level += 1 if level < 6
+
+        "#{"#" * level} #{content}"
+      end
+    end
+  end
+
+  def fix_headers!
+    replace fix_headers
+  end
+
+  ##
+  ## Adjust header levels so there's no jump greater than 1
+  ##
+  ## @return     Content with adjusted headers
+  ##
+  def fix_hierarchy
+    normalize_headers!
+    ensure_h1!
+    fix_headers!
+    headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
+    content = dup
+    last = 1
+    headers.each do |h|
+      level = h[1].chars
+      if level <= last + 1
+        last = level
+        next
+      end
+
+      level = last + 1
+      content.sub!(/#{Regexp.escape(h[0])}/, "#{"#" * level} #{h[2].strip}")
+    end
+
+    content
+  end
+
+  ##
+  ## Convert a string to a regular expression
+  ##
+  ## If the string matches /xxx/, it will be interpreted
+  ## directly as a regex. Otherwise it will be escaped and
+  ## converted to regex.
+  ##
+  ## @return     [Regexp] Regexp representation of the string.
+  ##
   def to_rx
     if self =~ %r{^/(.*?)/([im]+)?$}
       m = Regexp.last_match
@@ -353,6 +491,11 @@ class ::String
     end
   end
 
+  ##
+  ## Convert a string containing $1, $2 to a Regexp replace pattern
+  ##
+  ## @return     [String] Pattern representation of the object.
+  ##
   def to_pattern
     gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, "")
   end
@@ -445,6 +588,8 @@ class Filter < String
       content.replace_one(@params[0], @params[1])
     when /(auto|self)link/
       content.autolink
+    when /fix(head(lines|ers)|hierarchy)/
+      content.fix_hierarchy
     end
   end
 end

@@ -163,6 +163,7 @@ The action can be `script`, `command`, or `filter`.
 | `prepend/appendCode(path)` | insert a file as a code block at beginning or end of content |
 | `insertCSS(path)` | insert custom CSS into document |
 | `autoLink()` | Turn bare URLs into \<self-linked\> urls |
+| `fixHeaders()` | Reorganize headline levels to semantic order |
 
 For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
 
@@ -176,7 +177,9 @@ If the path for `insertScript` or `insertCSS` is a URL instead of a filename, th
 
 For all of the prepend/append file filters, you can store files in `~/.config/conductor/files` and reference them with just a filename. Otherwise a full path will be assumed.
 
-For `autoLink`, any URL that's not contained in parenthesis or following a `[]: url` pattern will be autolinked (surrounded by angle brackets). URLs must contain `//` to be recognized, but any protocol will work, e.g. `x-marked://refresh`.
+For `autoLink`, any URL that's not contained in parenthesis or following a `[]: url` pattern will be autolinked (surrounded by angle brackets). URLs must contain `//` to be recognized, but any protocol will work, e.g. `x-marked://refresh`. Must be run on Markdown, not HTML.
+
+For `fixHeaders`, it will be ensured that the document has an h1, and all header levels will be adapted to never jump more than one header level when increasing. If no H1 exists in the document, the first header of the lowest existing level will be turned into an H1 and all other headers will be decremented to fit the hierarchy. It's not perfect, but it does a pretty good job. When saving the document as Markdown from Marked, the new headers will be applied.
 
 **Note:** successive filters in a sequence that insert or prepend will always insert content before/above the result of the previous insert filter. So if you have an `insertTitle` filter followed by an `insertCSS` filter, the CSS will appear above the inserted title. If you want elements inserted in reverse order, reverse the order of the inserts in the sequence.
 
