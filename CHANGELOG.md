@@ -1,3 +1,15 @@
+### 1.0.22
+
+2024-07-16 12:30
+
+#### IMPROVED
+
+- When injecting CSS or JS paths, URL encode the path
+
+#### FIXED
+
+- Shell escape environment variables
+
 ### 1.0.21
 
 2024-07-10 12:18
