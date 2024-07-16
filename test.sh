@@ -67,7 +67,7 @@ export MARKED_EXT="$EXTENSION"
 export MARKED_CSS_PATH="/Applications/Marked 2.app/Contents/Resources/swiss.css"
 export PATH="$PATH:$(dirname "$FILE")"
 export MARKED_PATH="$FILE"
-export MARKED_INCLUDES=""
+export MARKED_INCLUDES="/Applications/Marked 2.app/Contents/Resources/tocstyle.css"
 export MARKED_PHASE="$PHASE"
 
 if [[ $STD =~ ^(STD)?E ]]; then

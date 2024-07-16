@@ -61,7 +61,7 @@ module Conductor
         "MARKED_PHASE" => @env[:phase],
         "OUTLINE" => @env[:outline],
         "PATH" => @env[:path]
-      }.map { |k, v| %(#{k}="#{v}") }.join(" ")
+      }.map { |k, v| %(#{k}="#{Shellwords.escape(v)}") }.join(" ")
     end
   end
 end
