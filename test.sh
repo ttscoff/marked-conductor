@@ -49,7 +49,7 @@ if [[ -z $1 ]]; then
 	exit 1
 fi
 
-FILE=$(realpath $1)
+FILE=$(realpath "$1")
 FILENAME=$(basename -- "$FILE")
 EXTENSION="${FILENAME##*.}"
 PHASE=$(echo $PHASE | tr [a-z] [A-Z])

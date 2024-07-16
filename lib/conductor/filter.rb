@@ -124,7 +124,7 @@ class ::String
   end
 
   def insert_stylesheet(path)
-    inject_after_meta(%(<link rel="stylesheet" href="#{path.strip}">))
+    inject_after_meta(%(<link rel="stylesheet" href="#{ERB::Util.url_encode(path.strip)}">))
   end
 
   def insert_css(path)
@@ -200,7 +200,7 @@ class ::String
   end
 
   def insert_javascript(path)
-    %(#{self}\n<script type="javascript" src="#{path.strip}"></script>\n)
+    %(#{self}\n<script type="javascript" src="#{ERB::Util.url_encode(path.strip)}"></script>\n)
   end
 
   def insert_raw_javascript(content)
