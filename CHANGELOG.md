@@ -1,3 +1,11 @@
+### 1.0.23
+
+2024-07-17 15:51
+
+#### FIXED
+
+- Environment variable escaping was hyperactive, only escape includes array
+
 ### 1.0.22
 
 2024-07-16 12:30
