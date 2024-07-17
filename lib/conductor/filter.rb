@@ -2,6 +2,19 @@
 
 # String helpers
 class ::String
+  def find_file_in(paths, filename, ext)
+    return filename if File.exist?(filename)
+
+    filename = File.basename(filename, ".#{ext}")
+
+    paths.each do |path|
+      exp = File.join(File.expand_path('~/.config/conductor/'), path, "#{filename}.#{ext}")
+      return exp if File.exist?(exp)
+    end
+
+    "#{filename}.#{ext}"
+  end
+
   def normalize_filter
     parts = match(/(?<filter>[\w_]+)(?:\((?<paren>.*?)\))?$/i)
     filter = parts["filter"].downcase.gsub(/_/, "")
@@ -9,6 +22,11 @@ class ::String
     [filter, params]
   end
 
+  ##
+  ## Determine type of metadata (yaml, mmd, none)
+  ##
+  ## @return     [Symbol] metadata type
+  ##
   def meta_type
     lines = split(/\n/)
     case lines[0]
@@ -124,7 +142,8 @@ class ::String
   end
 
   def insert_stylesheet(path)
-    inject_after_meta(%(<link rel="stylesheet" href="#{ERB::Util.url_encode(path.strip)}">))
+    path = find_file_in(['css', 'styles'], path, 'css') unless path =~ /^http/
+    inject_after_meta(%(<link rel="stylesheet" href="#{path.strip}">))
   end
 
   def insert_css(path)
@@ -514,6 +533,11 @@ class Filter < String
     content = Conductor.stdin
 
     case @filter
+    when /(insert|add|inject)stylesheet/
+      @params.each do |sheet|
+        content = content.insert_stylesheet(sheet)
+      end
+      content
     when /(insert|add|inject)(css|style)/
       @params.each do |css|
         content = content.insert_css(css)

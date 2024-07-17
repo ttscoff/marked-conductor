@@ -56,12 +56,12 @@ module Conductor
         "MARKED_CSS_PATH" => @env[:css_path],
         "MARKED_EXT" => @env[:ext],
         "MARKED_ORIGIN" => @env[:origin],
-        "MARKED_INCLUDES" => @env[:includes],
+        "MARKED_INCLUDES" => Shellwords.escape(@env[:includes]),
         "MARKED_PATH" => @env[:filepath],
         "MARKED_PHASE" => @env[:phase],
         "OUTLINE" => @env[:outline],
         "PATH" => @env[:path]
-      }.map { |k, v| %(#{k}="#{Shellwords.escape(v)}") }.join(" ")
+      }.map { |k, v| %(#{k}="#{v}") }.join(" ")
     end
   end
 end
