@@ -1,3 +1,11 @@
+### 1.0.24
+
+2024-07-18 11:32
+
+#### IMPROVED
+
+- Use Shellwords.shellsplit/join instead of escaping MARKED_INCLUDES environment variable
+
 ### 1.0.23
 
 2024-07-17 15:51
