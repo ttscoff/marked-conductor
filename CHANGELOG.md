@@ -1,3 +1,21 @@
+### 1.0.25
+
+2024-07-22 12:36
+
+#### NEW
+
+- `includes contains [file|path]` testing against included files
+
+#### IMPROVED
+
+- Better env variable handling
+
+#### FIXED
+
+- Inserting comment when YAML exists breaks YAML
+- Ensure newline after MMD metadata
+- Error in ensure_h1 if no headers exist
+
 ### 1.0.24
 
 2024-07-18 11:32

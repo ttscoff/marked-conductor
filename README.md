@@ -104,6 +104,9 @@ Available conditions are:
     - If both the YAML key value and the test value are numbers, you can use operators `greater than` (`>`), `less than` (`<`), `equal`/`is` (`=`/`==`), and `is not equal`/`not equals` (`!=`/`!==`). Numbers will be interpreted as floats.
     - If the YAML value is a boolean, you can test with `is true` or `is not true` (or `is false`)
 - `mmd` or `meta` will test for MultiMarkdown metadata using the same formatting as `yaml` above.
+- `includes` are files included in the document with special syntax (Marked, IA Writer, etc.)
+    - `includes contain file` or `includes not contains file` will test all included files for filename matches
+    - `includes contain path` or `includes not contains path` will test all included files for fragment matches anywhere in the path
 - The following keywords act as a catchall and can be used as the last track in the config to act on any documents that aren't matched by preceding rules:
     - `any`
     - `else`
