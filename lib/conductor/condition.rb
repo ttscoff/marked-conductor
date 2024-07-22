@@ -111,8 +111,9 @@ module Conductor
         return ["#{type}#{m[3]}", nil, op]
       end
 
-      res = condition.match(/^(?<val1>.*?)(?:(?: +(?<op>(?:is|does)(?: not)?(?: an?|type(?: of)?|equals?(?: to))?|!?==?|[gl]t|(?:greater|less)(?: than)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve) )?(?:prefix|suffix)|has|contains?|includes?) +)(?<val2>.*?))?$/i)
-      [res["val1"], res["val2"], operator_to_symbol(res["op"])]
+      res = condition.match(/(?i)^(?<val1>.*?)(?:(?:\s+(?<bool>(?:is|does)?\s*(?:not)?\s*)(?<op>(?:an?|type(?:\sof)?|equals?(?:\sto))?|[!*$]?==?|[gl]t|(?:greater|less)(?:\sthan)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve)\s)?(?:prefix|suffix)|(?:contains?|includes?)\s+(?:file|path)|has|contains?|includes?|match(?:es)?)\s+)(?<val2>.*?))?$/)
+      operator = res["bool"] ? "#{res["bool"]}#{res["op"]}" : res["op"]
+      [res["val1"], res["val2"], operator_to_symbol(operator)]
     end
 
     ##
@@ -138,6 +139,28 @@ module Conductor
               val1.date?
             end
       operator == :type_of ? res : !res
+    end
+
+    ##
+    ## Test for includes
+    ##
+    ## @param      includes  [Array] array of included files
+    ## @param      val      value to test against
+    ## @param      operator  The operator
+    ##
+    def test_includes(includes, val, operator)
+      case operator
+      when :not_includes_file
+        !includes.includes_file?(val)
+      when :not_includes_path
+        !includes.includes_frag?(val)
+      when :includes_file
+        includes.includes_file?(val)
+      when :includes_path
+        includes.includes_frag?(val)
+      else
+        false
+      end
     end
 
     ##
@@ -353,6 +376,8 @@ module Conductor
       end
 
       case type
+      when /^include/i
+        test_includes(@env[:includes], value, operator) ? true : false
       when /^ext/i
         test_string(@env[:ext], value, operator) ? true : false
       when /^tree/i
@@ -386,6 +411,16 @@ module Conductor
         :gt
       when /(lt|less( than)?|<|(?:is )?before)/i
         :lt
+      when /not (ha(?:s|ve)|contains?|includes?) +file/i
+        :not_includes_file
+      when /not (ha(?:s|ve)|contains?|includes?) +path/i
+        :not_includes_path
+      when /(ha(?:s|ve)|contains?|includes?|\*=) +file/i
+        :includes_file
+      when /(ha(?:s|ve)|contains?|includes?|\*=) +path/i
+        :includes_path
+      when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
+        :contains
       when /not (ha(?:s|ve)|contains|includes|match(es)?)/i
         :not_contains
       when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i

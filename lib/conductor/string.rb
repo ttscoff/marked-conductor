@@ -11,12 +11,18 @@ class ::String
     split(/(\W)/).map(&:capitalize).join
   end
 
+  def split_list
+    split(/,/).map { |s| Shellwords.shellsplit(s) }
+  end
+
   def normalize_position
     case self
     when /^(be|s|t)/
       :start
     when /h1/
       :h1
+    when /h2/
+      :h2
     else
       :end
     end

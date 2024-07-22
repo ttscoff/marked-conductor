@@ -205,6 +205,8 @@ class ::String
       inject_after_meta(out)
     when :h1
       split(/\n/).insert(first_h1 + 1, out).join("\n")
+    when :h2
+      split(/\n/).insert(first_h2 + 1, out).join("\n")
     else
       "#{self}\n#{out}"
     end
@@ -300,18 +302,22 @@ class ::String
     when :yaml
       add_yaml(key, value)
     when :mmd
-      add_mmd(key, value)
+      add_mmd(key, value).ensure_mmd_meta_newline
     else # comment or none
       add_comment(key, value)
     end
+  end
+
+  def ensure_mmd_meta_newline
+    split(/\n/).insert(meta_insert_point, "\n\n").join("\n")
   end
 
   def add_yaml(key, value)
     sub(/^---.*?\n(---|\.\.\.)/m) do
       m = Regexp.last_match
       yaml = YAML.load(m[0])
-      yaml[key] = value
-      "#{YAML.dump(yaml)}\n---\n"
+      yaml[key.gsub(/ /, "_")] = value
+      "#{YAML.dump(yaml)}---\n"
     end
   end
 
@@ -330,7 +336,7 @@ class ::String
     else
       lines = split(/\n/)
       lines.insert(meta_insert_point, "#{key}: #{value}")
-      lines.join("\n")
+      lines.join("\n") + "\n"
     end
   end
 
@@ -347,7 +353,7 @@ class ::String
       sub(/ *#{key}: .*?$/, "#{key}: #{value}")
     else
       lines = split(/\n/)
-      lines.insert(meta_insert_point, "<!--\n#{key}: #{value}\n-->")
+      lines.insert(meta_insert_point + 1, "<!--\n#{key}: #{value}\n-->")
       lines.join("\n")
     end
   end
@@ -426,6 +432,8 @@ class ::String
     return self if headers.select { |h| h[1].chars == 1 }.count.positive?
 
     lowest_header = headers.min_by { |h| h[1].chars }
+    return self if lowest_header.nil?
+
     level = lowest_header[1].chars
 
     sub(/#{Regexp.escape(lowest_header[0])}/, "# #{lowest_header[2].strip}").decrease_headers(level)
