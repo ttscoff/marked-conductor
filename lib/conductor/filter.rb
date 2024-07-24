@@ -47,7 +47,7 @@ class ::String
       lines = split(/\n/)
       lines.shift
       lines.each_with_index do |line, idx|
-        next unless line =~ /^(...|---) *$/
+        next unless line =~ /^(\.\.\.|---) *$/
 
         insert_point = idx + 1
         break
@@ -370,7 +370,7 @@ class ::String
   def strip_meta
     case meta_type
     when :yaml
-      sub(/^---.*?(---|...)/m, "")
+      sub(/^---.*?(---|\.\.\.)/m, "")
     when :mmd
       lines = split(/\n/)
       lines[meta_insert_point..]
@@ -596,7 +596,7 @@ class Filter < String
       # should recognize yaml and mmd
       content.set_meta(@params[0], @params[1], style: content.meta_type)
     when /(strip|remove|delete)meta/
-      if @params.count.positive?
+      if @params&.count&.positive?
         content.delete_meta(@params[0])
       else
         content.strip_meta
