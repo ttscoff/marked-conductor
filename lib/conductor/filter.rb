@@ -405,7 +405,7 @@ class ::String
   ## @return [String] content with headers updated
   ##
   def normalize_headers
-    gsub(/^(\S.*)\n([=-]+)\n/) do
+    gsub(/^(?<=\n\n)(\S.*)\n([=-]+)\n/) do
       m = Regexp.last_match
       case m[2]
       when /\=/
