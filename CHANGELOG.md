@@ -1,3 +1,11 @@
+### 1.0.26
+
+2024-07-24 13:49
+
+#### FIXED
+
+- Don't recognize YAML closing line as settext header
+
 ### 1.0.25
 
 2024-07-22 12:36
