@@ -8,7 +8,7 @@ class ::String
     filename = File.basename(filename, ".#{ext}")
 
     paths.each do |path|
-      exp = File.join(File.expand_path('~/.config/conductor/'), path, "#{filename}.#{ext}")
+      exp = File.join(File.expand_path("~/.config/conductor/"), path, "#{filename}.#{ext}")
       return exp if File.exist?(exp)
     end
 
@@ -92,17 +92,17 @@ class ::String
   ##
   ## @return     [Integer] number of characters
   ##
-  def chars
+  def char_count
     split(//).count
   end
 
   def decrease_headers(amt = 1)
     gsub(/^(\#{1,6})(?!=#)/) do
       m = Regexp.last_match
-      level = m[1].chars
+      level = m[1].char_count
       level -= amt
       level = 1 if level < 1
-      "#{"#" * level}"
+      "#" * level
     end
   end
 
@@ -111,7 +111,7 @@ class ::String
   end
 
   def increase_headers(amt = 1)
-    gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, '######')
+    gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, "######")
   end
 
   def increase_headers!(amt = 1)
@@ -142,14 +142,14 @@ class ::String
   end
 
   def insert_stylesheet(path)
-    path = find_file_in(['css', 'styles'], path, 'css') unless path =~ /^http/
+    path = find_file_in(%w[css styles], path, "css") unless path =~ /^http/
     inject_after_meta(%(<link rel="stylesheet" href="#{path.strip}">))
   end
 
   def insert_css(path)
     return insert_stylesheet(path) if path.strip =~ /^http/
 
-    path.sub!(/(\.css)?$/, '.css')
+    path.sub!(/(\.css)?$/, ".css")
 
     if path =~ %r{^[~/]}
       path = File.expand_path(path)
@@ -234,7 +234,7 @@ class ::String
 
     return insert_raw_javascript(path) if path =~ /\(.*?\)/
 
-    path.sub!(/(\.js)?$/, '.js')
+    path.sub!(/(\.js)?$/, ".js")
 
     if path =~ %r{^[~/]}
       path = File.expand_path(path)
@@ -261,7 +261,7 @@ class ::String
     filename
   end
 
-  def get_title
+  def read_title
     title = nil
 
     case meta_type
@@ -288,7 +288,7 @@ class ::String
 
   def insert_title(shift: 0)
     content = dup
-    title = get_title
+    title = read_title
     content.increase_headers!(shift) if shift.positive?
     lines = content.split(/\n/)
     insert_point = content.meta_insert_point
@@ -336,7 +336,7 @@ class ::String
     else
       lines = split(/\n/)
       lines.insert(meta_insert_point, "#{key}: #{value}")
-      lines.join("\n") + "\n"
+      "#{lines.join("\n")}\n"
     end
   end
 
@@ -344,12 +344,12 @@ class ::String
     sub(/^ *#{key}:.*?\n/i, "")
   end
 
-  def has_comment?(key)
+  def comment?(key)
     match(/^<!--.*?#{key}: \S.*?-->/m)
   end
 
   def add_comment(key, value)
-    if has_comment?(key)
+    if comment?(key)
       sub(/ *#{key}: .*?$/, "#{key}: #{value}")
     else
       lines = split(/\n/)
@@ -408,7 +408,7 @@ class ::String
     gsub(/^(?<=\n\n)(\S.*)\n([=-]+)\n/) do
       m = Regexp.last_match
       case m[2]
-      when /\=/
+      when /=/
         "# #{m[1]}\n\n"
       else
         "## #{m[1]}\n\n"
@@ -429,12 +429,12 @@ class ::String
   ##
   def ensure_h1
     headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
-    return self if headers.select { |h| h[1].chars == 1 }.count.positive?
+    return self if headers.select { |h| h[1].char_count == 1 }.count.positive?
 
-    lowest_header = headers.min_by { |h| h[1].chars }
+    lowest_header = headers.min_by { |h| h[1].char_count }
     return self if lowest_header.nil?
 
-    level = lowest_header[1].chars
+    level = lowest_header[1].char_count
 
     sub(/#{Regexp.escape(lowest_header[0])}/, "# #{lowest_header[2].strip}").decrease_headers(level)
   end
@@ -453,9 +453,9 @@ class ::String
 
     first_h1 = true
 
-    gsub(%r/^(\#{1,6})([^#].*?)$/m) do
+    gsub(/^(\#{1,6})([^#].*?)$/m) do
       m = Regexp.last_match
-      level = m[1].chars
+      level = m[1].char_count
       content = m[2].strip
       if level == 1 && first_h1
         first_h1 = false
@@ -485,7 +485,7 @@ class ::String
     content = dup
     last = 1
     headers.each do |h|
-      level = h[1].chars
+      level = h[1].char_count
       if level <= last + 1
         last = level
         next
@@ -496,35 +496,6 @@ class ::String
     end
 
     content
-  end
-
-  ##
-  ## Convert a string to a regular expression
-  ##
-  ## If the string matches /xxx/, it will be interpreted
-  ## directly as a regex. Otherwise it will be escaped and
-  ## converted to regex.
-  ##
-  ## @return     [Regexp] Regexp representation of the string.
-  ##
-  def to_rx
-    if self =~ %r{^/(.*?)/([im]+)?$}
-      m = Regexp.last_match
-      regex = m[1]
-      flags = m[2]
-      Regexp.new(regex, flags)
-    else
-      Regexp.new(Regexp.escape(self))
-    end
-  end
-
-  ##
-  ## Convert a string containing $1, $2 to a Regexp replace pattern
-  ##
-  ## @return     [String] Pattern representation of the object.
-  ##
-  def to_pattern
-    gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, "")
   end
 end
 
