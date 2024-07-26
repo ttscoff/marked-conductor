@@ -41,12 +41,11 @@ if res.nil?
   warn "No conditions satisfied"
   # puts Conductor::Env
   puts "NOCUSTOM"
+elsif res == Conductor.original_input
+  warn "No change in output"
+  puts "NOCUSTOM"
 else
-  if res == Conductor.original_input
-    warn "No change in output"
-    puts "NOCUSTOM"
-  else
-    warn "Met condition: #{clean_condition(condition)}"
-    puts res
-  end
+  warn "Met condition: #{clean_condition(condition)}"
+  puts res
 end
+

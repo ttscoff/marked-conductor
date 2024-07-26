@@ -97,7 +97,7 @@ module Conductor
     ## @return [Array] Value, value to compare, operator
     ##
     def split_condition(condition)
-      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?|pandoc)(:\S+)?/i)
+      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?|pandoc)(:[\S_ ]+)?/i)
         m = Regexp.last_match
         op = m[1].nil? ? :contains : :not_contains
         type = case m[2]
@@ -111,7 +111,7 @@ module Conductor
         return ["#{type}#{m[3]}", nil, op]
       end
 
-      res = condition.match(/(?i)^(?<val1>.*?)(?:(?:\s+(?<bool>(?:is|does)?\s*(?:not)?\s*)(?<op>(?:an?|type(?:\sof)?|equals?(?:\sto))?|[!*$]?==?|[gl]t|(?:greater|less)(?:\sthan)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve)\s)?(?:prefix|suffix)|(?:contains?|includes?)\s+(?:file|path)|has|contains?|includes?|match(?:es)?)\s+)(?<val2>.*?))?$/)
+      res = condition.match(/(?i)^(?<val1>.*?)(?:(?:\s+(?<bool>(?:is|do(?:es)?)?\s*(?:not)?\s*)(?<op>(?:an?|type(?:\sof)?|equals?(?:\sto))?|[!*$]?==?|[gl]t|(?:greater|less)(?:\sthan)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve)\s)?(?:prefix|suffix)|(?:contains?|includes?)\s+(?:file|path)|has|contains?|includes?|match(?:es)?)\s+)(?<val2>.*?))?$/)
       operator = res["bool"] ? "#{res["bool"]}#{res["op"]}" : res["op"]
       [res["val1"], res["val2"], operator_to_symbol(operator)]
     end

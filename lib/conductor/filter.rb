@@ -87,19 +87,10 @@ class ::String
     first
   end
 
-  ##
-  ## Count the characters in a string
-  ##
-  ## @return     [Integer] number of characters
-  ##
-  def char_count
-    split(//).count
-  end
-
   def decrease_headers(amt = 1)
     gsub(/^(\#{1,6})(?!=#)/) do
       m = Regexp.last_match
-      level = m[1].char_count
+      level = m[1].size
       level -= amt
       level = 1 if level < 1
       "#" * level
@@ -429,12 +420,12 @@ class ::String
   ##
   def ensure_h1
     headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
-    return self if headers.select { |h| h[1].char_count == 1 }.count.positive?
+    return self if headers.select { |h| h[1].size == 1 }.count.positive?
 
-    lowest_header = headers.min_by { |h| h[1].char_count }
+    lowest_header = headers.min_by { |h| h[1].size }
     return self if lowest_header.nil?
 
-    level = lowest_header[1].char_count
+    level = lowest_header[1].size
 
     sub(/#{Regexp.escape(lowest_header[0])}/, "# #{lowest_header[2].strip}").decrease_headers(level)
   end
@@ -455,7 +446,7 @@ class ::String
 
     gsub(/^(\#{1,6})([^#].*?)$/m) do
       m = Regexp.last_match
-      level = m[1].char_count
+      level = m[1].size
       content = m[2].strip
       if level == 1 && first_h1
         first_h1 = false
@@ -485,7 +476,7 @@ class ::String
     content = dup
     last = 1
     headers.each do |h|
-      level = h[1].char_count
+      level = h[1].size
       if level <= last + 1
         last = level
         next
