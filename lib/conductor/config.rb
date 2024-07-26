@@ -5,6 +5,11 @@ module Conductor
   class Config
     attr_reader :config, :tracks
 
+    ##
+    ## Instantiate a configuration
+    ##
+    ## @return     [Config] Config object
+    ##
     def initialize
       config_file = File.expand_path("~/.config/conductor/tracks.yaml")
 
@@ -17,6 +22,11 @@ module Conductor
 
     private
 
+    ##
+    ## Generate a blank config and directory structure
+    ##
+    ## @param      config_file  [String] The configuration file to create
+    ##
     def create_config(config_file)
       config_dir = File.dirname(config_file)
       scripts_dir = File.dirname(File.join(config_dir, "scripts"))
@@ -28,6 +38,11 @@ module Conductor
       Process.exit 0
     end
 
+    ##
+    ## Content for sample configuration
+    ##
+    ## @return     [String] sample config
+    ##
     def sample_config
       <<~EOCONFIG
         tracks:

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Conductor
+  # Condition class
   class Condition
-
     ##
     ## Initializes the given condition.
     ##
@@ -358,8 +358,14 @@ module Conductor
       end
     end
 
+    ##
+    ## Test for Pandoc headers
+    ##
+    ## @param      content   [String] The content to test
+    ## @param      operator  [Symbol] The operator
+    ##
     def test_pandoc(content, operator)
-      res = content.match(/^%% /)
+      res = content.meta_type == :pandoc
       %i[not_contains not_equal].include?(operator) ? !res.nil? : res.nil?
     end
 
@@ -403,6 +409,13 @@ module Conductor
       end
     end
 
+    ##
+    ## Convert an operator string to a symbol
+    ##
+    ## @param      operator  [String] The operator
+    ##
+    ## @return     [Symbol] the operator symbol
+    ##
     def operator_to_symbol(operator)
       return operator if operator.nil?
 
@@ -444,6 +457,11 @@ module Conductor
       end
     end
 
+    ##
+    ## Parse a condition, handling parens and booleans
+    ##
+    ## @return     [Boolean] condition result
+    ##
     def parse_condition
       cond = @condition.to_s.gsub(/\((.*?)\)/) do
         condition = Regexp.last_match(1)

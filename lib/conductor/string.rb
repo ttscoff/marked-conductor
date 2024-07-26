@@ -15,6 +15,11 @@ class ::String
     split(/,/).map { |s| Shellwords.shellsplit(s) }
   end
 
+  ##
+  ## Normalize positional string to symbol
+  ##
+  ## @return     [Symbol] position symbol (:start, :h1, :h2, :end)
+  ##
   def normalize_position
     case self
     when /^(be|s|t)/
@@ -28,6 +33,11 @@ class ::String
     end
   end
 
+  ##
+  ## Normalize a file include string to symbol
+  ##
+  ## @return     [Symbol] include type symbol (:code, :raw, :file)
+  ##
   def normalize_include_type
     case self
     when /^c/

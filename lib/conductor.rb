@@ -19,14 +19,19 @@ require_relative "conductor/filter"
 require_relative "conductor/script"
 require_relative "conductor/command"
 require_relative "conductor/condition"
-require_relative "conductor/yui-compressor"
+require_relative "conductor/yui_compressor"
 
-# Main Conductor class
+# Main Conductor module
 module Conductor
   class << self
     attr_accessor :original_input
     attr_writer :stdin
 
+    ##
+    ## Return STDIN value, reading from STDIN if needed
+    ##
+    ## @return     [String] STDIN contents
+    ##
     def stdin
       warn "input on STDIN required" unless $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
       @stdin ||= $stdin.read.force_encoding("utf-8")
