@@ -156,4 +156,33 @@ class ::String
       false
     end
   end
+
+  ##
+  ## Convert a string to a regular expression
+  ##
+  ## If the string matches /xxx/, it will be interpreted
+  ## directly as a regex. Otherwise it will be escaped and
+  ## converted to regex.
+  ##
+  ## @return     [Regexp] Regexp representation of the string.
+  ##
+  def to_rx
+    if self =~ %r{^/(.*?)/([im]+)?$}
+      m = Regexp.last_match
+      regex = m[1]
+      flags = m[2]
+      Regexp.new(regex, flags)
+    else
+      Regexp.new(Regexp.escape(self))
+    end
+  end
+
+  ##
+  ## Convert a string containing $1, $2 to a Regexp replace pattern
+  ##
+  ## @return     [String] Pattern representation of the object.
+  ##
+  def to_pattern
+    gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, "")
+  end
 end
