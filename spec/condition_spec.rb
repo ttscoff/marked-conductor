@@ -21,11 +21,22 @@ describe Conductor::Condition do
     end
   end
 
+  describe ".parse_condition" do
+    it "handles parentheticals" do
+      ENV["CONDUCTOR_TEST"] = "true"
+      c = cond.new("filename ends with md AND (has yaml OR has meta OR has pandoc OR parent contains .obsidian) AND NOT true")
+      expect(c.parse_condition).to be false
+    end
+  end
+
   describe ".split_booleans" do
     it "splits and tests booleans" do
       ENV["CONDUCTOR_TEST"] = "true"
       c = cond.new("filename ends with md AND (has yaml OR has meta OR has pandoc OR parent contains .obsidian) AND NOT true")
       expect(c.split_booleans(c.condition)).to be false
+
+      c = cond.new("filename ends with md OR true")
+      expect(c.split_booleans(c.condition)).to be true
     end
   end
 
@@ -108,6 +119,7 @@ describe Conductor::Condition do
         expect(c.test_string("once upon a time", "once", :not_ends_with)).to be true
         expect(c.test_string("once upon a time", "once", :not_equal)).to be true
         expect(c.test_string("once upon a time", "once", :unknown)).to be false
+        expect(c.test_string("once upon a time", "/once/", :contains)).to be true
       end
     end
 
@@ -117,6 +129,7 @@ describe Conductor::Condition do
         origin = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "conductor", "string.rb"))
         expect(c.test_tree(origin, "hash.rb", :unknown)).to be true
         expect(c.test_tree(origin, "conductor", :unknown)).to be true
+        expect(c.test_tree(origin, "finkle.txt", :unknown)).to be false
       end
     end
 
@@ -159,9 +172,18 @@ describe Conductor::Condition do
     end
 
     describe ".test_condition" do
-      it "tests a condition" do
+      it "tests a boolean condition" do
         c = cond.new("false")
         expect(c.test_condition("false")).to be false
+        expect(c.test_condition("ext is txt")).to be false
+        expect(c.test_condition("tree contains hello")).to be false
+        expect(c.test_condition("path contains hello")).to be false
+        expect(c.test_condition("text contains hello")).to be false
+      end
+
+      it "tests a file include" do
+        c = cond.new("false")
+        expect(c.test_condition("include contains style.css")).to be false
       end
     end
   end

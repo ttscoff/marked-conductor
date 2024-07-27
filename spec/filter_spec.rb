@@ -14,10 +14,21 @@ describe Conductor::Filter do
   end
 
   describe ".process" do
-    it "outputs processed content" do
-      Conductor.stdin = test_markdown.dup
-      %w[insertFile(filename.md,start) insertStylesheet(filename.css) injectCSS(string) add_title addTitle(:h1) injectScript(filename.js) prependFile(filename.txt) insert_toc setMeta(key,value) stripMeta setStyle(Ink) replaceAll(regex,pattern) replace(regex,pattern) autolink fixHeaders].each do |f|
-        filt = Conductor::Filter.new(f)
+    %w[insertFile(filename.md,start) insertStylesheet(filename.css) injectCSS(string) add_title addTitle(:h1) addTitle(y) injectScript(filename.js) prependFile(filename.txt) insert_toc insert_toc(3) insert_toc(3,h2) setMeta(key,value) setMeta(key) stripMeta stripMeta(title) setStyle(Ink) replaceAll(regex,pattern) replaceAll(regex) replace(regex,pattern) replace(regex) autolink fixHeaders].each do |f|
+      filt = Conductor::Filter.new(f)
+
+      it "outputs processed mmd content with filter #{f}" do
+        Conductor.stdin = test_mmd_meta.dup
+        expect(filt.process).to be_a String
+      end
+
+      it "outputs processed yaml content with filter #{f}" do
+        Conductor.stdin = test_yaml_meta.dup
+        expect(filt.process).to be_a String
+      end
+
+      it "outputs processed markdown content with filter #{f}" do
+        Conductor.stdin = test_markdown.dup
         expect(filt.process).to be_a String
       end
     end

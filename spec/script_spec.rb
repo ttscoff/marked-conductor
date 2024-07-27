@@ -21,6 +21,8 @@ describe Conductor::Script do
       expect(script.path).to eq "/usr/local/bin/multimarkdown"
       script.path = "/usr/local/bin/multimarkdown"
       expect(script.path).to eq "/usr/local/bin/multimarkdown"
+
+      expect { script.path = "flarglebutt" }.to raise_error(RuntimeError)
     end
   end
 

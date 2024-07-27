@@ -33,7 +33,7 @@ module Conductor
     ## @return     [String] STDIN contents
     ##
     def stdin
-      warn "input on STDIN required" unless $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
+      warn "input on STDIN required" unless ENV["CONDUCTOR_TEST"] || $stdin.stat.size.positive? || $stdin.fcntl(Fcntl::F_GETFL, 0).zero?
       @stdin ||= $stdin.read.force_encoding("utf-8")
     end
 
@@ -116,7 +116,7 @@ module Conductor
         break unless track[:continue]
       end
 
-      if res == Conductor.original_input
+      if res&.strip == Conductor.original_input.strip
         [nil, "No change in output"]
       else
         [res, condition]

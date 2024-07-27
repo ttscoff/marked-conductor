@@ -37,6 +37,7 @@ describe ::String do
       expect("beginning".normalize_position).to eq :start
       expect("top".normalize_position).to eq :start
       expect("h1".normalize_position).to eq :h1
+      expect("h2".normalize_position).to eq :h2
       expect("bottom".normalize_position).to eq :end
     end
   end
@@ -124,6 +125,13 @@ describe ::String do
     it "detects MMD metadata" do
       expect(mmd.meta?).to be_truthy
       expect("dunno".meta?).not_to be_truthy
+    end
+  end
+
+  describe ".pandoc?" do
+    it "detects Pandoc metadata" do
+      expect(pandoc.pandoc?).to be_truthy
+      expect("dunno".pandoc?).not_to be_truthy
     end
   end
 

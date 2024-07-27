@@ -149,13 +149,12 @@ class ::String
   end
 
   ##
-  ## Destructive version of #to_bool
+  ## Test if a string starts with Pandoc metadata
   ##
+  ## @return     [Boolean] test result
   ##
-  ## @see        #to_bool
-  ##
-  def to_bool!
-    replace to_bool
+  def pandoc?
+    dup.force_encoding('utf-8').match?(/^% \S/m)
   end
 
   ##

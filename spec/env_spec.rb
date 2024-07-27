@@ -21,15 +21,18 @@ describe Conductor::Env do
 
   describe ".env" do
     it "loads environment from variables" do
-      file = File.expand_path('test/header_test.md')
-      ENV['OUTLINE'] = "NONE"
-      ENV['MARKED_ORIGIN'] = file
-      ENV['MARKED_EXT'] = "#{File.extname(file)}"
-      ENV['MARKED_CSS_PATH'] = "/Applications/Marked 2.app/Contents/Resources/swiss.css"
-      ENV['MARKED_PATH'] = file
-      ENV['MARKED_INCLUDES'] = '"/Applications/Marked 2.app/Contents/Resources/tocstyle.css","/Applications/Marked 2.app/Contents/Resources/javascript/main.js"'
-      ENV['MARKED_PHASE'] = "PREPROCESS"
+      file = File.expand_path("test/header_test.md")
+      ENV["OUTLINE"] = "NONE"
+      ENV["MARKED_ORIGIN"] = file
+      ENV["MARKED_EXT"] = File.extname(file)
+      ENV["MARKED_CSS_PATH"] = "/Applications/Marked 2.app/Contents/Resources/swiss.css"
+      ENV["MARKED_PATH"] = file
+      ENV["MARKED_INCLUDES"] = '"/Applications/Marked 2.app/Contents/Resources/tocstyle.css",' \
+                               '"/Applications/Marked 2.app/Contents/Resources/javascript/main.js"'
+      ENV["MARKED_PHASE"] = "PREPROCESS"
+      ENV["CONDUCTOR_TEST"] = "false"
       expect(Conductor::Env.env).to be_a(Hash)
+      expect(Conductor::Env.env[:includes]).to be_a(Array)
     end
   end
 

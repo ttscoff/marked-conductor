@@ -144,18 +144,38 @@ class ::String
     end
   end
 
-  def decrease_headers!(amt = 1)
-    replace decrease_headers(amt)
-  end
-
+  ##
+  ## Increase all header levels by amount
+  ##
+  ## @param      amt   [Integer] number to increase by (1-5)
+  ##
+  ## @return     [String] content with headers increased
+  ##
   def increase_headers(amt = 1)
     gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, "######")
   end
 
+  ##
+  ## Destructive version of #increase_headers
+  ##
+  ## @see        #increase_headers
+  ##
+  ## @param      amt   [Integer] The amount
+  ##
+  ## @return     [String] content with headers increased
+  ##
   def increase_headers!(amt = 1)
     replace increase_headers(amt)
   end
 
+  ##
+  ## Insert a Table of Contents at given position
+  ##
+  ## @param      max    [Integer] The maximum depth of the TOC
+  ## @param      after  [Symbol] Where to place TOC after (:top, :h1, :h2)
+  ##
+  ## @return     [String] content with TOC tag added
+  ##
   def insert_toc(max = nil, after = :h1)
     lines = split(/\n/)
     max = max.to_i&.positive? ? " max#{max}" : ""
@@ -171,6 +191,11 @@ class ::String
     lines.insert(line, "\n<!--toc#{max}-->\n").join("\n")
   end
 
+  ##
+  ## Wrap content in <style> tag if needed
+  ##
+  ## @return     [String] wrapped content
+  ##
   def wrap_style
     if match(%r{<style>.*?</style>}m)
       self
@@ -179,11 +204,26 @@ class ::String
     end
   end
 
+  ##
+  ## Insert a <link> tag for the given path
+  ##
+  ## @param      path  [String] path to CSS files
+  ##
+  ## @return     [String] path with <style> link added
+  ##
   def insert_stylesheet(path)
     path = find_file_in(%w[css styles], path, "css") unless path =~ /^http/
     inject_after_meta(%(<link rel="stylesheet" href="#{path.strip}">))
   end
 
+  ##
+  ## Insert raw CSS into the document, reading from a file and compressing
+  ## contents
+  ##
+  ## @param      path  [String]  The CSS file path
+  ##
+  ## @return     [String] content with raw CSS injected
+  ##
   def insert_css(path)
     return insert_stylesheet(path) if path.strip =~ /^http/
 
@@ -206,6 +246,13 @@ class ::String
     end
   end
 
+  ##
+  ## Insert the given content after any existing metadata
+  ##
+  ## @param      content  [String] The content
+  ##
+  ## @return     [String] string with content injected
+  ##
   def inject_after_meta(content)
     lines = split(/\n/)
     insert_point = meta_insert_point
@@ -214,14 +261,21 @@ class ::String
     lines.join("\n")
   end
 
+  ##
+  ## Insert a file include syntax for various types
+  ##
+  ## @param      path      [String] The file path
+  ## @param      type      [Symbol] The type (:file, :code, :raw)
+  ## @param      position  [Symbol] The position (:start, :h1, :h2, :end)
+  ##
   def insert_file(path, type = :file, position = :end)
     path = path.strip
 
-    if path =~ %r{^[.~/]}
-      path = File.expand_path(path)
-    else
-      path = find_file_in(%w[files], path, File.extname(path))
-    end
+    path = if path =~ %r{^[.~/]}
+             File.expand_path(path)
+           else
+             find_file_in(%w[files], path, File.extname(path))
+           end
 
     warn "File not found: #{path}" unless File.exist?(path)
 
@@ -249,39 +303,77 @@ class ::String
     end
   end
 
+  ##
+  ## Append string to self
+  ##
+  ## @param      string  [String] The string to append
+  ##
+  ## @return self with string appended
+  ##
   def append(string)
     "#{self}\n#{string}"
   end
 
+  ##
+  ## Destructive version of #append
+  ## @see        #append
+  ##
+  ## @return     self with string appended
+  ##
   def append!(string)
     replace append(string)
   end
 
+  ##
+  ## Append a <script> tag for a given path
+  ##
+  ## @param      path  [String] The path
+  ##
+  ## @return     self with javascript tag appended
+  ##
   def insert_javascript(path)
     %(#{self}\n<script type="javascript" src="#{path.strip}"></script>\n)
   end
 
+  ##
+  ## Append raw javascript
+  ##
+  ## @param      content  [String] The content
+  ##
+  ## @return     self with script tag containing contents appended
+  ##
   def insert_raw_javascript(content)
     %(#{self}\n<script>#{content}</script>\n)
   end
 
+  ##
+  ## Insert javascript, detecting raw js and files, inserting appropriately
+  ##
+  ## Paths that are just a filename will be searched for in various .config
+  ## directories. If found, a full path will be used.
+  ##
+  ## @param      path  [String] The path or raw content to inject
+  ##
   def insert_script(path)
     path = path.strip
+    orig_path = path
+
     return insert_javascript(path) if path =~ /^http/
 
     return insert_raw_javascript(path) if path =~ /\(.*?\)/
 
-    path.sub!(/(\.js)?$/, ".js")
+    path = if path =~ %r{^[~/.]}
+             File.expand_path(path)
+           else
+             find_file_in(%w[javascript javascripts js scripts], path.sub(/(\.js)?$/, ".js"), "js")
+           end
 
-    if path =~ %r{^[~/.]}
-      path = File.expand_path(path)
+    if File.exist?(path)
+      insert_javascript(path)
     else
-      path = find_file_in(%w[javascript javascripts js scripts], path, "js")
+      warn "Javascript not found: #{path}"
+      insert_javascript(orig_path)
     end
-
-    warn "Javascript not found: #{path}" unless File.exist?(path)
-
-    insert_javascript(path)
   end
 
   def title_from_slug
@@ -404,6 +496,8 @@ class ::String
       delete_yaml(key)
     when :mmd
       delete_mmd(key)
+    else
+      self
     end
   end
 
@@ -413,12 +507,12 @@ class ::String
       sub(/^---.*?(---|\.\.\.)/m, "")
     when :mmd
       lines = split(/\n/)
-      lines[meta_insert_point..]
+      lines[meta_insert_point..].join("\n")
     when :pandoc
       lines = split(/\n/)
-      lines[meta_insert_point..]
+      lines[meta_insert_point..].join("\n")
     else
-      gsub(/(\n|^)<!--\n[\w\s]+: (.*?)\n-->\n/m, '')
+      gsub(/(\n|^)<!--\n[\w\d\s]+: ([\w\d\s]+)\n-->\n/m, '')
     end
   end
 
@@ -511,7 +605,7 @@ class ::String
 
     h1 = true
 
-    gsub(/^(\#{1,6})([^#].*?)$/m) do
+    gsub(/^(\#{1,6})([^#].*?)$/) do
       m = Regexp.last_match
       level = m[1].size
       content = m[2].strip
@@ -670,6 +764,8 @@ module Conductor
         content.autolink
       when /fix(head(lines|ers)|hierarchy)/
         content.fix_hierarchy
+      else
+        content
       end
     end
   end

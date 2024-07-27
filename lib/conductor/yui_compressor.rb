@@ -78,7 +78,7 @@ module YuiCompressor
       # Shorten colors from rgb(51,102,153) to #336699
       # This makes it more likely that it'll get further compressed in the next step.
       css.gsub!(/rgb\s*\(\s*([0-9,\s]+)\s*\)/) do |_match|
-        "#" << ::Regexp.last_match(1).scan(/\d+/).map { |n| n.to_i.to_s(16).rjust(2, "0") }.join
+        "#".dup << ::Regexp.last_match(1).scan(/\d+/).map { |n| n.to_i.to_s(16).rjust(2, "0") }.join
       end
 
       # Shorten colors from #AABBCC to #ABC. Note that we want to make sure
@@ -105,13 +105,13 @@ module YuiCompressor
         # than, say 8000 characters, are checked in. The linebreak option is used in
         # that case to split long lines after a specific column.
         start_index = 0
-        index = 0
+        idx = 0
         length = css.length
-        while index < length
-          index += 1
-          if css[index - 1, 1] == "}" && index - start_index > line_length
-            css = "#{css.slice(0, index)}\n#{css.slice(index, length)}"
-            start_index = index
+        while idx < length
+          idx += 1
+          if css[idx - 1, 1] == "}" && idx - start_index > line_length
+            css = "#{css.slice(0, idx)}\n#{css.slice(idx, length)}"
+            start_index = idx
           end
         end
       end
@@ -150,8 +150,7 @@ module YuiCompressor
         end_index ||= totallen
         token = css.slice(start_index + 2..end_index - 1)
         @comments.push(token)
-        css =  "#{css.slice(0..start_index + 1)}___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_" \
-               "#{@comments.length - 1}___#{css.slice(end_index, totallen)}"
+        css =  "#{css.slice(0..start_index + 1)}___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{@comments.length - 1}___#{css.slice(end_index, totallen)}"
         start_index += 2
       end
 
@@ -163,8 +162,8 @@ module YuiCompressor
         # maybe the string contains a comment-like substring?
         # one, maybe more? put'em back then
         if string =~ /___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_/
-          @comments.each_index do |index|
-            string.gsub!(/___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{index}___/, @comments[index])
+          @comments.each_index do |idx|
+            string.gsub!(/___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{idx}___/, @comments[idx])
           end
         end
 
@@ -175,14 +174,14 @@ module YuiCompressor
         "#{quote}___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___#{quote}"
       end
 
-      # used to jump one index in loop
-      ie5_hack = false
+      # # used to jump one index in loop
+      # ie5_hack = false
       # strings are safe, now wrestle the comments
       @comments.each_index do |idx|
-        if ie5_hack
-          ie5_hack = false
-          next
-        end
+        # if ie5_hack
+        #   ie5_hack = false
+        #   next
+        # end
 
         token = @comments[idx]
         placeholder = "___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{idx}___"
@@ -195,26 +194,26 @@ module YuiCompressor
           next
         end
 
-        # \ in the last position looks like hack for Mac/IE5
-        # shorten that to /*\*/ and the next one to /**/
-        if token[-1, 1] == "\\"
-          @preserved_tokens.push("\\")
-          css.gsub!(/#{placeholder}/, "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
-          # keep the next comment but remove its content
-          @preserved_tokens.push("")
-          css.gsub!(/___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{idx + 1}___/,
-                    "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
-          ie5_hack = true
-          next
-        end
+        # # \ in the last position looks like hack for Mac/IE5
+        # # shorten that to /*\*/ and the next one to /**/
+        # if token[-1, 1] == "\\"
+        #   @preserved_tokens.push("\\")
+        #   css.gsub!(/#{placeholder}/, "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
+        #   # keep the next comment but remove its content
+        #   @preserved_tokens.push("")
+        #   css.gsub!(/___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_#{idx + 1}___/,
+        #             "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
+        #   ie5_hack = true
+        #   next
+        # end
 
-        # keep empty comments after child selectors (IE7 hack)
-        # e.g. html >/**/ body
-        if token.empty? && (start_index = css.index(/#{placeholder}/)) &&
-           (start_index > 2) && (css[start_index - 3, 1] == ">")
-          @preserved_tokens.push("")
-          css.gsub!(/#{placeholder}/, "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
-        end
+        # # keep empty comments after child selectors (IE7 hack)
+        # # e.g. html >/**/ body
+        # if token.empty? && (start_index = css.index(/#{placeholder}/)) &&
+        #    (start_index > 2) && (css[start_index - 3, 1] == ">")
+        #   @preserved_tokens.push("")
+        #   css.gsub!(/#{placeholder}/, "___YUICSSMIN_PRESERVED_TOKEN_#{@preserved_tokens.length - 1}___")
+        # end
 
         # in all other cases kill the comment
         css.gsub!(%r{/\*#{placeholder}\*/}, "")
@@ -233,16 +232,16 @@ module YuiCompressor
     def restore_preserved_comments_and_strings(clean_css)
       css = clean_css.clone
       css_length = css.length
-      @preserved_tokens.each_index do |index|
+      @preserved_tokens.each_index do |idx|
         # slice these back into place rather than regex, because
         # complex nested strings cause the replacement to fail
-        placeholder = "___YUICSSMIN_PRESERVED_TOKEN_#{index}___"
+        placeholder = "___YUICSSMIN_PRESERVED_TOKEN_#{idx}___"
         start_index = css.index(placeholder, 0)
         next unless start_index # skip if nil
 
         end_index = start_index + placeholder.length
 
-        css = css.slice(0..start_index - 1).to_s + @preserved_tokens[index] + css.slice(end_index, css_length).to_s
+        css = css.slice(0..start_index - 1).to_s + @preserved_tokens[idx] + css.slice(end_index, css_length).to_s
       end
 
       css

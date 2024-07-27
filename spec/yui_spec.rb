@@ -15,11 +15,8 @@ describe YuiCompressor::Yui do
 
   describe ".compress" do
     it "outputs compressed CSS" do
-      test_css
       yui = YuiCompressor::Yui.new
-      css = IO.read("test_style.css")
-      expect(yui.compress(css)).to match(/\{transition:transform 100ms ease-in-out\}/)
-      delete_css
+      expect(yui.compress(css_content, 60)).to match(/\{transition:transform 100ms ease-in-out\}/)
     end
   end
 end

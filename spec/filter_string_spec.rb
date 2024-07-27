@@ -82,6 +82,7 @@ describe ::String do
   describe ".insert_toc" do
     it "Inserts toc tag appropriately" do
       expect(string.insert_toc(3, :h1)).to match(/<!--toc max3-->/)
+      expect(string.insert_toc(nil, :h2)).to match(/<!--toc-->/)
     end
   end
 
@@ -215,9 +216,25 @@ describe ::String do
     end
   end
 
+  describe ".add_comment" do
+    it "adds and updates comment meta" do
+      out = string.add_comment('style', 'grump')
+      expect(out).to match(/^<!--\nstyle: grump/)
+      out = out.add_comment('style', 'ink')
+      expect(out).to match(/^<!--\nstyle: ink/)
+    end
+  end
+
   describe ".add_yaml" do
     it "sets YAML meta correctly" do
       expect(yaml.add_yaml("test_key", "test value")).to match(/\ntest_key: test value\n/)
+    end
+  end
+
+  describe ".delete_meta" do
+    it "deletes YAML meta correctly" do
+      expect(yaml.delete_meta("title")).not_to match(/\ntitle: This/)
+      expect(mmd.delete_meta("title")).not_to match(/^title: This/)
     end
   end
 
@@ -277,6 +294,8 @@ describe ::String do
   describe ".fix_headers" do
     it "ensures h1 and increases other headers" do
       expect(test_no_h1.fix_headers).to match(/^#### No H1/)
+      expect(test_two_h1.fix_headers).to match(/^## Second H1/)
+      expect(test_markdown.fix_headers).to match(/^# Conductor Test/)
     end
   end
 

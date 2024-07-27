@@ -10,21 +10,29 @@ end
 require "conductor"
 require "cli-test"
 
+# @old_setting = ENV["RUBYOPT"]
+
 RSpec.configure do |c|
+  c.formatter = 'd'
   c.expect_with(:rspec) { |e| e.syntax = :expect }
 
-  c.before(:each) do
+  c.before(:each) do |tst|
+    ENV["RUBYOPT"] = "-W0"
+    ENV["CONDUCTOR_TEST"] = "true"
+
     allow(FileUtils).to receive(:remove_entry_secure).with(anything)
     Conductor.stdin = test_markdown
   end
 
   c.after(:each) do
-    #
+    # ENV["RUBYOPT"] = @old_setting
   end
 end
 
-def test_css
-  css = <<~ENDCSS
+def css_content
+  <<~ENDCSS
+    /* Just a comment */
+
     body {
       --bold-weight: 600;
       --bold-color: inherit;
@@ -35,8 +43,17 @@ def test_css
       --font-small: 0.933em;
     }
 
+    /*! A preserved comment? */
+
     .callout-fold::after {
-      content: "\200B";
+      content: "This is a string? /* yep! */";
+    }
+
+    .callout-fold :pseudo {
+      content: 'Fake';
+      background-position:0;
+      color: rgb(51,102,153);
+      border: none;
     }
 
     .callout-fold .svg-icon {
@@ -47,7 +64,10 @@ def test_css
       transform: rotate(-90deg);
     }
   ENDCSS
-  File.open("test_style.css", "w") { |f| f.puts css }
+end
+
+def test_css
+  File.open("test_style.css", "w") { |f| f.puts css_content }
 end
 
 def delete_css
@@ -157,6 +177,20 @@ def test_no_h1
     #### Conductor Test
 
     Heyo.
+
+    EOF
+  EONOTE
+end
+
+def test_two_h1
+  <<~EONOTE
+    # First H1
+
+    #### Conductor Test
+
+    Heyo.
+
+    # Second H1
 
     EOF
   EONOTE
