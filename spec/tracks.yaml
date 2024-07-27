@@ -1,0 +1,26 @@
+tracks:
+  - title: Boolean test
+    condition: true
+    tracks:
+      - condition: true
+        continue: true
+        sequence:
+          - script: test-cat
+          - command: cat
+      - condition: true
+        continue: true
+        script: test-cat
+      - condition: true
+        continue: true
+        command: cat
+      - condition: true
+        continue: true
+        filter: nevermind()
+  - title: Preprocessing
+    condition: phase is pre
+    tracks:
+    - title: Test File
+      condition: filename ends with test.md
+      sequence:
+        - filter: nevermind()
+
