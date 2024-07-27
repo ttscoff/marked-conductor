@@ -21,6 +21,9 @@ end
 optparse.parse!
 
 config = Conductor::Config.new
+res = config.configure
+
+Process.exit 0 unless res
 
 Conductor.stdin
 Conductor.original_input = Conductor.stdin
@@ -48,4 +51,3 @@ else
   warn "Met condition: #{clean_condition(condition)}"
   puts res
 end
-

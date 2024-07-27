@@ -2,7 +2,6 @@
 
 # Hash helpers
 class ::Hash
-
   ##
   ## Destructive version of #symbolize_keys
   ##
