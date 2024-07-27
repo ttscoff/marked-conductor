@@ -5,14 +5,26 @@ module Conductor
   class Command
     attr_reader :args, :path
 
+    ##
+    ## Instantiate a command runner
+    ##
+    ## @param      command  [String] The command
+    ##
     def initialize(command)
       parts = Shellwords.split(command)
       self.path = parts[0]
       self.args = parts[1..].join(" ")
     end
 
+    ##
+    ## Writer method for command path
+    ##
+    ## @param      path  [String] The path
+    ##
+    ## @return     [String] New path
+    ##
     def path=(path)
-      @path = if %r{^[%/]}.match?(path)
+      @path = if %r{^[~/.]}.match?(path)
         File.expand_path(path)
       else
         which = TTY::Which.which(path)
@@ -20,6 +32,13 @@ module Conductor
       end
     end
 
+    ##
+    ## Writer method for arguments
+    ##
+    ## @param      array  [Array] Array of arguments
+    ##
+    ## @return     [String] Arguments as string
+    ##
     def args=(array)
       @args = if array.is_a?(Array)
         array.join(" ")
@@ -28,6 +47,11 @@ module Conductor
       end
     end
 
+    ##
+    ## Run the command
+    ##
+    ## @return     [String] result of running STDIN through command
+    ##
     def run
       stdin = Conductor.stdin
 

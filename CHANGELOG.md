@@ -1,3 +1,13 @@
+### 1.0.28
+
+2024-07-27 14:54
+
+#### IMPROVED
+
+- Code cleanup, fix for IRB
+- Switch to using #size for character counting
+- Begin adding test suite, fixing bugs as found
+
 ### 1.0.27
 
 2024-07-24 13:55

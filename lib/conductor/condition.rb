@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module Conductor
+  # Condition class
   class Condition
+    # R/W condition
+    attr_accessor :condition
 
     ##
     ## Initializes the given condition.
@@ -77,6 +80,8 @@ module Conductor
         value1.to_f > value2.to_f
       when :lt
         value1.to_f < value2.to_f
+      when :not_contains
+        value1.to_s !~ /#{value2}/i
       when :contains
         value1.to_s =~ /#{value2}/i
       when :starts_with
@@ -97,7 +102,7 @@ module Conductor
     ## @return [Array] Value, value to compare, operator
     ##
     def split_condition(condition)
-      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?|pandoc)(:\S+)?/i)
+      if condition.match(/(?:((?:does )?not)?(?:ha(?:s|ve)|contains?|includes?) +)?(yaml|headers|frontmatter|mmd|meta(?:data)?|pandoc)(:[\S_ ]+)?/i)
         m = Regexp.last_match
         op = m[1].nil? ? :contains : :not_contains
         type = case m[2]
@@ -111,7 +116,7 @@ module Conductor
         return ["#{type}#{m[3]}", nil, op]
       end
 
-      res = condition.match(/(?i)^(?<val1>.*?)(?:(?:\s+(?<bool>(?:is|does)?\s*(?:not)?\s*)(?<op>(?:an?|type(?:\sof)?|equals?(?:\sto))?|[!*$]?==?|[gl]t|(?:greater|less)(?:\sthan)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve)\s)?(?:prefix|suffix)|(?:contains?|includes?)\s+(?:file|path)|has|contains?|includes?|match(?:es)?)\s+)(?<val2>.*?))?$/)
+      res = condition.match(/(?i)^(?<val1>.*?)(?:(?:\s+(?<bool>(?:is|do(?:es)?)?\s*(?:not)?\s*)(?<op>(?:an?|type(?:\sof)?|equals?(?:\sto))?|[!*$]?==?|[gl]t|(?:greater|less)(?:\sthan)?|<|>|(?:starts|ends) with|(?:ha(?:s|ve)\s)?(?:prefix|suffix)|(?:contains?|includes?)\s+(?:file|path)|has|contains?|includes?|match(?:es)?)\s+)(?<val2>.*?))?$/)
       operator = res["bool"] ? "#{res["bool"]}#{res["op"]}" : res["op"]
       [res["val1"], res["val2"], operator_to_symbol(operator)]
     end
@@ -177,7 +182,7 @@ module Conductor
 
       return operator == :not_equal if val1.nil?
 
-      val2 = val2.force_encoding("utf-8")
+      val2 = val2.to_s.dup.force_encoding("utf-8")
 
       if val1.date?
         if val2.time?
@@ -185,7 +190,7 @@ module Conductor
           date2 = val2.to_date
         else
           date1 = operator == :gt ? val1.to_day(:end) : val1.to_day
-          date2 = operator == :gt ? val2.to_day(:end) : val1.to_day
+          date2 = operator == :gt ? val2.to_day(:end) : val2.to_day
         end
 
         res = case operator
@@ -209,19 +214,19 @@ module Conductor
       val1 = val1.dup.to_s.force_encoding("utf-8")
       case operator
       when :contains
-        val1 =~ /#{val2}/i
+        val1 =~ /#{val2}/i ? true : false
       when :not_starts_with
-        val1 !~ /^#{val2}/i
+        val1 !~ /^#{val2}/i ? true : false
       when :not_ends_with
-        val1 !~ /#{val2}$/i
+        val1 !~ /#{val2}$/i ? true : false
       when :starts_with
-        val1 =~ /^#{val2}/i
+        val1 =~ /^#{val2}/i ? true : false
       when :ends_with
-        val1 =~ /#{val2}$/i
+        val1 =~ /#{val2}$/i ? true : false
       when :equal
-        val1 =~ /^#{val2}$/i
+        val1 =~ /^#{val2}$/i ? true : false
       when :not_equal
-        val1 !~ /^#{val2}$/i
+        val1 !~ /^#{val2}$/i ? true : false
       else
         false
       end
@@ -306,9 +311,9 @@ module Conductor
 
         value1 = value1.join(",") if value1.is_a?(Array)
 
-        if value1.bool?
+        if value1.to_s.bool?
           test_truthy(value1, value, operator)
-        elsif value1.number? && value.number? && %i[gt lt equal not_equal].include?(operator)
+        elsif value1.to_s.number? && value.to_s.number? && %i[gt lt equal not_equal].include?(operator)
           test_operator(value1, value, operator)
         else
           test_string(value1, value, operator)
@@ -351,6 +356,10 @@ module Conductor
       end
 
       if key
+        if %i[type_of not_type_of].include?(operator)
+          return test_type(meta[key], value, operator)
+        end
+
         test_string(meta[key], value, operator)
       else
         res = value ? meta.key?(value) : true
@@ -358,8 +367,14 @@ module Conductor
       end
     end
 
+    ##
+    ## Test for Pandoc headers
+    ##
+    ## @param      content   [String] The content to test
+    ## @param      operator  [Symbol] The operator
+    ##
     def test_pandoc(content, operator)
-      res = content.match(/^%% /)
+      res = content.meta_type == :pandoc
       %i[not_contains not_equal].include?(operator) ? !res.nil? : res.nil?
     end
 
@@ -403,6 +418,13 @@ module Conductor
       end
     end
 
+    ##
+    ## Convert an operator string to a symbol
+    ##
+    ## @param      operator  [String] The operator
+    ##
+    ## @return     [Symbol] the operator symbol
+    ##
     def operator_to_symbol(operator)
       return operator if operator.nil?
 
@@ -419,8 +441,6 @@ module Conductor
         :includes_file
       when /(ha(?:s|ve)|contains?|includes?|\*=) +path/i
         :includes_path
-      when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
-        :contains
       when /not (ha(?:s|ve)|contains|includes|match(es)?)/i
         :not_contains
       when /(ha(?:s|ve)|contains|includes|match(es)?|\*=)/i
@@ -444,6 +464,11 @@ module Conductor
       end
     end
 
+    ##
+    ## Parse a condition, handling parens and booleans
+    ##
+    ## @return     [Boolean] condition result
+    ##
     def parse_condition
       cond = @condition.to_s.gsub(/\((.*?)\)/) do
         condition = Regexp.last_match(1)

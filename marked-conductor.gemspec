@@ -9,7 +9,8 @@ Gem::Specification.new do |spec|
   spec.email = ["me@brettterpstra.com"]
 
   spec.summary = "A custom processor manager for Marked 2 (Mac)"
-  spec.description = "Conductor allows easy configuration of multiple scripts that are run as custom pre/processors for Marked based on conditional statements."
+  spec.description = "Conductor allows easy configuration of multiple scripts" \
+                     "which are run as custom pre/processors for Marked based on conditional statements."
   spec.homepage = "https://github.com/ttscoff/marked-conductor"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"

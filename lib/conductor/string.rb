@@ -15,6 +15,11 @@ class ::String
     split(/,/).map { |s| Shellwords.shellsplit(s) }
   end
 
+  ##
+  ## Normalize positional string to symbol
+  ##
+  ## @return     [Symbol] position symbol (:start, :h1, :h2, :end)
+  ##
   def normalize_position
     case self
     when /^(be|s|t)/
@@ -28,6 +33,11 @@ class ::String
     end
   end
 
+  ##
+  ## Normalize a file include string to symbol
+  ##
+  ## @return     [Symbol] include type symbol (:code, :raw, :file)
+  ##
   def normalize_include_type
     case self
     when /^c/
@@ -61,7 +71,7 @@ class ::String
   ## @return     [Boolean] test result
   ##
   def date?
-    dup.force_encoding("utf-8").match?(/^\d{4}-\d{2}-\d{2}( \d\d:\d\d)?$/)
+    dup.force_encoding("utf-8") =~ /^\d{4}-\d{2}-\d{2}( \d{1,2}(:\d\d)? *([ap]m)?)?$/ ? true : false
   end
 
   ##
@@ -70,7 +80,7 @@ class ::String
   ## @return     [Boolean] test result
   ##
   def time?
-    dup.force_encoding("utf-8").match(/ \d{1,2}(:\d\d)? *([ap]m)?/i)
+    dup.force_encoding("utf-8") =~ / \d{1,2}(:\d\d)? *([ap]m)?/i ? true : false
   end
 
   ##
@@ -92,6 +102,11 @@ class ::String
     dup.force_encoding("utf-8").sub(/ \d{1,2}(:\d\d)? *([ap]m)?/i, "")
   end
 
+  ##
+  ## Round a date string to a day
+  ##
+  ## @param      time [Symbol]  :start or :end
+  ##
   def to_day(time = :end)
     t = time == :end ? "23:59" : "00:00"
     Chronic.parse("#{strip_time} #{t}")
@@ -134,13 +149,12 @@ class ::String
   end
 
   ##
-  ## Destructive version of #to_bool
+  ## Test if a string starts with Pandoc metadata
   ##
+  ## @return     [Boolean] test result
   ##
-  ## @see        #to_bool
-  ##
-  def to_bool!
-    replace to_bool
+  def pandoc?
+    dup.force_encoding('utf-8').match?(/^% \S/m)
   end
 
   ##
@@ -149,7 +163,7 @@ class ::String
   ## @return     [Boolean] Bool representation of the object.
   ##
   def to_bool
-    case self.force_encoding('utf-8')
+    case self.dup.force_encoding('utf-8')
     when /^[yt]/i
       true
     else

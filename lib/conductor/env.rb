@@ -14,7 +14,7 @@ module Conductor
           home: ENV["HOME"],
           css_path: ENV["MARKED_CSS_PATH"],
           ext: ENV["MARKED_EXT"],
-          includes: ENV["MARKED_INCLUDES"].split(/,/).map { |s| Shellwords.shellsplit(s) },
+          includes: ENV["MARKED_INCLUDES"].split_list,
           origin: ENV["MARKED_ORIGIN"],
           filepath: ENV["MARKED_PATH"],
           filename: File.basename(ENV["MARKED_PATH"]),
@@ -35,7 +35,7 @@ module Conductor
         home: "/Users/ttscoff",
         css_path: "/Applications/Marked 2.app/Contents/Resources/swiss.css",
         ext: "md",
-        includes: "",
+        includes: "".split_list,
         origin: "/Users/ttscoff/Sites/dev/bt/source/_posts/",
         filepath: "/Users/ttscoff/Sites/dev/bt/source/_posts/2024-04-01-automating-the-dimspirations-workflow.md",
         filename: "advanced-features.md",
@@ -46,7 +46,7 @@ module Conductor
     end
 
     ##
-    ## env to string
+    ## env to shell-compatible string
     ##
     ## @return     [String] shell-compatible string representation of @env
     ##
