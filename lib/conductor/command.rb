@@ -24,7 +24,7 @@ module Conductor
     ## @return     [String] New path
     ##
     def path=(path)
-      @path = if %r{^[%/]}.match?(path)
+      @path = if %r{^[~/.]}.match?(path)
         File.expand_path(path)
       else
         which = TTY::Which.which(path)

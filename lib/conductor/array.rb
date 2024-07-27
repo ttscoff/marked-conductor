@@ -2,7 +2,6 @@
 
 # Array helpers
 class ::Array
-
   ##
   ## Destructive version of #symbolize_keys
   ##
@@ -42,7 +41,8 @@ class ::Array
   def includes_file?(filename)
     inc = false
     each do |path|
-      if path.join =~ /#{Regexp.escape(filename)}$/i
+      path = path.join if path.is_a?(Array)
+      if path =~ /#{Regexp.escape(filename)}$/i
         inc = true
         break
       end
@@ -60,7 +60,8 @@ class ::Array
   def includes_frag?(frag)
     inc = false
     each do |path|
-      if path.join =~ /#{Regexp.escape(frag)}/i
+      path = path.join if path.is_a?(Array)
+      if path =~ /#{Regexp.escape(frag)}/i
         inc = true
         break
       end

@@ -625,9 +625,9 @@ module Conductor
                    end
         content.insert_file(@params[0], m[2].normalize_include_type, position)
       when /inserttoc/
-        max = @params.count.positive? ? @params[0] : nil
+        max = @params.nil? || @params.empty? ? nil : @params[0]
 
-        after = if @params.count == 2
+        after = if @params && @params.count == 2
                   @params[1] =~ /2/ ? :h2 : :h1
                 else
                   :start

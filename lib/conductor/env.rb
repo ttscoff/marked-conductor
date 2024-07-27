@@ -35,7 +35,7 @@ module Conductor
         home: "/Users/ttscoff",
         css_path: "/Applications/Marked 2.app/Contents/Resources/swiss.css",
         ext: "md",
-        includes: "",
+        includes: "".split(/,/).map { |s| Shellwords.shellsplit(s) },
         origin: "/Users/ttscoff/Sites/dev/bt/source/_posts/",
         filepath: "/Users/ttscoff/Sites/dev/bt/source/_posts/2024-04-01-automating-the-dimspirations-workflow.md",
         filename: "advanced-features.md",

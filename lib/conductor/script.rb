@@ -22,7 +22,7 @@ module Conductor
     ## @param      path  The path
     ##
     def path=(path)
-      @path = if %r{^[%/]}.match?(path)
+      @path = if %r{^[~/.]}.match?(path)
                 File.expand_path(path)
               else
                 script_dir = File.expand_path("~/.config/conductor/scripts")
@@ -56,7 +56,7 @@ module Conductor
     ## @return     [String] script results (STDOUT)
     ##
     def run
-      stdin = Conductor.stdin
+      stdin = Conductor.stdin unless /\$\{?file\}?/.match?(args)
 
       raise "Script path not defined" unless @path
 

@@ -71,7 +71,7 @@ class ::String
   ## @return     [Boolean] test result
   ##
   def date?
-    dup.force_encoding("utf-8").match?(/^\d{4}-\d{2}-\d{2}( \d\d:\d\d)?$/)
+    dup.force_encoding("utf-8") =~ /^\d{4}-\d{2}-\d{2}( \d{1,2}(:\d\d)? *([ap]m)?)?$/ ? true : false
   end
 
   ##
@@ -80,7 +80,7 @@ class ::String
   ## @return     [Boolean] test result
   ##
   def time?
-    dup.force_encoding("utf-8").match(/ \d{1,2}(:\d\d)? *([ap]m)?/i)
+    dup.force_encoding("utf-8") =~ / \d{1,2}(:\d\d)? *([ap]m)?/i ? true : false
   end
 
   ##
@@ -102,6 +102,11 @@ class ::String
     dup.force_encoding("utf-8").sub(/ \d{1,2}(:\d\d)? *([ap]m)?/i, "")
   end
 
+  ##
+  ## Round a date string to a day
+  ##
+  ## @param      time [Symbol]  :start or :end
+  ##
   def to_day(time = :end)
     t = time == :end ? "23:59" : "00:00"
     Chronic.parse("#{strip_time} #{t}")
@@ -159,7 +164,7 @@ class ::String
   ## @return     [Boolean] Bool representation of the object.
   ##
   def to_bool
-    case self.force_encoding('utf-8')
+    case self.dup.force_encoding('utf-8')
     when /^[yt]/i
       true
     else
