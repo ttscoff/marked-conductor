@@ -1,3 +1,11 @@
+### 1.0.29
+
+2024-07-28 09:57
+
+#### NEW
+
+- Increase/decreaseHeaders(count) filter
+
 ### 1.0.28
 
 2024-07-27 14:54

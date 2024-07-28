@@ -167,6 +167,8 @@ The action can be `script`, `command`, or `filter`.
 | `insertCSS(path)` | insert custom CSS into document |
 | `autoLink()` | Turn bare URLs into \<self-linked\> urls |
 | `fixHeaders()` | Reorganize headline levels to semantic order |
+| `increaseHeaders(count) | Increase header levels by count (default 1) |
+| `decreaseHeaders(count) | Decrease header levels by count (default 1) |
 
 For `replace` and `replaceAll`: If *search* is surrounded with forward slashes followed by optional flags (*i* for case-insensitive, *m* to make dot match newlines), e.g. `/contribut(ing)?/i`, it will be interpreted as a regular expression. The *replace* value can include numeric capture groups, e.g. `Follow$2`.
 
