@@ -135,7 +135,7 @@ class ::String
   ## @param      amt   [Integer] The amount to decrease
   ##
   def decrease_headers(amt = 1)
-    gsub(/^(\#{1,6})(?!=#)/) do
+    normalize_headers.gsub(/^(\#{1,6})(?!=#)/) do
       m = Regexp.last_match
       level = m[1].size
       level -= amt
@@ -152,7 +152,7 @@ class ::String
   ## @return     [String] content with headers increased
   ##
   def increase_headers(amt = 1)
-    gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, "######")
+    normalize_headers.gsub(/^#/, "#{"#" * amt}#").gsub(/^\#{7,}/, "######")
   end
 
   ##
@@ -764,6 +764,9 @@ module Conductor
         content.autolink
       when /fix(head(lines|ers)|hierarchy)/
         content.fix_hierarchy
+      when /(increase|decrease)headers/
+        count = @params ? @params[0].to_i : 1
+        @filter =~ /^inc/ ? content.increase_headers(count) : content.decrease_headers(count)
       else
         content
       end
