@@ -7,7 +7,7 @@ module Conductor
     ## Define @env using Marked environment variables
     ##
     def self.env
-      if ENV["CONDUCTOR_TEST"].to_bool
+      if ENV["CONDUCTOR_TEST"]&.to_bool
         load_test_env
       else
         @env ||= {
