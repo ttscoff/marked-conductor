@@ -107,6 +107,8 @@ Available conditions are:
 - `includes` are files included in the document with special syntax (Marked, IA Writer, etc.)
     - `includes contain file` or `includes not contains file` will test all included files for filename matches
     - `includes contain path` or `includes not contains path` will test all included files for fragment matches anywhere in the path
+- `env:KEY matches VALUE` will test for matching values in a environment key. All string matching operators are available, and `env[KEY]` syntax will also work.
+    - `env contains KEY` tests just for the existence of an environment variable key (can include variables set by Marked).
 - The following keywords act as a catchall and can be used as the last track in the config to act on any documents that aren't matched by preceding rules:
     - `any`
     - `else`

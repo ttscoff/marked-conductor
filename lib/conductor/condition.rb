@@ -184,6 +184,11 @@ module Conductor
 
       val2 = val2.to_s.dup.force_encoding("utf-8")
 
+      if val2.bool?
+        res = val2.to_bool == val1.to_bool
+        return operator === :not_equal ? !res : res
+      end
+
       if val1.date?
         if val2.time?
           date1 = val1.to_date
@@ -274,6 +279,26 @@ module Conductor
       res = value1 == value2
 
       operator == :not_equal ? !res : res
+    end
+
+    ##
+    ## Test for environment variable
+    ##
+    ## @param      value     [String] The value (test for existence of key if
+    ##                       nil)
+    ## @param      key       [String] The key
+    ## @param      operator  [Symbol] The operator
+    ##
+    ## @return     [Boolean] test result
+    ##
+    def test_env(value, key, operator)
+      env = Env.env.merge(ENV)
+      if key.nil?
+        res = !env[value].nil?
+        return operator == :not_contains ? !res : res
+      end
+
+      return test_string(env[key], value, operator)
     end
 
     ##
@@ -391,6 +416,9 @@ module Conductor
       end
 
       case type
+      when /^env(?:ironment)?(?:[:\[\()](.*?)[\]\)]?)?$/i
+        key = Regexp.last_match(1) || nil
+        test_env(value, key, operator)
       when /^include/i
         test_includes(@env[:includes], value, operator) ? true : false
       when /^ext/i

@@ -23,6 +23,7 @@ fi
 
 PHASE="PREPROCESS"
 STD="BOTH"
+CONFIG=""
 
 while getopts "h?p:o:d" opt; do
   case "$opt" in
@@ -31,6 +32,8 @@ while getopts "h?p:o:d" opt; do
       exit 0
       ;;
     p)  PHASE=$OPTARG
+      ;;
+    c)  CMD="$CMD -c \"$OPTARG\""
       ;;
     o)  STD=$OPTARG
       ;;

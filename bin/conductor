@@ -4,8 +4,19 @@
 require_relative "../lib/conductor"
 require "optparse"
 
+options = {
+  config_file: nil
+}
+
 optparse = OptionParser.new do |opts|
   opts.banner = "Called from Marked 2 as a Custom Pre/Processor"
+
+  opts.on("-c", "--config", "Specify alternate config file") do |file|
+    config = File.expand_path(file)
+    raise "Config file not found" unless File.exist?(config)
+
+    options[:config_file] = file
+  end
 
   opts.on("-v", "--version", "Show version number") do
     puts "conductor v#{Conductor::VERSION}"
@@ -21,6 +32,7 @@ end
 optparse.parse!
 
 config = Conductor::Config.new
+config.config_file = options[:config_file] if options[:config_file]
 res = config.configure
 
 Process.exit 0 unless res

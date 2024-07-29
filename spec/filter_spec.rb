@@ -14,7 +14,12 @@ describe Conductor::Filter do
   end
 
   describe ".process" do
-    %w[insertFile(filename.md,start) insertStylesheet(filename.css) injectCSS(string) add_title addTitle(:h1) addTitle(y) injectScript(filename.js) prependFile(filename.txt) insert_toc insert_toc(3) insert_toc(3,h2) setMeta(key,value) setMeta(key) stripMeta stripMeta(title) setStyle(Ink) replaceAll(regex,pattern) replaceAll(regex) replace(regex,pattern) replace(regex) autolink fixHeaders increaseHeaders increaseHeaders(2) decreaseHeaders decreaseHeaders(2)].each do |f|
+    %w[insertFile(filename.md,start) insertStylesheet(filename.css) injectCSS(string)
+       add_title addTitle(:h1) addTitle(y) injectScript(filename.js) prependFile(filename.txt)
+       insert_toc insert_toc(3) insert_toc(3,h2) setMeta(key,value) setMeta(key) stripMeta
+       stripMeta(title) setStyle(Ink) replaceAll(regex,pattern) replaceAll(regex)
+       replace(regex,pattern) replace(regex) autolink fixHeaders increaseHeaders
+       increaseHeaders(2) decreaseHeaders decreaseHeaders(2)].each do |f|
       filt = Conductor::Filter.new(f)
 
       it "outputs processed mmd content with filter #{f}" do
