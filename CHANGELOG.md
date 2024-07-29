@@ -1,3 +1,11 @@
+### 1.0.31
+
+2024-07-29 15:40
+
+#### FIXED
+
+- Nil environment variable failure
+
 ### 1.0.30
 
 2024-07-29 11:47
