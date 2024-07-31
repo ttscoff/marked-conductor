@@ -1,3 +1,11 @@
+### 1.0.32
+
+2024-07-31 11:12
+
+#### FIXED
+
+- Force UTF-8 encoding on Env and STDIN in command.rb and script.rb
+
 ### 1.0.31
 
 2024-07-29 15:40
