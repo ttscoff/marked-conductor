@@ -67,7 +67,7 @@ module Conductor
       end
 
       if use_stdin
-        `echo #{Shellwords.escape(stdin)} | #{Env} #{path} #{args}`
+        `echo #{Shellwords.escape(stdin.force_encoding("utf-8"))} | #{Env} #{path} #{args}`
       else
         `#{Env} #{path} #{args}`
       end
