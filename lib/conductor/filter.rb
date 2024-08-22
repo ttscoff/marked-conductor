@@ -574,7 +574,7 @@ class ::String
   ##
   def ensure_h1
     headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
-    return self if headers.select { |h| h[1].size == 1 }.count.positive?
+    return self unless headers.select { |h| h[1].size == 1 }.empty?
 
     lowest_header = headers.min_by { |h| h[1].size }
     return self if lowest_header.nil?
