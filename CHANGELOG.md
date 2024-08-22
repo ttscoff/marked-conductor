@@ -1,3 +1,12 @@
+### 1.0.34
+
+2024-08-22 10:13
+
+#### IMPROVED
+
+- Code cleanup
+- Cleaner UTF-8 string encoding
+
 ### 1.0.33
 
 2024-08-22 06:35
