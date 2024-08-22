@@ -201,11 +201,38 @@ class ::String
   end
 
   ##
+  ## Discard invalid characters and output a UTF-8 String
+  ##
+  ## @return     [String] UTF-8 encoded string
+  ##
+  def utf8
+    encode('utf-16', invalid: :replace).encode('utf-8')
+  end
+
+  ##
+  ## Destructive version of #utf8
+  ##
+  ## @return     [String] UTF-8 encoded string, in place
+  ##
+  def utf8!
+    replace scrub
+  end
+
+  ##
   ## Get a clean UTF-8 string by forcing an ISO encoding and then re-encoding
   ##
   ## @return     [String] UTF-8 string
   ##
   def clean_encode
     force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
+  end
+
+  ##
+  ## Destructive version of #clean_encode
+  ##
+  ## @return     [String] UTF-8 string, in place
+  ##
+  def clean_encode!
+    replace clean_encode
   end
 end
