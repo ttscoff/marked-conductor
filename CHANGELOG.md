@@ -1,3 +1,11 @@
+### 1.0.33
+
+2024-08-22 06:31
+
+#### IMPROVED
+
+- Clean up string encoding in filters
+
 ### 1.0.32
 
 2024-07-31 11:12
