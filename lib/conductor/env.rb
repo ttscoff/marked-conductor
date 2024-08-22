@@ -7,7 +7,7 @@ module Conductor
     ## Define @env using Marked environment variables
     ##
     def self.env
-      if ENV["CONDUCTOR_TEST"] == "true"
+      if ENV["CONDUCTOR_TEST"]&.to_bool
         load_test_env
       else
         @env ||= {
@@ -61,7 +61,7 @@ module Conductor
         "MARKED_PHASE" => @env[:phase],
         "OUTLINE" => @env[:outline],
         "PATH" => @env[:path]
-      }.map { |k, v| %(#{k}="#{v}") }.join(" ")
+      }.map { |k, v| %(#{k}="#{v}") }.join(" ").force_encoding("utf-8")
     end
   end
 end

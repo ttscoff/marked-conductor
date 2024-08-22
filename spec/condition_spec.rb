@@ -95,96 +95,103 @@ describe Conductor::Condition do
       expect(c.test_type("test", "string", :type_of)).to be true
       expect(c.test_type('2021-04-12 14:00', "date", :type_of)).to be true
     end
+  end
 
-    describe ".test_includes" do
-      it "tests types" do
-        includes = ["~/test/filename.md", "~/test/funky.md"]
-        c = cond.new("filename ends with md")
-        expect(c.test_includes(includes, "filename.md", :includes_file)).to be true
-        expect(c.test_includes(includes, "filename2.md", :not_includes_file)).to be true
-        expect(c.test_includes(includes, "test", :includes_path)).to be true
-        expect(c.test_includes(includes, "funky", :not_includes_path)).to be false
-        expect(c.test_includes(includes, "funky", :unknown)).to be false
-      end
+  describe ".test_includes" do
+    it "tests types" do
+      includes = ["~/test/filename.md", "~/test/funky.md"]
+      c = cond.new("filename ends with md")
+      expect(c.test_includes(includes, "filename.md", :includes_file)).to be true
+      expect(c.test_includes(includes, "filename2.md", :not_includes_file)).to be true
+      expect(c.test_includes(includes, "test", :includes_path)).to be true
+      expect(c.test_includes(includes, "funky", :not_includes_path)).to be false
+      expect(c.test_includes(includes, "funky", :unknown)).to be false
+    end
+  end
+
+  describe ".test_string" do
+    it "tests types" do
+      c = cond.new("filename ends with md")
+      expect(c.test_string("2024-12-12", "2024-12-11", :gt)).to be true
+      expect(c.test_string("2024-12-11 11pm", "2024-12-12 5pm", :lt)).to be true
+      expect(c.test_string("2024-12-11 11:00", "2024-12-11 11:00", :equal)).to be true
+      expect(c.test_string("2024-12-11 11:00", "2024-12-11 11:00", :not_equal)).to be false
+      expect(c.test_string("once upon a time", "once", :not_starts_with)).to be false
+      expect(c.test_string("once upon a time", "once", :not_ends_with)).to be true
+      expect(c.test_string("once upon a time", "once", :not_equal)).to be true
+      expect(c.test_string("once upon a time", "once", :unknown)).to be false
+      expect(c.test_string("once upon a time", "/once/", :contains)).to be true
+    end
+  end
+
+  describe ".test_tree" do
+    it "tests for file in parent tree" do
+      c = cond.new("filename ends with md")
+      origin = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "conductor", "string.rb"))
+      expect(c.test_tree(origin, "hash.rb", :unknown)).to be true
+      expect(c.test_tree(origin, "conductor", :unknown)).to be true
+      expect(c.test_tree(origin, "finkle.txt", :unknown)).to be false
+    end
+  end
+
+  describe ".test_truthy" do
+    it "tests for truthiness" do
+      c = cond.new("filename ends with md")
+      expect(c.test_truthy(true, "yes", :equal)).to be true
+      expect(c.test_truthy(true, "yes", :not_equal)).to be false
+      expect(c.test_truthy(false, "false", :equal)).to be true
+      expect(c.test_truthy(false, "false", :not_equal)).to be false
+    end
+  end
+
+  describe ".test_yaml" do
+    it "tests for yaml" do
+      c = cond.new("filename ends with md")
+      expect(c.test_yaml(test_yaml_meta, "Brett Terpstra", "author", :equal)).to be true
+      expect(c.test_yaml(test_yaml_meta, "Brett Terpstra", "title", :not_equal)).to be true
+      expect(c.test_yaml(test_yaml_meta, nil, "title", :equal)).to be true
+      expect(c.test_yaml(test_yaml_meta, "string", "title", :type_of)).to be true
+      expect(c.test_yaml(test_yaml_meta, true, "comments", :equal)).to be true
+      expect(c.test_yaml(test_yaml_meta, 5, "value", :equal)).to be true
+      expect(c.test_yaml(test_yaml_meta, "value", nil, :equal)).to be true
+      expect(c.test_yaml(test_bad_yaml, "value", nil, :equal)).to be false
+    end
+  end
+
+  describe ".test_meta" do
+    it "tests for mmd meta" do
+      c = cond.new("filename ends with md")
+      expect(c.test_meta(test_mmd_meta, "Brett Terpstra", "author", :equal)).to be true
+      expect(c.test_meta(test_mmd_meta, "Brett Terpstra", "title", :not_equal)).to be true
+      expect(c.test_meta(test_mmd_meta, nil, "title", :equal)).to be true
+      expect(c.test_meta(test_mmd_meta, "string", "title", :type_of)).to be true
+      expect(c.test_meta(test_mmd_meta, true, "comments", :equal)).to be true
+      expect(c.test_meta(test_mmd_meta, 5, "value", :equal)).to be true
+      expect(c.test_meta(test_mmd_meta, "value", nil, :equal)).to be true
+      expect(c.test_meta(test_bad_yaml, "value", nil, :equal)).to be false
+    end
+  end
+
+  describe ".test_condition" do
+    it "tests a boolean condition" do
+      c = cond.new("false")
+      expect(c.test_condition("false")).to be false
+      expect(c.test_condition("ext is txt")).to be false
+      expect(c.test_condition("tree contains hello")).to be false
+      expect(c.test_condition("path contains hello")).to be false
+      expect(c.test_condition("text contains hello")).to be false
     end
 
-    describe ".test_string" do
-      it "tests types" do
-        c = cond.new("filename ends with md")
-        expect(c.test_string("2024-12-12", "2024-12-11", :gt)).to be true
-        expect(c.test_string("2024-12-11 11pm", "2024-12-12 5pm", :lt)).to be true
-        expect(c.test_string("2024-12-11 11:00", "2024-12-11 11:00", :equal)).to be true
-        expect(c.test_string("2024-12-11 11:00", "2024-12-11 11:00", :not_equal)).to be false
-        expect(c.test_string("once upon a time", "once", :not_starts_with)).to be false
-        expect(c.test_string("once upon a time", "once", :not_ends_with)).to be true
-        expect(c.test_string("once upon a time", "once", :not_equal)).to be true
-        expect(c.test_string("once upon a time", "once", :unknown)).to be false
-        expect(c.test_string("once upon a time", "/once/", :contains)).to be true
-      end
+    it "tests a file include" do
+      c = cond.new("false")
+      expect(c.test_condition("include contains style.css")).to be false
     end
 
-    describe ".test_tree" do
-      it "tests for file in parent tree" do
-        c = cond.new("filename ends with md")
-        origin = File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "conductor", "string.rb"))
-        expect(c.test_tree(origin, "hash.rb", :unknown)).to be true
-        expect(c.test_tree(origin, "conductor", :unknown)).to be true
-        expect(c.test_tree(origin, "finkle.txt", :unknown)).to be false
-      end
-    end
-
-    describe ".test_truthy" do
-      it "tests for truthiness" do
-        c = cond.new("filename ends with md")
-        expect(c.test_truthy(true, 'yes', :equal)).to be true
-        expect(c.test_truthy(true, 'yes', :not_equal)).to be false
-        expect(c.test_truthy(false, 'false', :equal)).to be true
-        expect(c.test_truthy(false, 'false', :not_equal)).to be false
-      end
-    end
-
-    describe ".test_yaml" do
-      it "tests for yaml" do
-        c = cond.new("filename ends with md")
-        expect(c.test_yaml(test_yaml_meta, "Brett Terpstra", "author", :equal)).to be true
-        expect(c.test_yaml(test_yaml_meta, "Brett Terpstra", "title", :not_equal)).to be true
-        expect(c.test_yaml(test_yaml_meta, nil, "title", :equal)).to be true
-        expect(c.test_yaml(test_yaml_meta, "string", "title", :type_of)).to be true
-        expect(c.test_yaml(test_yaml_meta, true, "comments", :equal)).to be true
-        expect(c.test_yaml(test_yaml_meta, 5, "value", :equal)).to be true
-        expect(c.test_yaml(test_yaml_meta, "value", nil, :equal)).to be true
-        expect(c.test_yaml(test_bad_yaml, "value", nil, :equal)).to be false
-      end
-    end
-
-    describe ".test_meta" do
-      it "tests for mmd meta" do
-        c = cond.new("filename ends with md")
-        expect(c.test_meta(test_mmd_meta, "Brett Terpstra", "author", :equal)).to be true
-        expect(c.test_meta(test_mmd_meta, "Brett Terpstra", "title", :not_equal)).to be true
-        expect(c.test_meta(test_mmd_meta, nil, "title", :equal)).to be true
-        expect(c.test_meta(test_mmd_meta, "string", "title", :type_of)).to be true
-        expect(c.test_meta(test_mmd_meta, true, "comments", :equal)).to be true
-        expect(c.test_meta(test_mmd_meta, 5, "value", :equal)).to be true
-        expect(c.test_meta(test_mmd_meta, "value", nil, :equal)).to be true
-        expect(c.test_meta(test_bad_yaml, "value", nil, :equal)).to be false
-      end
-    end
-
-    describe ".test_condition" do
-      it "tests a boolean condition" do
-        c = cond.new("false")
-        expect(c.test_condition("false")).to be false
-        expect(c.test_condition("ext is txt")).to be false
-        expect(c.test_condition("tree contains hello")).to be false
-        expect(c.test_condition("path contains hello")).to be false
-        expect(c.test_condition("text contains hello")).to be false
-      end
-
-      it "tests a file include" do
-        c = cond.new("false")
-        expect(c.test_condition("include contains style.css")).to be false
-      end
+    it "tests an environment variable" do
+      ENV["DONT_FEEL"] = "tardy"
+      c = cond.new("false")
+      expect(c.test_condition("env:DONT_FEEL is tardy")).to be true
+      expect(c.test_condition("env has DONT_FEEL")).to be true
     end
   end
 end

@@ -1,7 +1,9 @@
 ---
 title: meta test
 ---
-
+<!--
+style: "Amblin"
+-->
 ## This is the first headline
 
 <<[linktest.md]

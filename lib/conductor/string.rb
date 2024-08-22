@@ -199,4 +199,13 @@ class ::String
   def to_pattern
     gsub(/\$(\d+)/, '\\\\\1').gsub(/(^["']|["']$)/, "")
   end
+
+  ##
+  ## Get a clean UTF-8 string by forcing an ISO encoding and then re-encoding
+  ##
+  ## @return     [String] UTF-8 string
+  ##
+  def clean_encode
+    force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
+  end
 end

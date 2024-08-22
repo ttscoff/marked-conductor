@@ -137,7 +137,7 @@ module YuiCompressor
     ##
     ## @return [String] css text with strings replaced
     def process_comments_and_strings(css_text)
-      css = css_text.dup.force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
+      css = css_text.dup.clean_encode
 
       start_index = 0
       token = ""
@@ -155,7 +155,7 @@ module YuiCompressor
       end
 
       # preserve strings so their content doesn't get accidentally minified
-      css.gsub!(/("([^\\"]|\\.|\\)*")|('([^\\']|\\.|\\)*')/) do |match|
+      css = css.gsub(/("([^\\"]|\\.|\\)*")|('([^\\']|\\.|\\)*')/) do |match|
         quote = match[0, 1]
         string = match.slice(1..-2)
 
