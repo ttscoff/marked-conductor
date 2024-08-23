@@ -1,3 +1,11 @@
+### 1.0.36
+
+2024-08-23 11:03
+
+#### FIXED
+
+- Attempt to fix installation on Ruby 2.6
+
 ### 1.0.35
 
 2024-08-22 10:14
