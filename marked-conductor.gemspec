@@ -41,6 +41,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov-console", "~> 0.9"
   spec.add_development_dependency "yard", "~> 0.9", ">= 0.9.26"
 
+  spec.add_development_dependency "rubocop", "~> 1.21"
+
+
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "chronic", "~> 0.10.2"
   spec.add_dependency "tty-which", "~> 0.5.0"

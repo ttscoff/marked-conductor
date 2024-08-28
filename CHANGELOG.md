@@ -1,3 +1,41 @@
+### 1.0.38
+
+2024-08-23 11:20
+
+### 1.0.37
+
+2024-08-23 11:04
+
+#### FIXED
+
+- Attempt to fix installation on Ruby 2.6
+
+### 1.0.36
+
+2024-08-23 11:03
+
+#### FIXED
+
+- Attempt to fix installation on Ruby 2.6
+
+### 1.0.35
+
+2024-08-22 10:14
+
+#### IMPROVED
+
+- Code cleanup
+- Cleaner UTF-8 string encoding
+
+### 1.0.34
+
+2024-08-22 10:13
+
+#### IMPROVED
+
+- Code cleanup
+- Cleaner UTF-8 string encoding
+
 ### 1.0.33
 
 2024-08-22 06:35

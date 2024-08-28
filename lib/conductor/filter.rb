@@ -42,7 +42,7 @@ class ::String
   ## @return     [Symbol] metadata type
   ##
   def meta_type
-    lines = clean_encode.split(/\n/)
+    lines = utf8.split(/\n/)
     case lines[0]
     when /^--- *$/
       :yaml
@@ -65,7 +65,7 @@ class ::String
 
     case meta_type
     when :yaml
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines.shift
       lines.each_with_index do |line, idx|
         next unless line =~ /^(\.\.\.|---) *$/
@@ -74,7 +74,7 @@ class ::String
         break
       end
     when :mmd
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines.each_with_index do |line, idx|
         next if line =~ /^ *[ \w]+: +\S+/
 
@@ -82,7 +82,7 @@ class ::String
         break
       end
     when :pandoc
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines.each_with_index do |line, idx|
         next if line =~ /^% +\S/
 
@@ -101,7 +101,7 @@ class ::String
   ##
   def first_h1
     first = nil
-    clean_encode.split(/\n/).each_with_index do |line, idx|
+    utf8.split(/\n/).each_with_index do |line, idx|
       if line =~ /^(# *[^#]|={2,} *$)/
         first = idx
         break
@@ -118,7 +118,7 @@ class ::String
   def first_h2
     first = nil
     meta_end = meta_insert_point
-    clean_encode.split(/\n/).each_with_index do |line, idx|
+    utf8.split(/\n/).each_with_index do |line, idx|
       next if idx <= meta_end
 
       if line =~ /^(## *[^#]|-{2,} *$)/
@@ -177,7 +177,7 @@ class ::String
   ## @return     [String] content with TOC tag added
   ##
   def insert_toc(max = nil, after = :h1)
-    lines = clean_encode.split(/\n/)
+    lines = utf8.split(/\n/)
     max = max.to_i&.positive? ? " max#{max}" : ""
     line = case after.to_sym
            when :h2
@@ -238,7 +238,7 @@ class ::String
     if File.exist?(path)
       content = IO.read(path)
       yui = YuiCompressor::Yui.new
-      content = yui.compress(content.clean_encode)
+      content = yui.compress(content.utf8)
       inject_after_meta(content.wrap_style)
     else
       warn "File not found (#{path})"
@@ -254,7 +254,7 @@ class ::String
   ## @return     [String] string with content injected
   ##
   def inject_after_meta(content)
-    lines = clean_encode.split(/\n/)
+    lines = utf8.split(/\n/)
     insert_point = meta_insert_point
     insert_at = insert_point.positive? ? insert_point + 1 : 0
     lines.insert(insert_at, "#{content}\n\n")
@@ -294,10 +294,10 @@ class ::String
       inject_after_meta(out)
     when :h1
       h1 = first_h1.nil? ? 0 : first_h1 + 1
-      clean_encode.split(/\n/).insert(h1, out).join("\n")
+      utf8.split(/\n/).insert(h1, out).join("\n")
     when :h2
       h2 = first_h2.nil? ? 0 : first_h2 + 1
-      clean_encode.split(/\n/).insert(h2, out).join("\n")
+      utf8.split(/\n/).insert(h2, out).join("\n")
     else
       "#{self}\n#{out}"
     end
@@ -393,7 +393,7 @@ class ::String
       yaml = YAML.load(m[0])
       title = yaml["title"]
     when :mmd
-      clean_encode.split(/\n/).each do |line|
+      utf8.split(/\n/).each do |line|
         if line =~ /^ *title: *(\S.*?)$/i
           title = Regexp.last_match(1)
           break
@@ -401,7 +401,7 @@ class ::String
       end
     when :pandoc
       title = nil
-      clean_encode.split(/\n/).each do |line|
+      utf8.split(/\n/).each do |line|
         if line =~ /^% +(.*?)$/
           title = Regexp.last_match(1)
           break
@@ -419,7 +419,7 @@ class ::String
   end
 
   def insert_title(shift: 0)
-    content = dup.clean_encode
+    content = dup.utf8
     title = read_title
     content.increase_headers!(shift) if shift.positive?
     lines = content.split(/\n/)
@@ -441,7 +441,7 @@ class ::String
   end
 
   def ensure_mmd_meta_newline
-    clean_encode.split(/\n/).insert(meta_insert_point, "\n\n").join("\n")
+    utf8.split(/\n/).insert(meta_insert_point, "\n\n").join("\n")
   end
 
   def add_yaml(key, value)
@@ -466,7 +466,7 @@ class ::String
     if match(/(\A|\n) *#{key}: *\S+/i)
       sub(/^ *#{key}:.*?\n/i, "#{key}: #{value}\n")
     else
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines.insert(meta_insert_point, "#{key}: #{value}")
       "#{lines.join("\n")}\n"
     end
@@ -484,7 +484,7 @@ class ::String
     if comment?(key)
       sub(/ *#{key}: .*?$/, "#{key}: #{value}")
     else
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines.insert(meta_insert_point + 1, "\n<!--\n#{key}: #{value}\n-->")
       lines.join("\n")
     end
@@ -506,10 +506,10 @@ class ::String
     when :yaml
       sub(/^---.*?(---|\.\.\.)/m, "")
     when :mmd
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines[meta_insert_point..].join("\n")
     when :pandoc
-      lines = clean_encode.split(/\n/)
+      lines = utf8.split(/\n/)
       lines[meta_insert_point..].join("\n")
     else
       gsub(/(\n|^)<!--\n[\w\d\s]+: ([\w\d\s]+)\n-->\n/m, '')
@@ -574,7 +574,7 @@ class ::String
   ##
   def ensure_h1
     headers = to_enum(:scan, /(\#{1,6})([^#].*?)$/m).map { Regexp.last_match }
-    return self if headers.select { |h| h[1].size == 1 }.count.positive?
+    return self unless headers.select { |h| h[1].size == 1 }.empty?
 
     lowest_header = headers.min_by { |h| h[1].size }
     return self if lowest_header.nil?
