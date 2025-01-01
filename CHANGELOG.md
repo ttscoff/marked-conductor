@@ -1,3 +1,11 @@
+### 1.0.39
+
+2025-01-01 13:55
+
+#### FIXED
+
+- Inert_file messing up file extensions
+
 ### 1.0.38
 
 2024-08-23 11:20
