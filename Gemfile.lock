@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    marked-conductor (1.0.34)
+    marked-conductor (1.0.39)
       chronic (~> 0.10.2)
       tty-which (~> 0.5.0)
 
@@ -83,6 +83,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  arm64-darwin-24
   x86_64-darwin-20
 
 DEPENDENCIES
@@ -93,7 +94,7 @@ DEPENDENCIES
   parse_gemspec-cli (~> 1.0)
   pry (~> 0.14.2)
   rake (~> 13.0)
-  rspec (~> 3.13)
+  rspec (~> 3.0)
   rubocop (~> 1.21)
   simplecov (~> 0.21)
   simplecov-console (~> 0.9)

@@ -12,13 +12,14 @@ class ::String
   def find_file_in(paths, filename, ext)
     return filename if File.exist?(filename)
 
+    ext = ext.sub(/^\./, "")
+
     filename = File.basename(filename, ".#{ext}")
 
     paths.each do |path|
       exp = File.join(File.expand_path("~/.config/conductor/"), path, "#{filename}.#{ext}")
       return exp if File.exist?(exp)
     end
-
     "#{filename}.#{ext}"
   end
 
@@ -180,13 +181,13 @@ class ::String
     lines = utf8.split(/\n/)
     max = max.to_i&.positive? ? " max#{max}" : ""
     line = case after.to_sym
-           when :h2
-             first_h2.nil? ? 0 : first_h2 + 1
-           when :h1
-             first_h1.nil? ? 0 : first_h1 + 1
-           else
-             meta_insert_point.positive? ? meta_insert_point + 1 : 0
-           end
+      when :h2
+        first_h2.nil? ? 0 : first_h2 + 1
+      when :h1
+        first_h1.nil? ? 0 : first_h1 + 1
+      else
+        meta_insert_point.positive? ? meta_insert_point + 1 : 0
+      end
 
     lines.insert(line, "\n<!--toc#{max}-->\n").join("\n")
   end
@@ -272,21 +273,21 @@ class ::String
     path = path.strip
 
     path = if path =~ %r{^[.~/]}
-             File.expand_path(path)
-           else
-             find_file_in(%w[files], path, File.extname(path))
-           end
+        File.expand_path(path)
+      else
+        find_file_in(%w[files], path, File.extname(path))
+      end
 
     warn "File not found: #{path}" unless File.exist?(path)
 
     out = case type
-          when :code
-            "<<(#{path})"
-          when :raw
-            "<<{#{path}}"
-          else
-            "<<[#{path}]"
-          end
+      when :code
+        "<<(#{path})"
+      when :raw
+        "<<{#{path}}"
+      else
+        "<<[#{path}]"
+      end
     out = "\n#{out}\n"
 
     case position
@@ -363,10 +364,10 @@ class ::String
     return insert_raw_javascript(path) if path =~ /\(.*?\)/
 
     path = if path =~ %r{^[~/.]}
-             File.expand_path(path)
-           else
-             find_file_in(%w[javascript javascripts js scripts], path.sub(/(\.js)?$/, ".js"), "js")
-           end
+        File.expand_path(path)
+      else
+        find_file_in(%w[javascript javascripts js scripts], path.sub(/(\.js)?$/, ".js"), "js")
+      end
 
     if File.exist?(path)
       insert_javascript(path)
@@ -381,7 +382,7 @@ class ::String
     filename.sub!(/-?\d{4}-\d{2}-\d{2}-?/, "")
     filename.sub!(/\bdot\b/, ".")
     filename.sub!(/ dash /, "-")
-    filename.gsub(/-/, ' ')
+    filename.gsub(/-/, " ")
   end
 
   def read_title
@@ -512,7 +513,7 @@ class ::String
       lines = utf8.split(/\n/)
       lines[meta_insert_point..].join("\n")
     else
-      gsub(/(\n|^)<!--\n[\w\d\s]+: ([\w\d\s]+)\n-->\n/m, '')
+      gsub(/(\n|^)<!--\n[\w\d\s]+: ([\w\d\s]+)\n-->\n/m, "")
     end
   end
 
@@ -697,10 +698,10 @@ module Conductor
         amt = 0
         if @params
           amt = if @params[0] =~ /^[yts]/
-                  1
-                else
-                  @params[0].to_i
-                end
+              1
+            else
+              @params[0].to_i
+            end
         end
         content.insert_title(shift: amt)
       when /(insert|add|inject)script/
@@ -713,19 +714,19 @@ module Conductor
         m = Regexp.last_match
 
         position = if @params.count == 2
-                     @params[1].normalize_position
-                   else
-                     m[1].normalize_position
-                   end
+            @params[1].normalize_position
+          else
+            m[1].normalize_position
+          end
         content.insert_file(@params[0], m[2].normalize_include_type, position)
       when /inserttoc/
         max = @params.nil? || @params.empty? ? nil : @params[0]
 
         after = if @params && @params.count == 2
-                  @params[1] =~ /2/ ? :h2 : :h1
-                else
-                  :start
-                end
+            @params[1] =~ /2/ ? :h2 : :h1
+          else
+            :start
+          end
 
         content.insert_toc(max, after)
       when /(add|set)meta/
