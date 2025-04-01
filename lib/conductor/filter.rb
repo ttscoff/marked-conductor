@@ -753,6 +753,7 @@ module Conductor
           return content
         end
 
+        content = content.dup.force_encoding("UTF-8") # Enforce UTF-8 encoding
         content.replace_all(@params[0], @params[1])
       when /replace$/
         unless @params.count == 2
