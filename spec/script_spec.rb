@@ -43,5 +43,15 @@ describe Conductor::Script do
       script.args = ["${file}"]
       expect(script.run).to match(/First, there seems to be a misconception/)
     end
+
+    it "preserves backslash escapes in STDIN" do
+      # A literal backslash-n in the payload (e.g. a D2 label "a\nb") must reach
+      # the downstream processor verbatim. Shell `echo` interprets the escape and
+      # collapses it to a real newline; `printf '%s\n'` emits it as-is.
+      Conductor.stdin = 'label: "a\nb"'
+      script.path = "/bin/cat"
+      script.args = []
+      expect(script.run).to include('a\nb')
+    end
   end
 end
