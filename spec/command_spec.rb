@@ -41,5 +41,15 @@ describe Conductor::Command do
       command.args = "$file".dup
       expect(command.run).to match(/<p>First, there seems to be a misconception that/)
     end
+
+    it "preserves backslash escapes in STDIN" do
+      # A literal backslash-n in the payload (e.g. a D2 label "a\nb") must reach
+      # the downstream processor verbatim. Shell `echo` interprets the escape and
+      # collapses it to a real newline; `printf '%s\n'` emits it as-is.
+      Conductor.stdin = 'label: "a\nb"'
+      command.path = "/bin/cat"
+      command.args = []
+      expect(command.run).to include('a\nb')
+    end
   end
 end

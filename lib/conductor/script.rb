@@ -72,7 +72,7 @@ module Conductor
       end
 
       if use_stdin
-        `echo #{Shellwords.escape(stdin.utf8)} | #{Env} #{@path} #{@args}`
+        `printf '%s\n' #{Shellwords.escape(stdin.utf8)} | #{Env} #{@path} #{@args}`
       else
         `#{Env} #{@path} #{@args}`
       end
